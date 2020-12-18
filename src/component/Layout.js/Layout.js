@@ -8,12 +8,13 @@ import { Main } from '../Main';
 const Layout = ({ children }) => {
     return (
         <Grid
-            templateRows="auto 90vh"
+            templateRows="auto 96vh"
             templateColumns="repeat(5, 1fr)"
             p={3}
             gap={3}
         >
-            <GridItem
+            {/* TODO:  */}
+            {/* <GridItem
                 border="1px"
                 borderColor="red"
                 rowStart={1}
@@ -22,7 +23,7 @@ const Layout = ({ children }) => {
                 colEnd={6}
             >
                 <Header />
-            </GridItem>
+            </GridItem> */}
 
             <GridItem
                 border="1px"
@@ -31,6 +32,7 @@ const Layout = ({ children }) => {
                 rowEnd={-1}
                 colStart={1}
                 colEnd={2}
+                overflowY="scroll"
             >
                 <Navbar />
             </GridItem>
@@ -45,6 +47,7 @@ const Layout = ({ children }) => {
                 rowEnd={-1}
                 colStart={2}
                 colEnd={-1}
+                overflowY="scroll"
             >
                 <Main>{children}</Main>
             </GridItem>
