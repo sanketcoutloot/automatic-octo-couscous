@@ -11,40 +11,27 @@ import {
     Button,
 } from '@chakra-ui/react';
 import { FaSearch } from 'react-icons/fa';
-const Styles = styled.div`
-    padding: 1rem;
-
-    table {
-        border-spacing: 0;
-        border: 1px solid black;
-        width: 100%;
-
-        tr {
-            :last-child {
-                td {
-                    border-bottom: 0;
-                }
-            }
-        }
-
-        th,
-        td {
-            margin: 0;
-            padding: 0.5rem;
-            border-bottom: 1px solid black;
-            border-right: 1px solid black;
-
-            :last-child {
-                border-right: 0;
-            }
-        }
-    }
+const Table = styled.table`
+    margin: 1rem;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    width: 100%;
+    text-align: center;
 `;
 
+const TableBody = styled.tbody``;
+
 const TableHeader = styled.tr`
-    border: black 1px solid;
     background-color: #e47297;
+    border-radius: 5%;
+    height: 3rem;
     color: white;
+`;
+
+const TableRow = styled.tr`
+    background-color: #ffffff;
+    border-radius: 5px;
+    height: 3rem;
 `;
 
 function Dropdown() {
@@ -75,23 +62,34 @@ function GlobalFilter({
     };
 
     return (
-        <Flex alignItems="center">
-            <Input
-                w="75%"
-                size="md"
-                value={value || ''}
-                onChange={(e) => {
-                    setValue(e.target.value);
-                    onChange(e.target.value);
-                }}
-                bg="white"
-                border="none"
-                placeholder={`${count} records...`}
-            />
-            <Box w="25%" bg="none">
-                <Dropdown />
+        <Flex align="center" justify="space-between">
+            <Box width="87%">
+                <Flex border="1px solid black">
+                    <Input
+                        w="70%"
+                        size="md"
+                        value={value || ''}
+                        onChange={(e) => {
+                            setValue(e.target.value);
+                            onChange(e.target.value);
+                        }}
+                        bg="white"
+                        border="none"
+                        placeholder="Search Here"
+                    />
+                    <Box w="30%" bg="none">
+                        <Dropdown />
+                    </Box>
+                </Flex>
             </Box>
-            <Button leftIcon={<FaSearch />} colorScheme="blue">
+
+            <Button
+                w="12%"
+                bgColor="#177CE6"
+                borderRadius={2}
+                leftIcon={<FaSearch />}
+                colorScheme="blue"
+            >
                 Search
             </Button>
         </Flex>
@@ -99,7 +97,7 @@ function GlobalFilter({
 }
 
 // Our table component
-function Table({ columns, data }) {
+function ReactTable({ columns, data }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -120,57 +118,58 @@ function Table({ columns, data }) {
     );
 
     return (
-        <div>
-            <Styles>
-                <table {...getTableProps()}>
-                    <thead>
-                        {' '}
-                        <tr>
-                            <th
-                                colSpan={visibleColumns.length}
-                                style={{
-                                    textAlign: 'right',
-                                }}
-                            >
-                                <GlobalFilter
-                                    preGlobalFilteredRows={
-                                        preGlobalFilteredRows
-                                    }
-                                    globalFilter={state.globalFilter}
-                                    setGlobalFilter={setGlobalFilter}
-                                />
-                            </th>
-                        </tr>
-                        {headerGroups.map((headerGroup) => (
-                            <TableHeader {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => (
-                                    <th {...column.getHeaderProps()}>
-                                        {column.render('Header')}
-                                    </th>
-                                ))}
-                            </TableHeader>
-                        ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                        {rows.map((row, i) => {
-                            prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map((cell) => {
-                                        return (
-                                            <td {...cell.getCellProps()}>
-                                                {cell.render('Cell')}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </Styles>
-        </div>
+        <Box>
+            <Table {...getTableProps()}>
+                <thead>
+                    {' '}
+                    <tr
+                        style={{
+                            marginBottom: '5px',
+                        }}
+                    >
+                        <th
+                            colSpan={visibleColumns.length}
+                            style={{
+                                textAlign: 'right',
+                                padding: '0px',
+                            }}
+                        >
+                            <GlobalFilter
+                                preGlobalFilteredRows={preGlobalFilteredRows}
+                                globalFilter={state.globalFilter}
+                                setGlobalFilter={setGlobalFilter}
+                            />
+                        </th>
+                    </tr>
+                    {headerGroups.map((headerGroup) => (
+                        <TableHeader {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column) => (
+                                <th {...column.getHeaderProps()}>
+                                    {column.render('Header')}
+                                </th>
+                            ))}
+                        </TableHeader>
+                    ))}
+                </thead>{' '}
+                <TableBody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row);
+                        return (
+                            <TableRow {...row.getRowProps()}>
+                                {row.cells.map((cell) => {
+                                    return (
+                                        <td {...cell.getCellProps()}>
+                                            {cell.render('Cell')}
+                                        </td>
+                                    );
+                                })}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </Box>
     );
 }
 
-export default Table;
+export default ReactTable;

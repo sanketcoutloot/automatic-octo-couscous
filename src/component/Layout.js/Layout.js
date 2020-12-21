@@ -32,7 +32,10 @@ const Layout = ({ children }) => {
                 rowEnd={-1}
                 colStart={1}
                 colEnd={2}
-                overflowY="scroll"
+                overflowY="hidden"
+                _hover={{
+                    overflowY: 'scroll',
+                }}
             >
                 <Navbar />
             </GridItem>
@@ -47,7 +50,10 @@ const Layout = ({ children }) => {
                 rowEnd={-1}
                 colStart={2}
                 colEnd={-1}
-                overflowY="scroll"
+                overflowY="hidden"
+                _hover={{
+                    overflowY: 'scroll',
+                }}
             >
                 <Main>{children}</Main>
             </GridItem>
