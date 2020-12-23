@@ -13,18 +13,8 @@ const Layout = ({ children }) => {
             p={3}
             gap={3}
         >
-            {/* TODO:  */}
-            {/* <GridItem
-                border="1px"
-                borderColor="red"
-                rowStart={1}
-                rowEnd={1}
-                colStart={1}
-                colEnd={6}
-            >
-                <Header />
-            </GridItem> */}
-
+            
+        {/* side navigation  */}
             <GridItem
                 border="1px"
                 borderColor="blue"
@@ -40,6 +30,8 @@ const Layout = ({ children }) => {
                 <Navbar />
             </GridItem>
 
+            {/* main content */}
+
             <GridItem
                 bg="rgba(245,245,245,1)"
                 borderColor="white"
@@ -51,9 +43,7 @@ const Layout = ({ children }) => {
                 colStart={2}
                 colEnd={-1}
                 overflowY="hidden"
-                _hover={{
-                    overflowY: 'scroll',
-                }}
+               
             >
                 <Main>{children}</Main>
             </GridItem>
