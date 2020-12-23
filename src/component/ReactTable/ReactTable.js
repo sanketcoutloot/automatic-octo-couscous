@@ -16,9 +16,10 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
+
 import { FaSearch } from "react-icons/fa";
+
 const Table = styled.table`
-  margin: 1rem;
   border-collapse: separate;
   border-spacing: 0 15px;
   font-size: 14px;
@@ -115,10 +116,8 @@ function ReactTable({ columns, data }) {
     visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
+    page,
 
-    // The rest of these things are super handy, too ;)
     canPreviousPage,
     canNextPage,
     pageOptions,
