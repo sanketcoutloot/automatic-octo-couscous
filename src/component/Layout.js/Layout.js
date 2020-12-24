@@ -10,21 +10,14 @@ const Layout = ({ children }) => {
       templateColumns="repeat(5, 1fr)"
       p={2}
       gap={2}
-      style={{ boxSizing: "border-box" }}
+      style={{ boxSizing: "border-box", fontFamily: "Comfortaa, cursive" }}
     >
       {/* side navigation  */}
       <GridItem
-        border="1px"
-        borderColor="blue"
-        // rowStart={2}
-        // rowEnd={-1}
         colStart={1}
         colEnd={2}
         style={{ height: "calc(100vh - 1rem)" }}
-        overflowY="hidden"
-        _hover={{
-          overflowY: "scroll",
-        }}
+        overflowY="scroll"
       >
         <Navbar />
       </GridItem>

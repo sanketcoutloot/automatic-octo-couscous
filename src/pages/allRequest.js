@@ -1,17 +1,24 @@
-import { Box, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Heading,
+  Text,
+} from "@chakra-ui/react";
+
 import React, { useEffect, useState } from "react";
 
-//factory function
-import { MoneyLogFactory as MoneyLogsGenerator } from "../../Factory";
+//react-router
+import { Link } from "react-router-dom";
 
-//redux
-import { fetchUsers, allUsers } from "./userSlice";
-import { useDispatch, useSelector } from "react-redux";
+//factory function
+import { allRequestFactory as AllRequestGenerator } from "../Factory";
 
 //components
-import { ReactTable } from "../../component/ReactTable";
+import { ReactTable } from "../component/ReactTable";
 
-const renderWalletType = (props) => {
+const renderPaymentMode = (props) => {
   let lowerCaseValue = props.value.toLowerCase().trim();
 
   switch (lowerCaseValue) {
@@ -120,8 +127,8 @@ const renderAmount = ({
 
 const columns = [
   {
-    Header: "Transaction Id",
-    accessor: "transactionId",
+    Header: "ID",
+    accessor: "id",
     Cell: (props) => {
       return (
         <Text color="#6B46C1" fontWeight="bold">
@@ -131,8 +138,8 @@ const columns = [
     },
   },
   {
-    Header: "User Name",
-    accessor: "userName",
+    Header: "Requested By",
+    accessor: "requestedBy",
     Cell: ({
       cell: {
         row: {
@@ -147,6 +154,22 @@ const columns = [
       >{`${userName} (${userId})`}</Text>
     ),
   },
+
+  {
+    Header: "Payment Mode",
+    accessor: "paymentMode",
+    Cell: renderPaymentMode,
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    Cell: ({ value }) => <Text>{value}</Text>,
+  },
+  {
+    Header: "Amount",
+    accessor: "amount",
+    Cell: renderAmount,
+  },
   {
     Header: "Date",
     accessor: "date",
@@ -158,40 +181,43 @@ const columns = [
       return <Text fontWeight="bold"> {date} </Text>;
     },
   },
-  {
-    Header: "Wallet Type",
-    accessor: "walletType",
-    Cell: renderWalletType,
-  },
-
-  {
-    Header: "Amount",
-    accessor: "amount",
-    Cell: renderAmount,
-  },
+  //   render action button
 ];
 
 const UserList = () => {
-  const dispatch = useDispatch();
-  const users = useSelector(allUsers);
-  const [moneyLogs, SetMoneyLogs] = useState([]);
+  const [allRequests, SetAllRequest] = useState([]);
+
   useEffect(() => {
-    console.log("rendering");
-    //redux to fetch user
-    // dispatch(fetchUsers());
+    console.log("rendering all request ");
     getMoneyLogs();
   }, []);
 
   function getMoneyLogs() {
-    let logs = MoneyLogsGenerator(100);
-    SetMoneyLogs(logs);
+    let requests = AllRequestGenerator(100);
+    SetAllRequest(requests);
   }
 
   return (
     <Box>
       {" "}
-      <h1>User List</h1>
-      <ReactTable columns={columns} data={moneyLogs} />
+      <Heading as="H1" size="lg">
+        All Requests
+      </Heading>
+      <Breadcrumb fontWeight="medium" fontSize="sm">
+        <BreadcrumbItem>
+          <BreadcrumbLink as={Link} to="/">
+            <Text color="blue">Cashout Panel</Text>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink>
+            {" "}
+            <Text>Cashout Requests </Text>{" "}
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <ReactTable columns={columns} data={allRequests} />
     </Box>
   );
 };

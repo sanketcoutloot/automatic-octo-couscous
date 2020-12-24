@@ -61,9 +61,6 @@ function GlobalFilter({
 }) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
-  // const onChange = useAsyncDebounce((value) => {
-  //     setGlobalFilter(value || undefined);
-  // }, 200);
 
   const onChange = (value) => {
     setGlobalFilter(value || undefined);
@@ -71,7 +68,7 @@ function GlobalFilter({
 
   return (
     <Flex align="center" justify="space-between">
-      <Box width="87%">
+      <Box width="87%" borderRadius="none">
         <Flex border="1px solid black">
           <Input
             w="70%"
