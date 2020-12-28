@@ -182,7 +182,7 @@ const columns = [
   },
 ];
 
-const UserList = () => {
+const MoneyLogs = () => {
   // const dispatch = useDispatch();
   // const users = useSelector(allUsers);
   const [moneyLogs, SetMoneyLogs] = useState([]);
@@ -203,10 +203,9 @@ const UserList = () => {
 
   return (
     <Box>
-      {" "}
-      <Heading as="H1" size="lg">
+      <Box as="h1" fontSize="30px">
         Money Logs
-      </Heading>
+      </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
           <BreadcrumbLink as={Link} to="/">
@@ -230,4 +229,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default MoneyLogs;

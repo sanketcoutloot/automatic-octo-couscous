@@ -6,17 +6,19 @@ import { MoneyLogs, AllRequests } from "./pages";
 
 import { Layout } from "./component/Layout.js";
 
+import { UserCashoutProfile } from "./component/UserCashoutProfile";
+
 class App extends Component {
   render() {
     return (
       <React.Fragment>
         <Router>
           <Switch>
-            <Route path="/moneylogs">
+            <Route exact path="/moneylogs">
               <Layout children={<MoneyLogs />} />
             </Route>
 
-            <Route path="/allrequests">
+            <Route exact path="/allrequests">
               <Layout children={<AllRequests />} />
             </Route>
 

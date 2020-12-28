@@ -15,9 +15,15 @@ import {
   Flex,
   Box,
   Button,
+  Icon,
 } from "@chakra-ui/react";
 
-import { FaSearch } from "react-icons/fa";
+import {
+  FaSearch,
+  FaSort,
+  FaSortAmountDownAlt,
+  FaSortAmountUpAlt,
+} from "react-icons/fa";
 
 const Table = styled.table`
   border-collapse: separate;
@@ -170,7 +176,26 @@ function ReactTable({ columns, data }) {
                       ? column.isSortedDesc
                         ? " 🔽"
                         : " 🔼"
-                      : ""}
+                      : null}
+                    {/* //todo : renderinf icon */}
+                    {/* todo : render only for default and not for others  */}
+                    {/* {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <Icon size="lg">
+                          {" "}
+                          <FaSortAmountUpAlt />{" "}
+                        </Icon>
+                      ) : (
+                        <Icon size="lg">
+                          {" "}
+                          <FaSortAmountDownAlt />{" "}
+                        </Icon>
+                      )
+                    ) : (
+                      <Icon size="lg">
+                        <FaSort />
+                      </Icon>
+                    )} */}
                   </span>
                 </th>
               ))}

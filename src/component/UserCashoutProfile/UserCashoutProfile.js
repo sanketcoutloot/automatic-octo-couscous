@@ -10,9 +10,6 @@ import {
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
-import BANK from "../asset/bank.svg";
-import PAYTM from "../asset/paytm.png";
-import UPI from "../asset/upi.png";
 
 //react-router
 import {
@@ -20,74 +17,73 @@ import {
   useRouteMatch,
   Switch,
   Route,
-  useParams,
 } from "react-router-dom";
 
 //factory function
-import { allRequestFactory as AllRequestGenerator } from "../Factory";
+import { allRequestFactory as AllRequestGenerator } from "../../Factory";
 
 //components
-import { ReactTable } from "../component/ReactTable";
-import { UserCashoutProfile } from "../component/UserCashoutProfile";
+import { ReactTable } from "../ReactTable";
 
 const renderPaymentMode = (props) => {
   let lowerCaseValue = props.value.toLowerCase().trim();
 
-  switch (lowerCaseValue) {
-    case "paytm":
-      return (
-        <Box>
-          <Image
-            mx="auto"
-            boxSize="50px"
-            objectFit="contain"
-            src={PAYTM}
-            alt="PAYTM"
-          />
-        </Box>
-      );
+  // switch (lowerCaseValue) {
+  //   case "paytm":
+  //     return (
+  //       <Box>
+  //         <Image
+  //           mx="auto"
+  //           boxSize="50px"
+  //           objectFit="contain"
+  //           src={PAYTM}
+  //           alt="PAYTM"
+  //         />
+  //       </Box>
+  //     );
 
-    case "upi":
-      return (
-        <Box>
-          <Image
-            boxSize="50px"
-            mx="auto"
-            objectFit="contain"
-            src={UPI}
-            alt="UPI"
-          />
-        </Box>
-      );
+  //   case "upi":
+  //     return (
+  //       <Box>
+  //         <Image
+  //           boxSize="50px"
+  //           mx="auto"
+  //           objectFit="contain"
+  //           src={UPI}
+  //           alt="UPI"
+  //         />
+  //       </Box>
+  //     );
 
-    case "bank":
-      return (
-        <Box>
-          <Image
-            mx="auto"
-            boxSize="60px"
-            objectFit="contain"
-            src={BANK}
-            alt="Segun Adebayo"
-          />
-        </Box>
-      );
+  //   case "bank":
+  //     return (
+  //       <Box>
+  //         <Image
+  //           mx="auto"
+  //           boxSize="60px"
+  //           objectFit="contain"
+  //           src={BANK}
+  //           alt="Segun Adebayo"
+  //         />
+  //       </Box>
+  //     );
 
-    default:
-      return (
-        <Text
-          align="left"
-          fontWeight="bold"
-          color="#89664C"
-          casing="capitalize"
-        >
-          {lowerCaseValue}
-        </Text>
-      );
-  }
+  //   default:
+  //     return (
+  //       <Text
+  //         align="left"
+  //         fontWeight="bold"
+  //         color="#89664C"
+  //         casing="capitalize"
+  //       >
+  //         {lowerCaseValue}
+  //       </Text>
+  //     );
+  // }
 };
 
 const AllRequests = () => {
+  return;
   const [allRequests, SetAllRequest] = useState([]);
   let { path, url } = useRouteMatch();
   useEffect(() => {
@@ -184,7 +180,6 @@ const AllRequests = () => {
       Header: "Action",
       accessor: "userId",
       Cell: ({ value }) => {
-        console.log("LINK RENDERED", `${url}/${value}`);
         return (
           <Link
             size="sm"
@@ -206,7 +201,7 @@ const AllRequests = () => {
 
   return (
     <Box>
-      {" "}
+      <h1>Some deeep shit </h1>;{" "}
       <Box as="h1" fontSize="30px">
         All Requests
       </Box>
@@ -225,33 +220,10 @@ const AllRequests = () => {
         </BreadcrumbItem>
       </Breadcrumb>
       {console.log("All request logging ", allRequests)}
-      <ReactTable columns={columns} data={allRequests} />
-      {/* ROuting  */}
-      <Switch>
-        {console.log("PAth ===> ", `${path}/:userId`)}
-        <Route path={`${path}/:userId`}>
-          <Topic />
-        </Route>
-      </Switch>
+      <h1>We are working on deep shit.</h1>
+      {/* <ReactTable columns={columns} data={allRequests} /> */}
     </Box>
   );
 };
-
-function Topic() {
-  // The <Route> that rendered this component has a
-  // path of `/topics/:topicId`. The `:topicId` portion
-  // of the URL indicates a placeholder that we can
-  // get from `useParams()`.
-  let { userId } = useParams();
-
-  console.log("userId is -->", userId);
-
-  return (
-    <div>
-      <h1>Some Deep Shit</h1>
-      <h3>{userId}</h3>
-    </div>
-  );
-}
 
 export default AllRequests;

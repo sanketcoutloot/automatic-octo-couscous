@@ -8,7 +8,7 @@ const allRequestFactory = (amount) => {
       id: faker.random.number(12),
       requestedBy: faker.name.findName(),
       userId: faker.random.number(),
-      paymentMode: faker.random.arrayElement(["paytm", "UPI", "bank"]),
+      paymentMode: faker.random.arrayElement(["paytm", "upi", "bank"]),
       status: faker.random.arrayElement(["active", "renewed"]),
       amount: faker.random.number({ min: 0, max: 10000 }),
       date: `${Math.floor(
