@@ -1,33 +1,10 @@
-import {
-    Box,
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    Text,
-    Image,
-    Button,
-    Link,
-} from '@chakra-ui/react';
-
 import React, { useEffect, useState } from 'react';
-import BANK from '../asset/bank.svg';
-import PAYTM from '../asset/paytm.png';
-import UPI from '../asset/upi.png';
-
-//react-router
-import {
-    Link as RouterLink,
-    useRouteMatch,
-    Switch,
-    Route,
-    useParams,
-} from 'react-router-dom';
-
-//factory function
-import { allRequestFactory as AllRequestGenerator } from '../Factory';
-
-//components
-import { ReactTable } from '../component/ReactTable';
+import { allRequestFactory as AllRequestGenerator } from '../../Factory';
+import BANK from '../../asset/bank.svg';
+import PAYTM from '../../asset/paytm.png';
+import UPI from '../../asset/upi.png';
+import { Box, Button, Image, Text } from '@chakra-ui/react';
+import { ReactTable } from '../ReactTable';
 
 const renderPaymentMode = (props) => {
     let lowerCaseValue = props.value.toLowerCase().trim();
@@ -86,11 +63,9 @@ const renderPaymentMode = (props) => {
     }
 };
 
-const AllRequests = () => {
+const cashoutRequestTable = () => {
     const [allRequests, SetAllRequest] = useState([]);
-    let { path, url } = useRouteMatch();
     useEffect(() => {
-        console.log('rendering all request ');
         getMoneyLogs();
     }, []);
 
@@ -181,62 +156,8 @@ const AllRequests = () => {
                 return <Text fontWeight="bold"> {date} </Text>;
             },
         },
-        {
-            Header: 'Action',
-            accessor: 'userId',
-            Cell: ({
-                cell: {
-                    row: {
-                        original: { userId, requestedBy },
-                    },
-                },
-            }) => {
-                return (
-                    <Link
-                        size="sm"
-                        as={RouterLink}
-                        style={{
-                            backgroundColor: 'red',
-                            padding: '0.5rem',
-                            color: 'white',
-                            borderRadius: '5px',
-                        }}
-                        to={{
-                            pathname: `${url}/${userId}`,
-                            state: { userId, requestedBy },
-                        }}
-                    >
-                        Process
-                    </Link>
-                );
-            },
-        },
     ];
-
-    return (
-        <Box>
-            {' '}
-            <Box as="h1" fontSize="30px">
-                All Requests
-            </Box>
-            <Breadcrumb fontWeight="medium" fontSize="sm">
-                <BreadcrumbItem>
-                    <BreadcrumbLink as={Link} to="/">
-                        <Text color="blue">Cashout Panel</Text>
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-
-                <BreadcrumbItem isCurrentPage>
-                    <BreadcrumbLink>
-                        {' '}
-                        <Text>Cashout Requests </Text>{' '}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            </Breadcrumb>
-            {console.log('All request logging ', allRequests)}
-            <ReactTable columns={columns} data={allRequests} />
-        </Box>
-    );
+    return <ReactTable columns={columns} data={allRequests} />;
 };
 
-export default AllRequests;
+export default cashoutRequestTable;
