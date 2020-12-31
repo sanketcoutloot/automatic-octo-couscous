@@ -23,6 +23,7 @@ import {
 import BANK from '../asset/bank.svg';
 
 import { CashoutRequestTable } from '../component/UserProfileUtilsComponents';
+import { FaPen } from 'react-icons/fa';
 
 const userProfileDetails = () => {
     const { state } = useLocation();
@@ -60,15 +61,7 @@ const userProfileDetails = () => {
                 </BreadcrumbItem>
             </Breadcrumb>
             {/* tabs and thgere respective data table  */}
-            <Tabs
-                style={{
-                    border: 'blue 1px solid',
-                }}
-                height="60vh"
-                mt="1.5rem"
-                variant="soft-rounded"
-                isLazy
-            >
+            <Tabs height="60vh" mt="1.5rem" variant="soft-rounded" isLazy>
                 <TabList bgColor="white" p="0.8rem" display="flex" rounded="md">
                     <Tab
                         _selected={{
@@ -119,9 +112,10 @@ const userProfileDetails = () => {
                     bgColor="white"
                     color="#6C757D"
                     p={2}
-                    border="dotted 2px blue"
                 >
-                    <Text>User Details :</Text>
+                    <Flex justify="space-between" align="center">
+                        <Text>User Details :</Text>
+                    </Flex>
                     <Grid
                         h="100%"
                         templateRows="repeat(4, 1fr)"
@@ -199,9 +193,71 @@ const userProfileDetails = () => {
                     height="100%"
                     margin="0.5rem 0.5rem 0rem 0rem"
                     width="50%"
-                    border="dotted 2px blue"
+                    bgColor="white"
+                    color="#6C757D"
+                    p={2}
                 >
-                    box 1
+                    <Flex justify="space-between" align="center">
+                        <Text>Bank Details :</Text>
+                        <Button
+                            colorScheme="blue"
+                            leftIcon={<FaPen />}
+                            variant="outline"
+                            borderRadius="2rem"
+                            size="sm"
+                        >
+                            Edit
+                        </Button>
+                    </Flex>
+                    <Grid
+                        h="100%"
+                        templateRows="repeat(4, 1fr)"
+                        templateColumns="repeat(6, 1fr)"
+                        gap={1}
+                        alignItems="center"
+                    >
+                        <GridItem gridRow="1/2" gridColumn="1/-1">
+                            <Flex>
+                                <Text>Acc. Holder Name :</Text>
+                                <Text color="#000000">sanket ding </Text>
+                            </Flex>
+                        </GridItem>
+
+                        <GridItem gridRow="2/3" gridColumn="1/-1">
+                            <Flex>
+                                <Text>Acc. Number :</Text>
+                                <Text color="#000000">745985859847487</Text>
+                            </Flex>
+                        </GridItem>
+
+                        <GridItem gridRow="3/4" gridColumn="1/-1">
+                            <Flex>
+                                <Text>Acc. Type :</Text>
+
+                                <Text color="#000000">Savibg</Text>
+                            </Flex>
+                        </GridItem>
+
+                        <GridItem gridRow="4/5" gridColumn="1/5">
+                            <Flex>
+                                <Text noOfLines={1}>Bank :</Text>
+
+                                <Text isTruncated color="#000000">
+                                    saome random bank sanke
+                                </Text>
+                            </Flex>
+                        </GridItem>
+
+                        <GridItem gridRow="4/5" gridColumn="4/7">
+                            <Flex>
+                                <Text>IFSC CODE :</Text>
+
+                                <Text color="#000000" casing="uppercase">
+                                    icicic94375405
+                                </Text>
+                            </Flex>
+                        </GridItem>
+                    </Grid>
                 </Box>
             </Flex>
         </Box>
