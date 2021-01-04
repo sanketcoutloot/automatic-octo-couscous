@@ -14,6 +14,8 @@ import BANK from '../asset/bank.svg';
 import PAYTM from '../asset/paytm.png';
 import UPI from '../asset/upi.png';
 
+// axios
+import API from '../config/API';
 //react-router
 import {
     Link as RouterLink,
@@ -89,15 +91,24 @@ const renderPaymentMode = (props) => {
 const AllRequests = () => {
     const [allRequests, SetAllRequest] = useState([]);
     let { path, url } = useRouteMatch();
-    useEffect(() => {
-        console.log('rendering all request ');
-        getMoneyLogs();
-    }, []);
 
-    function getMoneyLogs() {
-        let requests = AllRequestGenerator(100);
-        SetAllRequest(requests);
+    async function fetchAllRequests() {
+        try {
+            let { data: requests } = await API.get(
+                `/getCashoutRequests?pageNo=${parseInt(0)}`
+            );
+
+            console.log('all response ', requests);
+
+            SetAllRequest(requests);
+        } catch (error) {
+            console.log(error);
+        }
     }
+
+    useEffect(() => {
+        fetchAllRequests();
+    }, [allRequests]);
 
     const columns = [
         {
@@ -233,7 +244,6 @@ const AllRequests = () => {
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             </Breadcrumb>
-            {console.log('All request logging ', allRequests)}
             <ReactTable columns={columns} data={allRequests} />
         </Box>
     );

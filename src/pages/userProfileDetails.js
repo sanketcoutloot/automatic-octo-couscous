@@ -74,7 +74,7 @@ const userProfileDetails = () => {
     useEffect(() => {
         setUserId(() => state.userId);
         setUserName(() => state.requestedBy);
-    }, [location]);
+    }, [state]);
 
     return (
         <Box>
