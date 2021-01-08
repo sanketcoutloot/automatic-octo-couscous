@@ -32,10 +32,10 @@ import { allRequestFactory as AllRequestGenerator } from '../Factory';
 import { ReactTable } from '../component/ReactTable';
 
 const renderPaymentMode = (props) => {
-    let lowerCaseValue = props.value.toLowerCase().trim();
+    let paymentModeValue = parseInt(props.value.trim());
 
-    switch (lowerCaseValue) {
-        case 'paytm':
+    switch (paymentModeValue) {
+        case 1:
             return (
                 <Box>
                     <Image
@@ -48,7 +48,7 @@ const renderPaymentMode = (props) => {
                 </Box>
             );
 
-        case 'upi':
+        case 2:
             return (
                 <Box>
                     <Image
@@ -61,7 +61,7 @@ const renderPaymentMode = (props) => {
                 </Box>
             );
 
-        case 'bank':
+        case 0:
             return (
                 <Box>
                     <Image
@@ -82,7 +82,7 @@ const renderPaymentMode = (props) => {
                     color="#89664C"
                     casing="capitalize"
                 >
-                    {lowerCaseValue}
+                    {paymentModeValue}
                 </Text>
             );
     }
@@ -93,17 +93,10 @@ const AllRequests = () => {
     let { path, url } = useRouteMatch();
 
     async function fetchAllRequests() {
-        try {
-            let { data: requests } = await API.get(
-                `/getCashoutRequests?pageNo=${parseInt(0)}`
-            );
-
-            console.log('all response ', requests);
-
-            SetAllRequest(requests);
-        } catch (error) {
-            console.log(error);
-        }
+        fetch('http://localhost:3000/cashout/getCashoutRequests?pageNo=0')
+            .then((res) => res.json())
+            .then((resjson) => SetAllRequest(resjson))
+            .catch((err) => console.log(err));
     }
 
     useEffect(() => {
@@ -142,12 +135,12 @@ const AllRequests = () => {
 
         {
             Header: 'Payment Mode',
-            accessor: 'paymentMode',
+            accessor: 'requestMode',
             Cell: renderPaymentMode,
         },
         {
             Header: 'Status',
-            accessor: 'status',
+            accessor: 'requestStatus',
             Cell: ({ value }) => (
                 <Button
                     colorScheme={
