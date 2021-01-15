@@ -1,6 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
 
 export default axios.create({
-    baseURL: 'localhost:3000/cashout',
-    headers: { Accept: 'application/json' },
+  baseURL: "https://jsonplaceholder.typicode.com",
 });
