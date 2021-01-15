@@ -9,7 +9,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BANK from "../asset/bank.svg";
 import PAYTM from "../asset/paytm.png";
 import UPI from "../asset/upi.png";
@@ -24,9 +24,6 @@ import {
   Route,
   useParams,
 } from "react-router-dom";
-
-//factory function
-import { allRequestFactory as AllRequestGenerator } from "../Factory";
 
 //components
 import { ReactTable } from "../component/ReactTable";
@@ -69,7 +66,7 @@ const renderPaymentMode = (props) => {
             boxSize="60px"
             objectFit="contain"
             src={BANK}
-            alt="Segun Adebayo"
+            alt="BANK"
           />
         </Box>
       );
@@ -90,32 +87,46 @@ const renderPaymentMode = (props) => {
 
 const AllRequests = () => {
   const [allRequests, SetAllRequests] = useState([]);
+  const [pageNumber, changePageNumber] = useState(0);
+  const [isError, setIsError] = useState(false);
+
   let { path, url } = useRouteMatch();
+
+  console.log({ url });
 
   async function fetchAllRequests() {
     try {
       console.log("INSIDE fetch function");
-      let response = await axios.get("posts");
-
-      await SetAllRequests(response.data);
-
-      console.log("allRequests ==> ", allRequests);
+      let { data } = await axios.get(
+        `cahsout/getCashoutRequests/${pageNumber}`
+      );
+      let { success, data: responseData } = data;
+      if (success === 1) {
+        SetAllRequests(responseData);
+      } else {
+        setIsError(true);
+      }
     } catch (error) {
       console.log(error);
+      setIsError(true);
     }
   }
 
   useEffect(() => {
     console.log("calling the API ");
-    fetchAllRequests();
+    setTimeout(() => {
+      fetchAllRequests();
+    }, 3000);
+
+    // fetchAllRequests();
 
     console.log("api called ");
   }, []);
 
   const columns = [
     {
-      Header: "ID",
-      accessor: "id",
+      Header: "Request ID",
+      accessor: "requestId",
       Cell: (props) => {
         return (
           <Text color="#6B46C1" fontWeight="bold">
@@ -134,11 +145,16 @@ const AllRequests = () => {
           },
         },
       }) => (
+        // <Text
+        //   color="#000000"
+        //   align="center"
+        //   fontWeight="bold"
+        // >{`${requestedBy} (${userId})`}</Text>
         <Text
           color="#000000"
           align="center"
           fontWeight="bold"
-        >{`${requestedBy} (${userId})`}</Text>
+        >{`(${requestedBy})`}</Text>
       ),
     },
 
@@ -154,6 +170,7 @@ const AllRequests = () => {
         <Button
           colorScheme={value.toLowerCase() === "active" ? "green" : "orange"}
           variant="outline"
+          _hover={{ cursor: "initial" }}
           size="sm"
           width="5rem"
         >
@@ -163,11 +180,11 @@ const AllRequests = () => {
     },
     {
       Header: "Amount",
-      accessor: "amount",
+      accessor: "requestedAmount",
       Cell: ({
         cell: {
           row: {
-            original: { amount },
+            original: { requestedAmount },
           },
         },
       }) => (
@@ -177,13 +194,13 @@ const AllRequests = () => {
           color="#00000"
           casing="capitalize"
         >
-          {` \u20B9${amount}`}
+          {` \u20B9${requestedAmount}`}
         </Text>
       ),
     },
     {
       Header: "Date",
-      accessor: "date",
+      accessor: "requestDate",
       Cell: ({ value }) => {
         let date = new Date(Number(value) * 1000)
           .toLocaleString()
@@ -194,14 +211,15 @@ const AllRequests = () => {
     },
     {
       Header: "Action",
-      accessor: "userId",
+      accessor: "",
       Cell: ({
         cell: {
           row: {
-            original: { userId, requestedBy },
+            original: { requestedBy },
           },
         },
       }) => {
+        console.log({ requestedBy });
         return (
           <Link
             size="sm"
@@ -213,8 +231,8 @@ const AllRequests = () => {
               borderRadius: "5px",
             }}
             to={{
-              pathname: `${url}/${userId}`,
-              state: { userId, requestedBy },
+              pathname: `${url}/${requestedBy}`,
+              state: { requestedBy },
             }}
           >
             Process
@@ -244,7 +262,11 @@ const AllRequests = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      {/* <ReactTable columns={columns} data={allRequests} /> */}
+      {allRequests.length === 0 ? (
+        <h1 m="auto">Loading </h1>
+      ) : (
+        <ReactTable columns={columns} data={allRequests} />
+      )}
     </Box>
   );
 };
