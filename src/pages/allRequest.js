@@ -114,12 +114,7 @@ const AllRequests = () => {
 
   useEffect(() => {
     console.log("calling the API ");
-    setTimeout(() => {
-      fetchAllRequests();
-    }, 3000);
-
-    // fetchAllRequests();
-
+    fetchAllRequests();
     console.log("api called ");
   }, []);
 
