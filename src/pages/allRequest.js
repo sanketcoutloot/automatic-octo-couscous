@@ -210,11 +210,10 @@ const AllRequests = () => {
       Cell: ({
         cell: {
           row: {
-            original: { requestedBy },
+            original: { requestedBy: userId },
           },
         },
       }) => {
-        console.log({ requestedBy });
         return (
           <Link
             size="sm"
@@ -226,8 +225,8 @@ const AllRequests = () => {
               borderRadius: "5px",
             }}
             to={{
-              pathname: `${url}/${requestedBy}`,
-              state: { requestedBy },
+              pathname: `${url}/${userId}`,
+              state: { userId },
             }}
           >
             Process
