@@ -45,6 +45,8 @@ const userProfileDetails = () => {
   const { state } = useLocation();
   console.log("initila state ,", state);
   const [userId, setUserId] = useState("");
+  const [myTransactionLogs, setMyTransactionLogs] = useState([]);
+
   const [userCashoutRequests, setUserCashoutRequest] = useState([]);
   const [userName, setUserName] = useState("");
   const [isError, setIsError] = useState(false);
@@ -74,6 +76,29 @@ const userProfileDetails = () => {
       }, 3000);
     });
   }
+
+  const fetchMyTransactionLogs = async () => {
+    //will fetch  the data from pthe url
+
+    try {
+      let { data } = await API.post(`moneyLog/getMoneyLogs`, {
+        searchText: userId,
+        searchType: "USERID",
+      });
+      let { success, data: responseData } = data;
+      if (success === 1) {
+        if (!Array.isArray(responseData)) {
+          responseData = [responseData];
+        }
+        setMyTransactionLogs(responseData);
+      } else {
+        setIsError(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+    }
+  };
 
   const getUserCashoutRequests = async () => {
     try {
@@ -145,6 +170,7 @@ const userProfileDetails = () => {
               bg: "white",
               border: "2px #E47297 solid",
             }}
+            onClick={fetchMyTransactionLogs}
           >
             My Money Transactions
           </Tab>
@@ -167,7 +193,11 @@ const userProfileDetails = () => {
             )}
           </TabPanel>
           <TabPanel>
-            <CashoutRequestTable tab={2} />
+            {myTransactionLogs.length > 0 ? (
+              <CashoutRequestTable tab={2} tableData={myTransactionLogs} />
+            ) : (
+              <h1>LOADING</h1>
+            )}
           </TabPanel>
           <TabPanel>
             <CashoutRequestTable tab={3} />

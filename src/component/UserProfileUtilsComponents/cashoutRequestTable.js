@@ -64,18 +64,10 @@ const renderPaymentMode = (props) => {
 };
 
 const cashoutRequestTable = ({ tableData, tab }) => {
-  console.log("this is my data table ", tableData);
-  console.log("this is my tab ", tab);
-
-  //columon value if the tab === 1
-
-  // requestId:62301
-  // requestMode:"0"
-  // requestedBy:800100
-  // requestedAmount:35
-  // accountId:"123abc"
-  // requestStatus:"ACTIVE"
-  // requestDate:1609942401
+  console.log({ tab });
+  useEffect(() => {
+    console.log("The tab has changed ", tab);
+  }, [tab]);
 
   const tab_1_columns = [
     {
@@ -165,7 +157,83 @@ const cashoutRequestTable = ({ tableData, tab }) => {
     },
   ];
 
-  const tab_2_columns = [];
+  console.log("working tab_2_columns", tableData);
+  const tab_2_columns = [
+    {
+      Header: "Request ID",
+      accessor: "transactionId",
+      Cell: (props) => {
+        return (
+          <Text color="#6B46C1" fontWeight="bold">
+            {props.value}
+          </Text>
+        );
+      },
+    },
+    {
+      Header: "Type",
+      accessor: "type",
+      Cell: ({ value }) => (
+        <Text
+          color="#000000"
+          align="center"
+          fontWeight="bold"
+          casing="capitalize"
+        >{`${value}`}</Text>
+      ),
+    },
+
+    {
+      Header: "Transaction",
+      accessor: "requestStatus",
+      Cell: ({
+        cell: {
+          row: {
+            original: {
+              transactionData: { comments },
+            },
+          },
+        },
+      }) => <Text casing="capitalize">{comments}</Text>,
+    },
+
+    {
+      Header: "Amount",
+      accessor: "transactionAmount",
+      Cell: ({
+        cell: {
+          row: {
+            original: { transactionAmount, type },
+          },
+        },
+      }) => {
+        let color = type === "DEBIT" ? "#F05E4B" : "#28A745";
+        let symbol = type === "DEBIT" ? "-" : "+";
+        return (
+          <Text
+            align="center"
+            fontWeight="bold"
+            color={color}
+            casing="capitalize"
+          >
+            {symbol}
+            {` \u20B9${transactionAmount}`}
+          </Text>
+        );
+      },
+    },
+    {
+      Header: "Date",
+      accessor: "transactionDate",
+      Cell: ({ value }) => {
+        let date = new Date(Number(value) * 1000)
+          .toLocaleString()
+          .replaceAll("/", "-")
+          .replaceAll(",", " ");
+        return <Text fontWeight="bold"> {date} </Text>;
+      },
+    },
+  ];
 
   const tab_3_columns = [];
 
