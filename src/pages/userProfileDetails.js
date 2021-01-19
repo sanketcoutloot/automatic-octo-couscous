@@ -43,10 +43,9 @@ import API from "../config/API";
 
 const userProfileDetails = () => {
   const { state } = useLocation();
-  console.log("initila state ,", state);
   const [userId, setUserId] = useState("");
   const [myTransactionLogs, setMyTransactionLogs] = useState([]);
-
+  const [savedBankDetails, setSavedBankDetails] = useState([]);
   const [userCashoutRequests, setUserCashoutRequest] = useState([]);
   const [userName, setUserName] = useState("");
   const [isError, setIsError] = useState(false);
@@ -77,10 +76,34 @@ const userProfileDetails = () => {
     });
   }
 
-  const fetchMyTransactionLogs = async () => {
-    //will fetch  the data from pthe url
-
+  const fetchSavedBankDetails = async () => {
     try {
+      if (savedBankDetails.length > 0) {
+        return;
+      }
+      let { data } = await API.post(`cahsout/getUserBankDetails`, {
+        userId,
+      });
+      let { success, data: responseData } = data;
+      if (success === 1) {
+        if (!Array.isArray(responseData)) {
+          responseData = [responseData];
+        }
+        setSavedBankDetails(responseData);
+      } else {
+        setIsError(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+    }
+  };
+
+  const fetchMyTransactionLogs = async () => {
+    try {
+      if (myTransactionLogs.length > 0) {
+        return;
+      }
       let { data } = await API.post(`moneyLog/getMoneyLogs`, {
         searchText: userId,
         searchType: "USERID",
@@ -180,6 +203,7 @@ const userProfileDetails = () => {
               bg: "white",
               border: "2px #E47297 solid",
             }}
+            onClick={fetchSavedBankDetails}
           >
             Saved Bank Accounts
           </Tab>
@@ -200,7 +224,11 @@ const userProfileDetails = () => {
             )}
           </TabPanel>
           <TabPanel>
-            <CashoutRequestTable tab={3} />
+            {savedBankDetails.length > 0 ? (
+              <CashoutRequestTable tab={3} tableData={savedBankDetails} />
+            ) : (
+              <h1>LOADING</h1>
+            )}
           </TabPanel>
         </TabPanels>
       </Tabs>

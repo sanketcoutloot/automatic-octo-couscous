@@ -5,6 +5,7 @@ import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
 import { Box, Button, Image, Text } from "@chakra-ui/react";
 import { ReactTable } from "../ReactTable";
+import { FaPen } from "react-icons/fa";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -65,9 +66,7 @@ const renderPaymentMode = (props) => {
 
 const cashoutRequestTable = ({ tableData, tab }) => {
   console.log({ tab });
-  useEffect(() => {
-    console.log("The tab has changed ", tab);
-  }, [tab]);
+  console.log("TABLE DATA", tableData);
 
   const tab_1_columns = [
     {
@@ -157,7 +156,6 @@ const cashoutRequestTable = ({ tableData, tab }) => {
     },
   ];
 
-  console.log("working tab_2_columns", tableData);
   const tab_2_columns = [
     {
       Header: "Request ID",
@@ -235,7 +233,70 @@ const cashoutRequestTable = ({ tableData, tab }) => {
     },
   ];
 
-  const tab_3_columns = [];
+  const tab_3_columns = [
+    {
+      Header: "Bank Name",
+      accessor: "bankName",
+      Cell: (props) => {
+        return (
+          <Text color="#6B46C1" fontWeight="bold">
+            {props.value}
+          </Text>
+        );
+      },
+    },
+
+    {
+      Header: "Acc Number",
+      accessor: "accountNumber",
+      Cell: ({ value }) => (
+        <Text
+          color="#000000"
+          align="center"
+          fontWeight="bold"
+        >{`${value}`}</Text>
+      ),
+    },
+
+    {
+      Header: "Account Type",
+      accessor: "accountType",
+      Cell: ({ value }) => (
+        <Text color="#000000" align="center" fontWeight="bold">
+          {value}
+        </Text>
+      ),
+    },
+
+    {
+      Header: "IFSC Code",
+      accessor: "ifscCode",
+      Cell: ({ value }) => {
+        return (
+          <Text align="center" fontWeight="bold" color="#000000">
+            {value}
+          </Text>
+        );
+      },
+    },
+
+    {
+      Header: "action",
+      accessor: "",
+      Cell: (props) => {
+        return (
+          <Button
+            leftIcon={<FaPen />}
+            variant="outline"
+            borderRadius="2rem"
+            size="sm"
+          >
+            Edit
+          </Button>
+        );
+      },
+    },
+  ];
 
   //use props.tab value to choose between doffrent tab value
   let columns = null;

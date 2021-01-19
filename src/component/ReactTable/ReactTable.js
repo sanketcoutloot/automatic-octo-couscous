@@ -51,7 +51,7 @@ const TableRow = styled.tr`
 function Dropdown() {
   return (
     <Select variant="outline" bgColor="white" placeholder="Select option">
-      <option selected value="option1">
+      <option defaultValue value="option1">
         Option 1
       </option>
       <option value="option2">Option 2</option>
@@ -147,14 +147,10 @@ function ReactTable({ columns, data }) {
     setPageSize(50);
   }, [pageSize]);
 
-  console.log("current page size =>", pageSize);
-
   return (
     <Box>
-      {console.log("data table rendering  ")}
       <Table {...getTableProps()}>
         <thead>
-          {" "}
           <tr
             style={{
               marginBottom: "5px",
