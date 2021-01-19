@@ -210,7 +210,7 @@ const AllRequests = () => {
       Cell: ({
         cell: {
           row: {
-            original: { requestedBy: userId },
+            original: { requestedName, requestedBy: userId },
           },
         },
       }) => {
@@ -226,7 +226,7 @@ const AllRequests = () => {
             }}
             to={{
               pathname: `${url}/${userId}`,
-              state: { userId },
+              state: { userId, requestedName },
             }}
           >
             Process
