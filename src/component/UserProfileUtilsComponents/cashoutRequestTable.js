@@ -287,6 +287,7 @@ const cashoutRequestTable = ({ tableData, tab }) => {
         return (
           <Button
             leftIcon={<FaPen />}
+            colorScheme="blue"
             variant="outline"
             borderRadius="2rem"
             size="sm"

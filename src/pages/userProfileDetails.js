@@ -339,61 +339,63 @@ const userProfileDetails = () => {
                 Edit
               </Button>
             </Flex>
-            <Grid
-              h="100%"
-              templateRows="repeat(4, 1fr)"
-              templateColumns="repeat(6, 1fr)"
-              gap={1}
-              alignItems="center"
-            >
-              <GridItem gridRow="1/2" gridColumn="1/-1">
-                <Flex>
-                  <Text>Acc. Holder Name :</Text>
-                  <Text color="#000000">
-                    {userCashoutRequests[0].requestData.accountHolderName}{" "}
-                  </Text>
-                </Flex>
-              </GridItem>
+            {userCashoutRequests[0].requestData && (
+              <Grid
+                h="100%"
+                templateRows="repeat(4, 1fr)"
+                templateColumns="repeat(6, 1fr)"
+                gap={1}
+                alignItems="center"
+              >
+                <GridItem gridRow="1/2" gridColumn="1/-1">
+                  <Flex>
+                    <Text>Acc. Holder Name :</Text>
+                    <Text color="#000000">
+                      {userCashoutRequests[0].requestData.accountHolderName}{" "}
+                    </Text>
+                  </Flex>
+                </GridItem>
 
-              <GridItem gridRow="2/3" gridColumn="1/-1">
-                <Flex>
-                  <Text>Acc. Number :</Text>
-                  <Text color="#000000">
-                    {userCashoutRequests[0].requestData.accountNumber}
-                  </Text>
-                </Flex>
-              </GridItem>
+                <GridItem gridRow="2/3" gridColumn="1/-1">
+                  <Flex>
+                    <Text>Acc. Number :</Text>
+                    <Text color="#000000">
+                      {userCashoutRequests[0].requestData.accountNumber}
+                    </Text>
+                  </Flex>
+                </GridItem>
 
-              <GridItem gridRow="3/4" gridColumn="1/-1">
-                <Flex>
-                  <Text>Acc. Type :</Text>
+                <GridItem gridRow="3/4" gridColumn="1/-1">
+                  <Flex>
+                    <Text>Acc. Type :</Text>
 
-                  <Text color="#000000">
-                    {userCashoutRequests[0].requestData.accountType}
-                  </Text>
-                </Flex>
-              </GridItem>
+                    <Text color="#000000">
+                      {userCashoutRequests[0].requestData.accountType}
+                    </Text>
+                  </Flex>
+                </GridItem>
 
-              <GridItem gridRow="4/5" gridColumn="1/5">
-                <Flex>
-                  <Text noOfLines={1}>Bank :</Text>
+                <GridItem gridRow="4/5" gridColumn="1/5">
+                  <Flex>
+                    <Text noOfLines={1}>Bank :</Text>
 
-                  <Text isTruncated color="#000000">
-                    {userCashoutRequests[0].requestData.bankName}
-                  </Text>
-                </Flex>
-              </GridItem>
+                    <Text isTruncated color="#000000">
+                      {userCashoutRequests[0].requestData.bankName}
+                    </Text>
+                  </Flex>
+                </GridItem>
 
-              <GridItem gridRow="4/5" gridColumn="4/7">
-                <Flex>
-                  <Text>IFSC CODE :</Text>
+                <GridItem gridRow="4/5" gridColumn="4/7">
+                  <Flex>
+                    <Text>IFSC CODE :</Text>
 
-                  <Text color="#000000" casing="uppercase">
-                    {userCashoutRequests[0].requestData.ifscCode}
-                  </Text>
-                </Flex>
-              </GridItem>
-            </Grid>
+                    <Text color="#000000" casing="uppercase">
+                      {userCashoutRequests[0].requestData.ifscCode}
+                    </Text>
+                  </Flex>
+                </GridItem>
+              </Grid>
+            )}
           </Box>
         </Flex>
       )}
