@@ -104,6 +104,11 @@ const userProfileDetails = () => {
     }
   };
 
+  const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
+    console.log(isOpenValue);
+    console.log("bakdetails ", bankDetails);
+  };
+
   useEffect(() => {
     setUserId(state.userId);
     setUserName(() => state.requestedName);
@@ -189,7 +194,11 @@ const userProfileDetails = () => {
           </TabPanel>
           <TabPanel>
             {savedBankDetails.length > 0 ? (
-              <CashoutRequestTable tab={3} tableData={savedBankDetails} />
+              <CashoutRequestTable
+                openEditBankDetailsModal={openEditBankDetailsModal}
+                tab={3}
+                tableData={savedBankDetails}
+              />
             ) : (
               <h1>LOADING</h1>
             )}

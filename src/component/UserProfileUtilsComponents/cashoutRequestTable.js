@@ -3,13 +3,12 @@ import { allRequestFactory as AllRequestGenerator } from "../../Factory";
 import BANK from "../../asset/bank.svg";
 import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
-import { Box, Button, Image, Text } from "@chakra-ui/react";
+import { Box, Button, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { ReactTable } from "../ReactTable";
 import { FaPen } from "react-icons/fa";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
-
   switch (paymentModeValue) {
     case 1:
       return (
@@ -64,9 +63,12 @@ const renderPaymentMode = (props) => {
   }
 };
 
-const cashoutRequestTable = ({ tableData, tab }) => {
-  console.log({ tab });
-  console.log("TABLE DATA", tableData);
+const cashoutRequestTable = ({
+  tableData,
+  tab,
+  openEditBankDetailsModal = null,
+}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const tab_1_columns = [
     {
@@ -286,6 +288,8 @@ const cashoutRequestTable = ({ tableData, tab }) => {
       Cell: (props) => {
         return (
           <Button
+            onClick={onOpen}
+            onClick={() => openEditBankDetailsModal(props)}
             leftIcon={<FaPen />}
             colorScheme="blue"
             variant="outline"
