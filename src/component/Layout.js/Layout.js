@@ -7,7 +7,7 @@ import { Main } from "../Main";
 const Layout = ({ children }) => {
   return (
     <Grid
-      templateColumns="repeat(5, 1fr)"
+      templateColumns="250px repeat(4, 1fr)"
       p={2}
       gap={2}
       style={{ boxSizing: "border-box", fontFamily: "Comfortaa, cursive" }}
