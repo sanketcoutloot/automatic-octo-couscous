@@ -35,6 +35,8 @@ const userProfileDetails = () => {
   const [savedBankDetails, setSavedBankDetails] = useState([]);
   const [userCashoutRequests, setUserCashoutRequest] = useState([]);
   const [userName, setUserName] = useState("");
+
+  const [bankToTransfer, setBankToTransfer] = useState([]);
   const [isError, setIsError] = useState(false);
 
   // modal control
@@ -104,9 +106,19 @@ const userProfileDetails = () => {
     }
   };
 
+  useEffect(() => {
+    if (userCashoutRequests.length > 0) {
+      setBankToTransfer(userCashoutRequests[0].requestData);
+    }
+  }, [userCashoutRequests]);
+
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
-    console.log(isOpenValue);
-    console.log("bakdetails ", bankDetails);
+    console.log({ isOpenValue });
+    console.log(bankDetails);
+    setBankToTransfer(bankDetails);
+    if (isOpenValue === true) {
+      onOpen();
+    }
   };
 
   useEffect(() => {
@@ -375,7 +387,7 @@ const userProfileDetails = () => {
       {/* Edit modal code  */}
       {isOpen && (
         <EditBankDetailsModal
-          bankDetails={userCashoutRequests[0].requestData}
+          bankDetails={bankToTransfer}
           isOpen={isOpen}
           onOpen={onOpen}
           onClose={onClose}

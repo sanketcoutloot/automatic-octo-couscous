@@ -63,12 +63,32 @@ const renderPaymentMode = (props) => {
   }
 };
 
+const isEmptyObject = (value) => {
+  return (
+    value && Object.keys(value).length === 0 && value.constructor === Object
+  );
+};
+
 const cashoutRequestTable = ({
   tableData,
   tab,
   openEditBankDetailsModal = null,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [bankDetails, setBankdetails] = useState({});
+
+  useEffect(() => {
+    if (isEmptyObject(bankDetails) === false) {
+      onOpen();
+    }
+
+    if (isOpen === true && isEmptyObject(bankDetails) === false) {
+      openEditBankDetailsModal(isOpen, bankDetails.cell.row.original);
+    }
+
+    // console.log({ isOpen });
+    // console.log("bank details ", bankDetails);
+  }, [isOpen, bankDetails]);
 
   const tab_1_columns = [
     {
@@ -288,8 +308,7 @@ const cashoutRequestTable = ({
       Cell: (props) => {
         return (
           <Button
-            onClick={onOpen}
-            onClick={() => openEditBankDetailsModal(props)}
+            onClick={() => setBankdetails(props)}
             leftIcon={<FaPen />}
             colorScheme="blue"
             variant="outline"
