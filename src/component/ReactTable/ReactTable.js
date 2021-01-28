@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   useTable,
@@ -7,6 +7,7 @@ import {
   usePagination,
   useSortBy,
 } from "react-table";
+
 import {
   Input,
   InputGroup,
@@ -64,11 +65,15 @@ function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
+  setSearchText,
+  setShouldFetchMoneyLog,
 }) {
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
 
   const onChange = (value) => {
+    setSearchText(value);
+
     setGlobalFilter(value || undefined);
   };
 
@@ -100,6 +105,7 @@ function GlobalFilter({
         borderRadius={2}
         leftIcon={<FaSearch />}
         colorScheme="blue"
+        onClick={() => setShouldFetchMoneyLog(true)}
       >
         Search
       </Button>
@@ -108,7 +114,12 @@ function GlobalFilter({
 }
 
 // Our table component
-function ReactTable({ columns, data }) {
+function ReactTable({
+  columns,
+  data,
+  setSearchText = undefined,
+  setShouldFetchMoneyLog = undefined,
+}) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -120,7 +131,6 @@ function ReactTable({ columns, data }) {
     preGlobalFilteredRows,
     setGlobalFilter,
     page,
-
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -133,7 +143,7 @@ function ReactTable({ columns, data }) {
     {
       columns,
       data,
-      initialState: { pageIndex: 2 },
+      initialState: { pageIndex: 0 },
     },
     useFilters, // useFilters!
     useGlobalFilter,
@@ -145,10 +155,16 @@ function ReactTable({ columns, data }) {
 
   useEffect(() => {
     setPageSize(50);
-  }, [pageSize]);
+    setTableData(data);
+  }, [pageSize, tableDate]);
 
+  const [tableDate, setTableData] = useState([]);
   return (
     <Box>
+      {console.log("rendering react datatable")}
+      {console.log({ data })}
+      {/* {console.log({})} */}
+
       <Table {...getTableProps()}>
         <thead>
           <tr
@@ -167,6 +183,8 @@ function ReactTable({ columns, data }) {
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
                 setGlobalFilter={setGlobalFilter}
+                setSearchText={setSearchText}
+                setShouldFetchMoneyLog={setShouldFetchMoneyLog}
               />
             </th>
           </tr>

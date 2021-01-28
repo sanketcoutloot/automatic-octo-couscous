@@ -5,15 +5,14 @@ import {
   BreadcrumbLink,
   Heading,
   Text,
+  Icon,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
-
+import { FaGreaterThan } from "react-icons/fa";
 //react-router
 import { Link } from "react-router-dom";
-
-//factory function
-import { MoneyLogFactory as MoneyLogsGenerator } from "../Factory";
 
 //redux
 // import { fetchUsers, allUsers } from "./userSlice";
@@ -22,6 +21,11 @@ import { MoneyLogFactory as MoneyLogsGenerator } from "../Factory";
 //components
 import { ReactTable } from "../component/ReactTable";
 
+import { MoneyLogDetailsModals } from "../component/ReactTable/moneylog";
+
+import API from "../config/API";
+import { icons } from "react-icons/lib";
+
 const renderWalletType = (props) => {
   let lowerCaseValue = props.value.toLowerCase().trim();
 
@@ -29,7 +33,7 @@ const renderWalletType = (props) => {
     case "cashout":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#89664C"
           casing="capitalize"
@@ -41,7 +45,7 @@ const renderWalletType = (props) => {
     case "credit":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#F0AA28"
           casing="capitalize"
@@ -53,7 +57,7 @@ const renderWalletType = (props) => {
     case "referral":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#4AAAF0"
           casing="capitalize"
@@ -65,7 +69,7 @@ const renderWalletType = (props) => {
     default:
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#89664C"
           casing="capitalize"
@@ -79,11 +83,11 @@ const renderWalletType = (props) => {
 const renderAmount = ({
   cell: {
     row: {
-      original: { walletType, amount },
+      original: { type, transactionAmount },
     },
   },
 }) => {
-  switch (walletType.toLowerCase().trim()) {
+  switch (type.toLowerCase().trim()) {
     case "cashout":
       return (
         <Text
@@ -92,7 +96,7 @@ const renderAmount = ({
           color="#1FB241"
           casing="capitalize"
         >
-          {`+ \u20B9${amount}`}
+          {`+ \u20B9${transactionAmount}`}
         </Text>
       );
 
@@ -104,7 +108,7 @@ const renderAmount = ({
           color="#F4552F"
           casing="capitalize"
         >
-          {`+ \u20B9${amount}`}
+          {`- \u20B9${transactionAmount}`}
         </Text>
       );
 
@@ -116,93 +120,137 @@ const renderAmount = ({
           color="#1FB241"
           casing="capitalize"
         >
-          {`+ \u20B9${amount}`}
+          {`+ \u20B9${transactionAmount}`}
         </Text>
       );
 
     default:
       return (
-        <Text align="left" color="#89664C" casing="capitalize">
-          {amount}
+        <Text align="center" color="#89664C" casing="capitalize">
+          {`- \u20B9${transactionAmount}`}
         </Text>
       );
   }
 };
 
-const columns = [
-  {
-    Header: "Transaction Id",
-    accessor: "transactionId",
-    Cell: (props) => {
-      return (
-        <Text color="#6B46C1" fontWeight="bold">
-          {props.value}
-        </Text>
-      );
-    },
-  },
-  {
-    Header: "User Name",
-    accessor: "userName",
-    Cell: ({
-      cell: {
-        row: {
-          original: { userName, userId },
-        },
-      },
-    }) => (
-      <Text
-        color="#000000"
-        align="left"
-        fontWeight="bold"
-      >{`${userName} (${userId})`}</Text>
-    ),
-  },
-  {
-    Header: "Date",
-    accessor: "date",
-    Cell: ({ value }) => {
-      let date = new Date(Number(value) * 1000)
-        .toLocaleString()
-        .replaceAll("/", "-")
-        .replaceAll(",", " ");
-      return <Text fontWeight="bold"> {date} </Text>;
-    },
-  },
-  {
-    Header: "Wallet Type",
-    accessor: "walletType",
-    Cell: renderWalletType,
-  },
-
-  {
-    Header: "Amount",
-    accessor: "amount",
-    Cell: renderAmount,
-  },
-];
-
 const MoneyLogs = () => {
-  // const dispatch = useDispatch();
-  // const users = useSelector(allUsers);
+  const [isError, setIsError] = useState(false);
   const [moneyLogs, SetMoneyLogs] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [shouldFetchMoneyLog, setShouldFetchMoneyLog] = useState(false);
 
-  console.log(moneyLogs);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    console.log("rendering");
-    //redux to fetch user
-    // dispatch(fetchUsers());
+    // todo : comment the below line
     getMoneyLogs();
-  }, []);
+    if (shouldFetchMoneyLog) {
+      getMoneyLogs();
+    }
+  }, [shouldFetchMoneyLog]);
 
-  function getMoneyLogs() {
-    let logs = MoneyLogsGenerator(100);
-    SetMoneyLogs(logs);
+  const columns = [
+    {
+      Header: "Transaction Id",
+      accessor: "transactionId",
+      Cell: (props) => {
+        return (
+          <Text color="#6B46C1" fontWeight="bold">
+            {props.value}
+          </Text>
+        );
+      },
+    },
+    {
+      Header: "User",
+      accessor: "userId",
+      Cell: ({
+        cell: {
+          row: {
+            original: { userName, userId },
+          },
+        },
+      }) => (
+        // <Text
+        //   color="#000000"
+        //   align="left"
+        //   fontWeight="bold"
+        // >{`${userName} (${userId})`}</Text>
+        <Text
+          color="#000000"
+          align="center"
+          fontWeight="bold"
+        >{`${userId}`}</Text>
+      ),
+    },
+    {
+      Header: "Date",
+      accessor: "transactionDate",
+      Cell: ({ value }) => {
+        console.log({ value });
+        let date = new Date(Number(value) * 1000)
+          .toLocaleString()
+          .replaceAll("/", "-")
+          .replaceAll(",", " ");
+        return <Text fontWeight="bold"> {date} </Text>;
+      },
+    },
+    {
+      Header: "Wallet Type",
+      accessor: "walletType",
+      Cell: renderWalletType,
+    },
+    {
+      Header: "Amount",
+      accessor: "transactionAmount",
+      Cell: renderAmount,
+    },
+    {
+      Header: "Action",
+      accessor: "",
+      Cell: () => {
+        return (
+          <Box display="flex" justifyContent="center" justifyItems="center">
+            <Box
+              border="2px #D1D1D1 solid"
+              borderRadius="50%"
+              width="25px"
+              height="25px"
+              onClick={onOpen}
+            >
+              <Icon color="#D1D1D1" as={FaGreaterThan} />
+            </Box>
+          </Box>
+        );
+      },
+    },
+  ];
+
+  async function getMoneyLogs() {
+    try {
+      let { data } = await API.post(`moneyLog/getMoneyLogs`, {
+        searchText: "2237417",
+        searchType: "USERID",
+        pageNo: 0,
+      });
+      let { success, data: responseData } = data;
+      if (success === 1) {
+        if (!Array.isArray(responseData)) {
+          responseData = new Array(responseData);
+        }
+        SetMoneyLogs(responseData);
+      } else {
+        setIsError(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+    }
   }
 
   return (
     <Box>
+      {console.log("rendering money log ")}
       <Box as="h1" fontSize="30px">
         Money Logs
       </Box>
@@ -224,7 +272,19 @@ const MoneyLogs = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      <ReactTable columns={columns} data={moneyLogs} />
+
+      <ReactTable
+        setSearchText={setSearchText}
+        setShouldFetchMoneyLog={setShouldFetchMoneyLog}
+        columns={columns}
+        data={moneyLogs}
+      />
+
+      <MoneyLogDetailsModals
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      />
     </Box>
   );
 };
