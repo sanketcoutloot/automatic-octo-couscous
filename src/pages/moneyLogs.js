@@ -303,7 +303,7 @@ const MoneyLogs = () => {
           onOpen={onOpen}
           onClose={onClose}
           setMoneyLogDetails={setMoneyLogDetails}
-          bankDetailsLog={moneyLogDetails}
+          moneyLogDetails={moneyLogDetails}
         />
       )}
     </Box>

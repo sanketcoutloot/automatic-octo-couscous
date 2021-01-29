@@ -18,10 +18,56 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 
-const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
+const renderAmount = ({ type, transactionAmount }) => {
+  switch (type.toLowerCase().trim()) {
+    case "cashout":
+      return (
+        <Text
+          align="left"
+          fontWeight="bold"
+          color="#1FB241"
+          casing="capitalize"
+        >
+          {`+ \u20B9${transactionAmount}`}
+        </Text>
+      );
+
+    case "credit":
+      return (
+        <Text
+          align="left"
+          fontWeight="bold"
+          color="#F4552F"
+          casing="capitalize"
+        >
+          {`- \u20B9${transactionAmount}`}
+        </Text>
+      );
+
+    case "referral":
+      return (
+        <Text
+          align="left"
+          fontWeight="bold"
+          color="#1FB241"
+          casing="capitalize"
+        >
+          {`+ \u20B9${transactionAmount}`}
+        </Text>
+      );
+
+    default:
+      return (
+        <Text align="center" color="#89664C" casing="capitalize">
+          {`- \u20B9${transactionAmount}`}
+        </Text>
+      );
+  }
+};
+
+const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails: log }) => {
   return (
     <Box>
-      {console.log("data in the modal")}
       <Modal isCentered size="3xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -33,19 +79,24 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
                 <Button colorScheme="teal" variant="outline">
                   Order ID:
                   <Box as="span" color="#F9BD65">
-                    12344
+                    {` N/A`}
                   </Box>
                 </Button>
                 <Button colorScheme="teal" variant="outline">
                   Product ID:
                   <Box color="#8504BE" as="span">
-                    h9e879320
+                    {` N/A`}
                   </Box>
                 </Button>
               </Stack>
               <Spacer />
 
-              <Button color="#17A823">{`- \u20B9 98393`}</Button>
+              <Button color="#17A823">
+                {renderAmount({
+                  type: log.type,
+                  transactionAmount: log.transactionAmount,
+                })}
+              </Button>
             </Box>
 
             <Grid
@@ -65,21 +116,21 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
               </GridItem>
 
               <GridItem rowStart={1} rowEnd={2} colStart={2} colEnd={4}>
-                sanket singh
+                {`${log.transactionId}`}
               </GridItem>
 
               {/* row 2 */}
               <GridItem rowStart={2} rowEnd={3} colStart={1} colEnd={2}>
                 <Flex justifyContent="space-between">
                   <Text fontSize="lg" color="gray.500">
-                    User Name{" "}
+                    User Id{" "}
                   </Text>
                   <Text fontSize="lg">:</Text>
                 </Flex>
               </GridItem>
 
               <GridItem rowStart={2} rowEnd={3} colStart={2} colEnd={4}>
-                sanket singh
+                {`${log.userId}`}
               </GridItem>
               {/* row 3 */}
               <GridItem rowStart={3} rowEnd={4} colStart={1} colEnd={2}>
@@ -92,7 +143,10 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
               </GridItem>
 
               <GridItem rowStart={3} rowEnd={4} colStart={2} colEnd={4}>
-                sanket singh
+                {new Date(Number(log.transactionDate) * 1000)
+                  .toLocaleString()
+                  .replaceAll("/", "-")
+                  .replaceAll(",", " ")}
               </GridItem>
               {/* row 4 */}
               <GridItem rowStart={4} rowEnd={5} colStart={1} colEnd={2}>
@@ -105,7 +159,7 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
               </GridItem>
 
               <GridItem rowStart={4} rowEnd={5} colStart={2} colEnd={4}>
-                sanket singh
+                {log.type}
               </GridItem>
               {/* row 5 */}
               <GridItem rowStart={5} rowEnd={6} colStart={1} colEnd={2}>
@@ -118,7 +172,7 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
               </GridItem>
 
               <GridItem rowStart={5} rowEnd={6} colStart={2} colEnd={4}>
-                sanket singh
+                {log.transactionData.comments}
               </GridItem>
             </Grid>
 
