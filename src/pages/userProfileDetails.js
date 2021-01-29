@@ -388,6 +388,7 @@ const userProfileDetails = () => {
       {isOpen && (
         <EditBankDetailsModal
           bankDetails={bankToTransfer}
+          updateBankDetails={setBankToTransfer}
           isOpen={isOpen}
           onOpen={onOpen}
           onClose={onClose}

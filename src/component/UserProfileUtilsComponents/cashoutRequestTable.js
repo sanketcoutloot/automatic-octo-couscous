@@ -301,7 +301,6 @@ const cashoutRequestTable = ({
         );
       },
     },
-
     {
       Header: "action",
       accessor: "",

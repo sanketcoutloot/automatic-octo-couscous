@@ -14,10 +14,17 @@ import {
   NumberInputField,
   Select,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form/dist/index.ie11";
+import API from "../../config/API";
 
-const EditBankDetailsModal = ({ isOpen, onClose, bankDetails }) => {
+const EditBankDetailsModal = ({
+  isOpen,
+  onClose,
+  bankDetails,
+  updateBankDetails,
+}) => {
+  const [isError, setIsError] = useState(undefined);
   const {
     handleSubmit,
     errors,
@@ -27,17 +34,39 @@ const EditBankDetailsModal = ({ isOpen, onClose, bankDetails }) => {
     getValues,
   } = useForm();
 
+  const submitEditBankDetails = async (updatedBankDetails) => {
+    try {
+      let { data } = await API.post(
+        `cahsout/editBankDetails`,
+        updatedBankDetails
+      );
+      let { success, data: responseData } = data;
+      if (success === 1) {
+        if (!Array.isArray(responseData)) {
+          responseData = new Array(responseData);
+        }
+        console.log(" updateBankDetails", responseData[0]);
+        updateBankDetails(responseData[0]);
+      } else {
+        setIsError(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+    }
+  };
+
   const onSubmit = async () => {
-    // add Api calls
-    setTimeout(() => {
-      let data = getValues();
-      window.alert(JSON.stringify(data, null, 2));
-    }, 3000);
+    let data = getValues();
+    let accountId = bankDetails.accountId;
+    let payload = { ...data, accountId };
+    await submitEditBankDetails(payload);
   };
 
   useEffect(() => {
+    console.log({ bankDetails });
     reset(bankDetails);
-  }, []);
+  }, [bankDetails]);
   return (
     <Modal
       isCentered
