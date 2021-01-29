@@ -35,7 +35,6 @@ const EditBankDetailsModal = ({ isOpen, onClose, bankDetails }) => {
     }, 3000);
   };
 
-  console.log("bank details ", bankDetails);
   useEffect(() => {
     reset(bankDetails);
   }, []);

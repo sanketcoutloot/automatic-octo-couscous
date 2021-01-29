@@ -24,6 +24,7 @@ import { ReactTable } from "../component/ReactTable";
 import { MoneyLogDetailsModals } from "../component/ReactTable/moneylog";
 
 import API from "../config/API";
+import { isEmptyObject } from "../utils";
 import { icons } from "react-icons/lib";
 
 const renderWalletType = (props) => {
@@ -138,7 +139,7 @@ const MoneyLogs = () => {
   const [moneyLogs, SetMoneyLogs] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [shouldFetchMoneyLog, setShouldFetchMoneyLog] = useState(false);
-
+  const [moneyLogDetails, setMoneyLogDetails] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -148,6 +149,18 @@ const MoneyLogs = () => {
       getMoneyLogs();
     }
   }, [shouldFetchMoneyLog]);
+
+  useEffect(() => {
+    if (isEmptyObject(moneyLogDetails) === false) {
+      onOpen();
+    }
+  }, [moneyLogDetails]);
+
+  useEffect(() => {
+    if (isOpen === false) {
+      setMoneyLogDetails({});
+    }
+  }, [isOpen]);
 
   const columns = [
     {
@@ -208,7 +221,11 @@ const MoneyLogs = () => {
     {
       Header: "Action",
       accessor: "",
-      Cell: () => {
+      Cell: ({
+        cell: {
+          row: { original },
+        },
+      }) => {
         return (
           <Box display="flex" justifyContent="center" justifyItems="center">
             <Box
@@ -216,7 +233,7 @@ const MoneyLogs = () => {
               borderRadius="50%"
               width="25px"
               height="25px"
-              onClick={onOpen}
+              onClick={() => setMoneyLogDetails(original)}
             >
               <Icon color="#D1D1D1" as={FaGreaterThan} />
             </Box>
@@ -250,7 +267,9 @@ const MoneyLogs = () => {
 
   return (
     <Box>
-      {console.log("rendering money log ")}
+      {console.log("isOpen", isOpen)}
+      {console.log("logDetails", moneyLogDetails)}
+
       <Box as="h1" fontSize="30px">
         Money Logs
       </Box>
@@ -272,19 +291,21 @@ const MoneyLogs = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-
       <ReactTable
         setSearchText={setSearchText}
         setShouldFetchMoneyLog={setShouldFetchMoneyLog}
         columns={columns}
         data={moneyLogs}
       />
-
-      <MoneyLogDetailsModals
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-      />
+      {isOpen && (
+        <MoneyLogDetailsModals
+          isOpen={isOpen}
+          onOpen={onOpen}
+          onClose={onClose}
+          setMoneyLogDetails={setMoneyLogDetails}
+          bankDetailsLog={moneyLogDetails}
+        />
+      )}
     </Box>
   );
 };

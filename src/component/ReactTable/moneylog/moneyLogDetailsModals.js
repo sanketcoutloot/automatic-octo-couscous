@@ -16,11 +16,12 @@ import {
   useDisclosure,
   Flex,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 
-const moneyLogDetailsMoodal = ({ isOpen, onOpen, onClose }) => {
+const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails }) => {
   return (
     <Box>
+      {console.log("data in the modal")}
       <Modal isCentered size="3xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -146,12 +147,6 @@ const moneyLogDetailsMoodal = ({ isOpen, onOpen, onClose }) => {
               </Box>
             </Flex>
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>
