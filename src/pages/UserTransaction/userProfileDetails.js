@@ -98,7 +98,7 @@ const userProfileDetails = () => {
   };
 
   useEffect(() => {
-    if (userCashoutRequests.length > 0) {
+    if (userCashoutRequests.length === 0) {
       setBankToTransfer(userCashoutRequests[0].requestData);
     }
   }, [userCashoutRequests]);

@@ -30,7 +30,7 @@ const userTransactionsSlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.status = "succeeded";
-        state.cashoutRequests = state.allRequests.concat(data);
+        state.cashoutRequests = state.cashoutRequests.concat(data);
       } else {
         state.error = data;
       }
