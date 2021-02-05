@@ -7,15 +7,16 @@ import {
   Image,
   Button,
   Link,
+  CircularProgress,
 } from "@chakra-ui/react";
 
 import React, { useEffect, useRef, useState } from "react";
-import BANK from "../asset/bank.svg";
-import PAYTM from "../asset/paytm.png";
-import UPI from "../asset/upi.png";
+import BANK from "../../asset/bank.svg";
+import PAYTM from "../../asset/paytm.png";
+import UPI from "../../asset/upi.png";
 
 // axios
-import axios from "../config/API";
+import axios from "../../config/API";
 //react-router
 import {
   Link as RouterLink,
@@ -26,7 +27,10 @@ import {
 } from "react-router-dom";
 
 //components
-import { ReactTable } from "../component/ReactTable";
+import { ReactTable } from "../../component/ReactTable";
+import { useDispatch, useSelector } from "react-redux";
+
+import { fetchAllRequests } from "./allRequestSlice";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -86,37 +90,25 @@ const renderPaymentMode = (props) => {
 };
 
 const AllRequests = () => {
-  const [allRequests, SetAllRequests] = useState([]);
+  // const [allRequests, SetAllRequests] = useState([]);
   const [pageNumber, changePageNumber] = useState(0);
   const [isError, setIsError] = useState(false);
 
   let { path, url } = useRouteMatch();
 
-  console.log({ url });
+  const dispatch = useDispatch();
 
-  async function fetchAllRequests() {
-    try {
-      console.log("INSIDE fetch function");
-      let { data } = await axios.get(
-        `cahsout/getCashoutRequests/${pageNumber}`
-      );
-      let { success, data: responseData } = data;
-      if (success === 1) {
-        SetAllRequests(responseData);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
-  }
+  const allRequests = useSelector((state) => state.allRequests.allRequests);
+  const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
-    console.log("calling the API ");
-    fetchAllRequests();
-    console.log("api called ");
-  }, []);
+    //dispatch all requests
+    if (allRequests.length === 0) {
+      dispatch(fetchAllRequests(0));
+    }
+
+    console.log("all request ", allRequests);
+  }, [allRequests]);
 
   const columns = [
     {
@@ -256,11 +248,15 @@ const AllRequests = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      {allRequests.length === 0 ? (
-        <h1 m="auto">Loading </h1>
-      ) : (
-        <ReactTable columns={columns} data={allRequests} />
-      )}
+      <Box h="85vh" display="grid" overflow="scroll">
+        {allRequestStatus === "loading" ? (
+          <Box style={{ placeSelf: "center" }} as="span">
+            <CircularProgress isIndeterminate size="120px" color="red.300" />
+          </Box>
+        ) : (
+          <ReactTable columns={columns} data={allRequests} />
+        )}
+      </Box>
     </Box>
   );
 };

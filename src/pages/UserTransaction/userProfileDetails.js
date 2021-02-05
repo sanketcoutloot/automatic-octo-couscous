@@ -19,21 +19,24 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import BANK from "../asset/bank.svg";
+import BANK from "../../asset/bank.svg";
 import { Link } from "react-router-dom";
 import {
   CashoutRequestTable,
   EditBankDetailsModal,
-} from "../component/UserProfileUtilsComponents";
+} from "../../component/UserProfileUtilsComponents";
 import { FaPen } from "react-icons/fa";
-import API from "../config/API";
+import API from "../../config/API";
 
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserCashoutRequests } from "./userTransactionSlice";
 const userProfileDetails = () => {
   const { state } = useLocation();
   const [userId, setUserId] = useState("");
   const [myTransactionLogs, setMyTransactionLogs] = useState([]);
   const [savedBankDetails, setSavedBankDetails] = useState([]);
-  const [userCashoutRequests, setUserCashoutRequest] = useState([]);
+  // const [userCashoutRequests, setUserCashoutRequest] = useState([]);
   const [userName, setUserName] = useState("");
 
   const [bankToTransfer, setBankToTransfer] = useState([]);
@@ -41,6 +44,11 @@ const userProfileDetails = () => {
 
   // modal control
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const dispatch = useDispatch();
+  const userCashoutRequests = useSelector(
+    (state) => state.userTransactions.cashoutRequests
+  );
 
   const fetchSavedBankDetails = async () => {
     try {
@@ -89,23 +97,6 @@ const userProfileDetails = () => {
     }
   };
 
-  const getUserCashoutRequests = async () => {
-    try {
-      let { data } = await API.post(`cahsout/getUserCashoutRequests`, {
-        userId,
-      });
-      let { success, data: responseData } = data;
-      if (success === 1) {
-        setUserCashoutRequest(responseData);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
-  };
-
   useEffect(() => {
     if (userCashoutRequests.length > 0) {
       setBankToTransfer(userCashoutRequests[0].requestData);
@@ -113,8 +104,6 @@ const userProfileDetails = () => {
   }, [userCashoutRequests]);
 
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
-    console.log({ isOpenValue });
-    console.log(bankDetails);
     setBankToTransfer(bankDetails);
     if (isOpenValue === true) {
       onOpen();
@@ -127,8 +116,7 @@ const userProfileDetails = () => {
   }, []);
 
   useEffect(() => {
-    console.log("once ", { userId });
-    getUserCashoutRequests();
+    dispatch(fetchUserCashoutRequests);
   }, [userId]);
 
   return (
