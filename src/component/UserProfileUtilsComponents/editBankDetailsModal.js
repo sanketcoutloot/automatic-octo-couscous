@@ -10,8 +10,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  NumberInput,
-  NumberInputField,
   Select,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";

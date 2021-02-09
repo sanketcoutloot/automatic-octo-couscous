@@ -1,12 +1,4 @@
-import {
-  Box,
-  ListItem,
-  UnorderedList,
-  Link,
-  Image,
-  Icon,
-  Flex,
-} from "@chakra-ui/react";
+import { Box, ListItem, UnorderedList, Link, Icon } from "@chakra-ui/react";
 import { NavLink as RouterLink } from "react-router-dom";
 import React from "react";
 

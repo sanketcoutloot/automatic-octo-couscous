@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@chakra-ui/react";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BANK from "../../asset/bank.svg";
 import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
@@ -18,13 +18,7 @@ import UPI from "../../asset/upi.png";
 // axios
 import axios from "../../config/API";
 //react-router
-import {
-  Link as RouterLink,
-  useRouteMatch,
-  Switch,
-  Route,
-  useParams,
-} from "react-router-dom";
+import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 
 //components
 import { ReactTable } from "../../component/ReactTable";

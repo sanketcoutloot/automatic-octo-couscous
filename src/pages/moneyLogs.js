@@ -14,10 +14,6 @@ import { FaGreaterThan } from "react-icons/fa";
 //react-router
 import { Link } from "react-router-dom";
 
-//redux
-// import { fetchUsers, allUsers } from "./userSlice";
-// import { useDispatch, useSelector } from "react-redux";
-
 //components
 import { ReactTable } from "../component/ReactTable";
 

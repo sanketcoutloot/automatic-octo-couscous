@@ -30,13 +30,12 @@ import API from "../../config/API";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserCashoutRequests } from "./userTransactionSlice";
+import { fetchMoneyLogs, fetchCashoutRequests } from "./userTransactionSlice";
 const userProfileDetails = () => {
   const { state } = useLocation();
   const [userId, setUserId] = useState("");
-  const [myTransactionLogs, setMyTransactionLogs] = useState([]);
+  // const [myTransactionLogs, setMyTransactionLogs] = useState([]);
   const [savedBankDetails, setSavedBankDetails] = useState([]);
-  // const [userCashoutRequests, setUserCashoutRequest] = useState([]);
   const [userName, setUserName] = useState("");
 
   const [bankToTransfer, setBankToTransfer] = useState([]);
@@ -46,8 +45,13 @@ const userProfileDetails = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dispatch = useDispatch();
+
   const userCashoutRequests = useSelector(
     (state) => state.userTransactions.cashoutRequests
+  );
+
+  const myTransactionLogs = useSelector(
+    (state) => state.userTransactions.moneyLogs
   );
 
   const fetchSavedBankDetails = async () => {
@@ -73,35 +77,15 @@ const userProfileDetails = () => {
     }
   };
 
-  const fetchMyTransactionLogs = async () => {
-    try {
-      if (myTransactionLogs.length > 0) {
-        return;
-      }
-      let { data } = await API.post(`moneyLog/getMoneyLogs`, {
-        searchText: userId,
-        searchType: "USERID",
-      });
-      let { success, data: responseData } = data;
-      if (success === 1) {
-        if (!Array.isArray(responseData)) {
-          responseData = [responseData];
-        }
-        setMyTransactionLogs(responseData);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
+  const fetchMyTransactionLogs = () => {
+    dispatch(fetchMoneyLogs(userId));
   };
 
-  useEffect(() => {
-    if (userCashoutRequests.length === 0) {
-      setBankToTransfer(userCashoutRequests[0].requestData);
-    }
-  }, [userCashoutRequests]);
+  // useEffect(() => {
+  //   if (userCashoutRequests.length === 0) {
+  //     setBankToTransfer(userCashoutRequests[0].requestData);
+  //   }
+  // }, [userCashoutRequests]);
 
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
     setBankToTransfer(bankDetails);
@@ -116,7 +100,9 @@ const userProfileDetails = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchUserCashoutRequests);
+    if (userId) {
+      dispatch(fetchCashoutRequests(userId));
+    }
   }, [userId]);
 
   return (
