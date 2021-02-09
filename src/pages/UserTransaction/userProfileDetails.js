@@ -26,16 +26,17 @@ import {
   EditBankDetailsModal,
 } from "../../component/UserProfileUtilsComponents";
 import { FaPen } from "react-icons/fa";
-import API from "../../config/API";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMoneyLogs, fetchCashoutRequests } from "./userTransactionSlice";
+import {
+  fetchMoneyLogs,
+  fetchCashoutRequests,
+  fetchBankAccounts,
+} from "./userTransactionSlice";
 const userProfileDetails = () => {
   const { state } = useLocation();
   const [userId, setUserId] = useState("");
-  // const [myTransactionLogs, setMyTransactionLogs] = useState([]);
-  const [savedBankDetails, setSavedBankDetails] = useState([]);
   const [userName, setUserName] = useState("");
 
   const [bankToTransfer, setBankToTransfer] = useState([]);
@@ -54,32 +55,9 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.moneyLogs
   );
 
-  const fetchSavedBankDetails = async () => {
-    try {
-      if (savedBankDetails.length > 0) {
-        return;
-      }
-      let { data } = await API.post(`cahsout/getUserBankDetails`, {
-        userId,
-      });
-      let { success, data: responseData } = data;
-      if (success === 1) {
-        if (!Array.isArray(responseData)) {
-          responseData = [responseData];
-        }
-        setSavedBankDetails(responseData);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
-  };
-
-  const fetchMyTransactionLogs = () => {
-    dispatch(fetchMoneyLogs(userId));
-  };
+  const savedBankDetails = useSelector(
+    (state) => state.userTransactions.bankAccounts
+  );
 
   // useEffect(() => {
   //   if (userCashoutRequests.length === 0) {
@@ -104,6 +82,36 @@ const userProfileDetails = () => {
       dispatch(fetchCashoutRequests(userId));
     }
   }, [userId]);
+
+  const fetchMyTransactionLogs = () => {
+    dispatch(fetchMoneyLogs(userId));
+  };
+
+  const fetchSavedBankDetails = () => {
+    if (userId) {
+      dispatch(fetchBankAccounts(userId));
+    }
+    // try {
+    //   if (savedBankDetails.length > 0) {
+    //     return;
+    //   }
+    //   let { data } = await API.post(`cahsout/getUserBankDetails`, {
+    //     userId,
+    //   });
+    //   let { success, data: responseData } = data;
+    //   if (success === 1) {
+    //     if (!Array.isArray(responseData)) {
+    //       responseData = [responseData];
+    //     }
+    //     setSavedBankDetails(responseData);
+    //   } else {
+    //     setIsError(true);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   setIsError(true);
+    // }
+  };
 
   return (
     <Box>

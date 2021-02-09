@@ -4,6 +4,7 @@ import API from "../../config/API";
 const initialState = {
   cashoutRequests: [],
   moneyLogs: [],
+  bankAccounts: [],
   status: "idle",
   error: null,
 };
@@ -20,11 +21,21 @@ export const fetchCashoutRequests = createAsyncThunk(
 
 export const fetchMoneyLogs = createAsyncThunk(
   "user/fetchMoneyLogs",
-  async (userId) => {
+  async (userId, pageNumber = 0) => {
     const { data } = await API.post(`moneyLog/getMoneyLogs`, {
       searchText: userId,
       searchType: "USERID",
-      pageNo: 0,
+      pageNo: pageNumber,
+    });
+    return data;
+  }
+);
+
+export const fetchBankAccounts = createAsyncThunk(
+  "user/fetchBankAccounts",
+  async (userId) => {
+    const { data } = await API.post(`cahsout/getUserBankDetails`, {
+      userId,
     });
     return data;
   }
@@ -71,6 +82,28 @@ const userTransactionsSlice = createSlice({
       }
     },
     [fetchMoneyLogs.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.data;
+    },
+
+    // BANK DETAILS
+    [fetchBankAccounts.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchBankAccounts.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.status = "succeeded";
+        let resData = data;
+        if (!Array.isArray(resData)) {
+          resData = [resData];
+        }
+        state.bankAccounts = state.bankAccounts.concat(resData);
+      } else {
+        state.error = data;
+      }
+    },
+    [fetchBankAccounts.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload.data;
     },
