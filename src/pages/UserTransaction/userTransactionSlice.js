@@ -5,6 +5,7 @@ const initialState = {
   cashoutRequests: [],
   moneyLogs: [],
   bankAccounts: [],
+  currentCashoutRequest: [],
   status: "idle",
   error: null,
 };
@@ -41,10 +42,32 @@ export const fetchBankAccounts = createAsyncThunk(
   }
 );
 
+export const fetchCurrentCashoutRequest = createAsyncThunk(
+  "user/fetchCurrentCashoutRequest",
+  async (userId) => {
+    // const { data } = await API.post(`cahsout/currentCashoutRequest`, {
+    //   userId,
+    // });
+
+    const { data } = await API.post(`cahsout/getUserCashoutRequests`, {
+      userId,
+    });
+    console.log("Fdetching the current cashout Details ");
+    return data;
+  }
+);
+
 const userTransactionsSlice = createSlice({
   name: "userTransactions",
   initialState,
-  reducers: {},
+  reducers: {
+    clearCurrentCashoutRequest: (state) => {
+      state.cashoutRequests = [];
+      state.moneyLogs = [];
+      state.bankAccounts = [];
+      state.currentCashoutRequest = [];
+    },
+  },
   extraReducers: {
     // cashout request reducers
     [fetchCashoutRequests.pending]: (state, action) => {
@@ -107,7 +130,27 @@ const userTransactionsSlice = createSlice({
       state.status = "failed";
       state.error = action.payload.data;
     },
+
+    // Current CashOut request
+    [fetchCurrentCashoutRequest.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [fetchCurrentCashoutRequest.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.status = "succeeded";
+        state.currentCashoutRequest = [{ ...data[0] }];
+      } else {
+        state.error = data;
+      }
+    },
+    [fetchCurrentCashoutRequest.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.data;
+    },
   },
 });
+
+export const { clearCurrentCashoutRequest } = userTransactionsSlice.actions;
 
 export default userTransactionsSlice.reducer;

@@ -29,11 +29,15 @@ import { FaPen } from "react-icons/fa";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   fetchMoneyLogs,
   fetchCashoutRequests,
   fetchBankAccounts,
+  fetchCurrentCashoutRequest,
+  clearCurrentCashoutRequest,
 } from "./userTransactionSlice";
+
 const userProfileDetails = () => {
   const { state } = useLocation();
   const [userId, setUserId] = useState("");
@@ -59,6 +63,10 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.bankAccounts
   );
 
+  const currentCashoutRequest = useSelector(
+    (state) => state.userTransactions.currentCashoutRequest
+  );
+
   // useEffect(() => {
   //   if (userCashoutRequests.length === 0) {
   //     setBankToTransfer(userCashoutRequests[0].requestData);
@@ -72,16 +80,25 @@ const userProfileDetails = () => {
     }
   };
 
+  // get value of userID  from location state
   useEffect(() => {
     setUserId(state.userId);
     setUserName(() => state.requestedName);
   }, []);
 
+  // fetch cashout requests for users ID on page load
   useEffect(() => {
     if (userId) {
       dispatch(fetchCashoutRequests(userId));
+      dispatch(fetchCurrentCashoutRequest(userId));
     }
   }, [userId]);
+
+  useEffect(() => {
+    return () => {
+      clearCurrentUserTransactionDetails();
+    };
+  }, []);
 
   const fetchMyTransactionLogs = () => {
     dispatch(fetchMoneyLogs(userId));
@@ -91,26 +108,10 @@ const userProfileDetails = () => {
     if (userId) {
       dispatch(fetchBankAccounts(userId));
     }
-    // try {
-    //   if (savedBankDetails.length > 0) {
-    //     return;
-    //   }
-    //   let { data } = await API.post(`cahsout/getUserBankDetails`, {
-    //     userId,
-    //   });
-    //   let { success, data: responseData } = data;
-    //   if (success === 1) {
-    //     if (!Array.isArray(responseData)) {
-    //       responseData = [responseData];
-    //     }
-    //     setSavedBankDetails(responseData);
-    //   } else {
-    //     setIsError(true);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   setIsError(true);
-    // }
+  };
+
+  const clearCurrentUserTransactionDetails = () => {
+    dispatch(clearCurrentCashoutRequest());
   };
 
   return (
@@ -200,7 +201,7 @@ const userProfileDetails = () => {
         </TabPanels>
       </Tabs>
       {/* user details  */}
-      {userCashoutRequests.length > 0 && (
+      {currentCashoutRequest.length > 0 && (
         <Flex height="23vh" w="100%">
           <Box
             height="100%"
@@ -224,7 +225,7 @@ const userProfileDetails = () => {
                 <Flex>
                   <Text>Request Id :</Text>
                   <Text color="#000000">
-                    {userCashoutRequests[0].requestId}
+                    {currentCashoutRequest[0].requestId}
                   </Text>
                 </Flex>
               </GridItem>
@@ -239,7 +240,7 @@ const userProfileDetails = () => {
                     color="#177CE6"
                     padding="0.1rem"
                   >
-                    {` \u20B9  ${userCashoutRequests[0].requestedAmount}`}
+                    {` \u20B9  ${currentCashoutRequest[0].requestedAmount}`}
                   </Text>
                 </Flex>
               </GridItem>
@@ -264,7 +265,7 @@ const userProfileDetails = () => {
                   <Text>Requested Date :</Text>
 
                   <Text color="#000000">
-                    {userCashoutRequests[0].requestDate}
+                    {currentCashoutRequest[0].requestDate}
                   </Text>
                 </Flex>
               </GridItem>
@@ -306,7 +307,7 @@ const userProfileDetails = () => {
                 Edit
               </Button>
             </Flex>
-            {userCashoutRequests[0].requestData && (
+            {currentCashoutRequest[0].requestData && (
               <Grid
                 h="100%"
                 templateRows="repeat(4, 1fr)"
@@ -318,7 +319,7 @@ const userProfileDetails = () => {
                   <Flex>
                     <Text>Acc. Holder Name :</Text>
                     <Text color="#000000">
-                      {userCashoutRequests[0].requestData.accountHolderName}{" "}
+                      {currentCashoutRequest[0].requestData.accountHolderName}{" "}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -327,7 +328,7 @@ const userProfileDetails = () => {
                   <Flex>
                     <Text>Acc. Number :</Text>
                     <Text color="#000000">
-                      {userCashoutRequests[0].requestData.accountNumber}
+                      {currentCashoutRequest[0].requestData.accountNumber}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -337,7 +338,7 @@ const userProfileDetails = () => {
                     <Text>Acc. Type :</Text>
 
                     <Text color="#000000">
-                      {userCashoutRequests[0].requestData.accountType}
+                      {currentCashoutRequest[0].requestData.accountType}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -347,7 +348,7 @@ const userProfileDetails = () => {
                     <Text noOfLines={1}>Bank :</Text>
 
                     <Text isTruncated color="#000000">
-                      {userCashoutRequests[0].requestData.bankName}
+                      {currentCashoutRequest[0].requestData.bankName}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -357,7 +358,7 @@ const userProfileDetails = () => {
                     <Text>IFSC CODE :</Text>
 
                     <Text color="#000000" casing="uppercase">
-                      {userCashoutRequests[0].requestData.ifscCode}
+                      {currentCashoutRequest[0].requestData.ifscCode}
                     </Text>
                   </Flex>
                 </GridItem>
