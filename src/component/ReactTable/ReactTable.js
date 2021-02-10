@@ -72,7 +72,7 @@ function GlobalFilter({
   const [value, setValue] = React.useState(globalFilter);
 
   const onChange = (value) => {
-    setSearchText(value);
+    // setSearchText(value);
 
     setGlobalFilter(value || undefined);
   };

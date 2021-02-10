@@ -100,127 +100,130 @@ const AllRequests = () => {
     if (allRequests.length === 0) {
       dispatch(fetchAllRequests(0));
     }
-
-    console.log("all request ", allRequests);
   }, [allRequests]);
 
-  const columns = [
-    {
-      Header: "Request ID",
-      accessor: "requestId",
-      Cell: (props) => {
-        return (
-          <Text color="#6B46C1" fontWeight="bold">
-            {props.value}
-          </Text>
-        );
-      },
-    },
-    {
-      Header: "Requested By",
-      accessor: "requestedBy",
-      Cell: ({
-        cell: {
-          row: {
-            original: { requestedBy, userId },
-          },
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Request ID",
+        accessor: "requestId",
+        Cell: (props) => {
+          return (
+            <Text color="#6B46C1" fontWeight="bold">
+              {props.value}
+            </Text>
+          );
         },
-      }) => (
-        // <Text
-        //   color="#000000"
-        //   align="center"
-        //   fontWeight="bold"
-        // >{`${requestedBy} (${userId})`}</Text>
-        <Text
-          color="#000000"
-          align="center"
-          fontWeight="bold"
-        >{`(${requestedBy})`}</Text>
-      ),
-    },
+      },
+      {
+        Header: "Requested By",
+        accessor: "requestedBy",
+        Cell: ({
+          cell: {
+            row: {
+              original: { requestedBy, userId },
+            },
+          },
+        }) => (
+          // <Text
+          //   color="#000000"
+          //   align="center"
+          //   fontWeight="bold"
+          // >{`${requestedBy} (${userId})`}</Text>
+          <Text
+            color="#000000"
+            align="center"
+            fontWeight="bold"
+          >{`(${requestedBy})`}</Text>
+        ),
+      },
 
-    {
-      Header: "Payment Mode",
-      accessor: "requestMode",
-      Cell: renderPaymentMode,
-    },
-    {
-      Header: "Status",
-      accessor: "requestStatus",
-      Cell: ({ value }) => (
-        <Button
-          colorScheme={value.toLowerCase() === "active" ? "green" : "orange"}
-          variant="outline"
-          _hover={{ cursor: "initial" }}
-          size="sm"
-          width="5rem"
-        >
-          <Text casing="capitalize">{value}</Text>
-        </Button>
-      ),
-    },
-    {
-      Header: "Amount",
-      accessor: "requestedAmount",
-      Cell: ({
-        cell: {
-          row: {
-            original: { requestedAmount },
-          },
-        },
-      }) => (
-        <Text
-          align="center"
-          fontWeight="bold"
-          color="#00000"
-          casing="capitalize"
-        >
-          {` \u20B9${requestedAmount}`}
-        </Text>
-      ),
-    },
-    {
-      Header: "Date",
-      accessor: "requestDate",
-      Cell: ({ value }) => {
-        let date = new Date(Number(value) * 1000)
-          .toLocaleString()
-          .replaceAll("/", "-")
-          .replaceAll(",", " ");
-        return <Text fontWeight="bold"> {date} </Text>;
+      {
+        Header: "Payment Mode",
+        accessor: "requestMode",
+        Cell: renderPaymentMode,
       },
-    },
-    {
-      Header: "Action",
-      accessor: "",
-      Cell: ({
-        cell: {
-          row: {
-            original: { requestedName, requestedBy: userId },
-          },
-        },
-      }) => {
-        return (
-          <Link
+      {
+        Header: "Status",
+        accessor: "requestStatus",
+        Cell: ({ value }) => (
+          <Button
+            colorScheme={value.toLowerCase() === "active" ? "green" : "orange"}
+            variant="outline"
+            _hover={{ cursor: "initial" }}
             size="sm"
-            as={RouterLink}
-            style={{
-              backgroundColor: "red",
-              padding: "0.5rem",
-              color: "white",
-              borderRadius: "5px",
-            }}
-            to={{
-              pathname: `${url}/${userId}`,
-              state: { userId, requestedName },
-            }}
+            width="5rem"
           >
-            Process
-          </Link>
-        );
+            <Text casing="capitalize">{value}</Text>
+          </Button>
+        ),
       },
-    },
-  ];
+      {
+        Header: "Amount",
+        accessor: "requestedAmount",
+        Cell: ({
+          cell: {
+            row: {
+              original: { requestedAmount },
+            },
+          },
+        }) => (
+          <Text
+            align="center"
+            fontWeight="bold"
+            color="#00000"
+            casing="capitalize"
+          >
+            {` \u20B9${requestedAmount}`}
+          </Text>
+        ),
+      },
+      {
+        Header: "Date",
+        accessor: "requestDate",
+        Cell: ({ value }) => {
+          let date = new Date(Number(value) * 1000)
+            .toLocaleString()
+            .replaceAll("/", "-")
+            .replaceAll(",", " ");
+          return <Text fontWeight="bold"> {date} </Text>;
+        },
+      },
+      {
+        Header: "Action",
+        accessor: "",
+        Cell: ({
+          cell: {
+            row: {
+              original: { requestedName, requestedBy: userId },
+            },
+          },
+        }) => {
+          return (
+            <Link
+              size="sm"
+              as={RouterLink}
+              style={{
+                backgroundColor: "red",
+                padding: "0.5rem",
+                color: "white",
+                borderRadius: "5px",
+              }}
+              to={{
+                pathname: `${url}/${userId}`,
+                state: { userId, requestedName },
+              }}
+            >
+              Process
+            </Link>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  const data = React.useMemo(() => allRequests, []);
 
   return (
     <Box>

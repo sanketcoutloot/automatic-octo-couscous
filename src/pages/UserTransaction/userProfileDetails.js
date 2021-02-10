@@ -211,12 +211,12 @@ const userProfileDetails = () => {
             color="#6C757D"
             p={2}
           >
-            <Flex justify="space-between" align="center">
+            <Flex height="32px" justify="space-between" align="center">
               <Text>User Details :</Text>
             </Flex>
             <Grid
               h="100%"
-              templateRows="repeat(4, 1fr)"
+              templateRows="repeat(5, 1fr)"
               templateColumns="repeat(6, 1fr)"
               gap={1}
               alignItems="center"
@@ -310,7 +310,7 @@ const userProfileDetails = () => {
             {currentCashoutRequest[0].requestData && (
               <Grid
                 h="100%"
-                templateRows="repeat(4, 1fr)"
+                templateRows="repeat(5, 1fr)"
                 templateColumns="repeat(6, 1fr)"
                 gap={1}
                 alignItems="center"
