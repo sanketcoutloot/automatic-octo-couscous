@@ -121,7 +121,7 @@ const AllRequests = () => {
         Cell: ({
           cell: {
             row: {
-              original: { requestedBy, userId },
+              original: { requestedBy, requestedName },
             },
           },
         }) => (
@@ -134,7 +134,7 @@ const AllRequests = () => {
             color="#000000"
             align="center"
             fontWeight="bold"
-          >{`(${requestedBy})`}</Text>
+          >{`${requestedName}(${requestedBy})`}</Text>
         ),
       },
 
