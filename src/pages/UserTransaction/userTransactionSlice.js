@@ -57,6 +57,21 @@ export const fetchCurrentCashoutRequest = createAsyncThunk(
   }
 );
 
+export const markCashoutRequestComplete = createAsyncThunk(
+  "user/markCashoutRequestComplete",
+  async (userId) => {
+    const { data } = await API.post(`cahsout/markComplete`, {
+      userId: 800100,
+      requestId: 62301,
+      requestedAmt: 35,
+      cashoutBalance: 45,
+      requestedBy: 800100,
+      requestMode: "BANK",
+    });
+    return data;
+  }
+);
+
 const userTransactionsSlice = createSlice({
   name: "userTransactions",
   initialState,
@@ -145,6 +160,25 @@ const userTransactionsSlice = createSlice({
       }
     },
     [fetchCurrentCashoutRequest.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.data;
+    },
+
+    //mark as complete
+    [markCashoutRequestComplete.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [markCashoutRequestComplete.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.status = "succeeded";
+        // state.currentCashoutRequest = [{ ...data[0] }];
+        console.log("The trransaction has been marked completed ", data);
+      } else {
+        state.error = data;
+      }
+    },
+    [markCashoutRequestComplete.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload.data;
     },

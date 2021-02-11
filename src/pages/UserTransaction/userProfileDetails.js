@@ -17,6 +17,8 @@ import {
   Grid,
   GridItem,
   useDisclosure,
+  CircularProgress,
+  Center,
 } from "@chakra-ui/react";
 
 import BANK from "../../asset/bank.svg";
@@ -25,7 +27,7 @@ import {
   CashoutRequestTable,
   EditBankDetailsModal,
 } from "../../component/UserProfileUtilsComponents";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaMoneyBillWave, FaLandmark, FaRedo } from "react-icons/fa";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +38,7 @@ import {
   fetchBankAccounts,
   fetchCurrentCashoutRequest,
   clearCurrentCashoutRequest,
+  markCashoutRequestComplete,
 } from "./userTransactionSlice";
 
 const userProfileDetails = () => {
@@ -50,6 +53,8 @@ const userProfileDetails = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dispatch = useDispatch();
+
+  const apiStatus = useSelector((state) => state.userTransactions.status);
 
   const userCashoutRequests = useSelector(
     (state) => state.userTransactions.cashoutRequests
@@ -114,6 +119,10 @@ const userProfileDetails = () => {
     dispatch(clearCurrentCashoutRequest());
   };
 
+  const markCashoutRequest = () => {
+    dispatch(markCashoutRequestComplete());
+  };
+
   return (
     <Box>
       {" "}
@@ -172,30 +181,49 @@ const userProfileDetails = () => {
             Saved Bank Accounts
           </Tab>
         </TabList>
+
         <TabPanels overflowY="scroll" h="80%" bgColor="blue">
           <TabPanel>
-            {userCashoutRequests.length > 0 ? (
+            {apiStatus === "loading" ? (
+              <Center marginTop="10%">
+                <CircularProgress
+                  isIndeterminate
+                  size="120px"
+                  color="red.500"
+                />
+              </Center>
+            ) : (
               <CashoutRequestTable tab={1} tableData={userCashoutRequests} />
-            ) : (
-              <h1>LOADING</h1>
             )}
           </TabPanel>
           <TabPanel>
-            {myTransactionLogs.length > 0 ? (
+            {apiStatus === "loading" ? (
+              <Center marginTop="10%">
+                <CircularProgress
+                  isIndeterminate
+                  size="120px"
+                  color="red.500"
+                />
+              </Center>
+            ) : (
               <CashoutRequestTable tab={2} tableData={myTransactionLogs} />
-            ) : (
-              <h1>LOADING</h1>
             )}
           </TabPanel>
           <TabPanel>
-            {savedBankDetails.length > 0 ? (
+            {apiStatus === "loading" ? (
+              <Center marginTop="10%">
+                <CircularProgress
+                  isIndeterminate
+                  size="120px"
+                  color="red.500"
+                />
+              </Center>
+            ) : (
               <CashoutRequestTable
                 openEditBankDetailsModal={openEditBankDetailsModal}
                 tab={3}
                 tableData={savedBankDetails}
               />
-            ) : (
-              <h1>LOADING</h1>
             )}
           </TabPanel>
         </TabPanels>
@@ -360,6 +388,50 @@ const userProfileDetails = () => {
                     <Text color="#000000" casing="uppercase">
                       {currentCashoutRequest[0].requestData.ifscCode}
                     </Text>
+                  </Flex>
+                </GridItem>
+                <GridItem gridRow="5/6" gridColumn="1/7">
+                  <Flex justifyContent="space-evenly">
+                    <Button
+                      leftIcon={<FaMoneyBillWave />}
+                      size="lg"
+                      height="48px"
+                      width="200px"
+                      border="2px"
+                      bg="#28A745"
+                      color="white"
+                      fontWeight="700"
+                      _hover={{
+                        transform: "scale(1.25)",
+                      }}
+                      onClick={markCashoutRequest}
+                    >
+                      Manual Pay
+                    </Button>
+                    <Button
+                      leftIcon={<FaLandmark />}
+                      size="lg"
+                      bg="white"
+                      color="blue.500"
+                      height="48px"
+                      width="200px"
+                      border="2px"
+                      borderColor="blue.500"
+                    >
+                      Verify Account{" "}
+                    </Button>
+                    <Button
+                      leftIcon={<FaRedo />}
+                      size="lg"
+                      bg="white"
+                      color="gray.500"
+                      height="48px"
+                      width="200px"
+                      border="2px"
+                      borderColor="gray.500"
+                    >
+                      Auto Pay
+                    </Button>
                   </Flex>
                 </GridItem>
               </Grid>

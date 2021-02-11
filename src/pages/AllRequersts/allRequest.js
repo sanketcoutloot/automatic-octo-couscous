@@ -125,11 +125,6 @@ const AllRequests = () => {
             },
           },
         }) => (
-          // <Text
-          //   color="#000000"
-          //   align="center"
-          //   fontWeight="bold"
-          // >{`${requestedBy} (${userId})`}</Text>
           <Text
             color="#000000"
             align="center"
