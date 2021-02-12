@@ -55,7 +55,9 @@ const userProfileDetails = () => {
   const dispatch = useDispatch();
 
   const apiStatus = useSelector((state) => state.userTransactions.status);
-
+  const currentCashoutStatus = useSelector(
+    (state) => state.userTransactions.currentCashoutStatus
+  );
   const userCashoutRequests = useSelector(
     (state) => state.userTransactions.cashoutRequests
   );
@@ -72,11 +74,11 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.currentCashoutRequest
   );
 
-  // useEffect(() => {
-  //   if (userCashoutRequests.length === 0) {
-  //     setBankToTransfer(userCashoutRequests[0].requestData);
-  //   }
-  // }, [userCashoutRequests]);
+  useEffect(() => {
+    if (userCashoutRequests.length > 0) {
+      setBankToTransfer(userCashoutRequests[0].requestData);
+    }
+  }, [userCashoutRequests]);
 
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
     setBankToTransfer(bankDetails);
@@ -229,7 +231,12 @@ const userProfileDetails = () => {
         </TabPanels>
       </Tabs>
       {/* user details  */}
-      {currentCashoutRequest.length > 0 && (
+      {currentCashoutStatus === "loading" && (
+        <Center marginTop="5%">
+          <CircularProgress isIndeterminate size="120px" color="red.500" />
+        </Center>
+      )}
+      {currentCashoutStatus === "succeeded" && (
         <Flex height="23vh" w="100%">
           <Box
             height="100%"
@@ -252,9 +259,7 @@ const userProfileDetails = () => {
               <GridItem gridRow="1/2" gridColumn="1/4">
                 <Flex>
                   <Text>Request Id :</Text>
-                  <Text color="#000000">
-                    {currentCashoutRequest[0].requestId}
-                  </Text>
+                  <Text color="#000000">{currentCashoutRequest.requestId}</Text>
                 </Flex>
               </GridItem>
 
@@ -268,7 +273,7 @@ const userProfileDetails = () => {
                     color="#177CE6"
                     padding="0.1rem"
                   >
-                    {` \u20B9  ${currentCashoutRequest[0].requestedAmount}`}
+                    {` \u20B9  ${currentCashoutRequest.requestedAmount}`}
                   </Text>
                 </Flex>
               </GridItem>
@@ -293,7 +298,7 @@ const userProfileDetails = () => {
                   <Text>Requested Date :</Text>
 
                   <Text color="#000000">
-                    {currentCashoutRequest[0].requestDate}
+                    {currentCashoutRequest.requestDate}
                   </Text>
                 </Flex>
               </GridItem>
@@ -335,7 +340,7 @@ const userProfileDetails = () => {
                 Edit
               </Button>
             </Flex>
-            {currentCashoutRequest[0].requestData && (
+            {currentCashoutRequest.requestData && (
               <Grid
                 h="100%"
                 templateRows="repeat(5, 1fr)"
@@ -347,7 +352,7 @@ const userProfileDetails = () => {
                   <Flex>
                     <Text>Acc. Holder Name :</Text>
                     <Text color="#000000">
-                      {currentCashoutRequest[0].requestData.accountHolderName}{" "}
+                      {currentCashoutRequest.requestData.accountHolderName}{" "}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -356,7 +361,7 @@ const userProfileDetails = () => {
                   <Flex>
                     <Text>Acc. Number :</Text>
                     <Text color="#000000">
-                      {currentCashoutRequest[0].requestData.accountNumber}
+                      {currentCashoutRequest.requestData.accountNumber}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -366,7 +371,7 @@ const userProfileDetails = () => {
                     <Text>Acc. Type :</Text>
 
                     <Text color="#000000">
-                      {currentCashoutRequest[0].requestData.accountType}
+                      {currentCashoutRequest.requestData.accountType}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -376,7 +381,7 @@ const userProfileDetails = () => {
                     <Text noOfLines={1}>Bank :</Text>
 
                     <Text isTruncated color="#000000">
-                      {currentCashoutRequest[0].requestData.bankName}
+                      {currentCashoutRequest.requestData.bankName}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -386,7 +391,7 @@ const userProfileDetails = () => {
                     <Text>IFSC CODE :</Text>
 
                     <Text color="#000000" casing="uppercase">
-                      {currentCashoutRequest[0].requestData.ifscCode}
+                      {currentCashoutRequest.requestData.ifscCode}
                     </Text>
                   </Flex>
                 </GridItem>
@@ -438,6 +443,11 @@ const userProfileDetails = () => {
             )}
           </Box>
         </Flex>
+      )}
+      {currentCashoutStatus === "failed" && (
+        <Center marginTop="5%">
+          <Text fontSize="lg">No Request Found </Text>
+        </Center>
       )}
       {/* Edit modal code  */}
       {isOpen && (

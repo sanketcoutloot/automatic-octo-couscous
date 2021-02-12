@@ -5,15 +5,17 @@ const initialState = {
   cashoutRequests: [],
   moneyLogs: [],
   bankAccounts: [],
-  currentCashoutRequest: [],
+  currentCashoutRequest: {},
   status: "idle",
+  currentCashoutStatus: "idle",
+  currentCashoutError: null,
   error: null,
 };
 
 export const fetchCashoutRequests = createAsyncThunk(
   "user/fetchCashoutRequests",
   async (userId) => {
-    const { data } = await API.post(`cahsout/getUserCashoutRequests`, {
+    const { data } = await API.post(`cashout/getUserCashoutRequests`, {
       userId,
     });
     return data;
@@ -35,7 +37,7 @@ export const fetchMoneyLogs = createAsyncThunk(
 export const fetchBankAccounts = createAsyncThunk(
   "user/fetchBankAccounts",
   async (userId) => {
-    const { data } = await API.post(`cahsout/getUserBankDetails`, {
+    const { data } = await API.post(`cashout/getUserBankDetails`, {
       userId,
     });
     return data;
@@ -45,14 +47,9 @@ export const fetchBankAccounts = createAsyncThunk(
 export const fetchCurrentCashoutRequest = createAsyncThunk(
   "user/fetchCurrentCashoutRequest",
   async (userId) => {
-    // const { data } = await API.post(`cahsout/currentCashoutRequest`, {
-    //   userId,
-    // });
-
-    const { data } = await API.post(`cahsout/getUserCashoutRequests`, {
+    const { data } = await API.post(`cashout/getUserCurrentRequest`, {
       userId,
     });
-    console.log("Fdetching the current cashout Details ");
     return data;
   }
 );
@@ -60,8 +57,8 @@ export const fetchCurrentCashoutRequest = createAsyncThunk(
 export const markCashoutRequestComplete = createAsyncThunk(
   "user/markCashoutRequestComplete",
   async (userId) => {
-    const { data } = await API.post(`cahsout/markComplete`, {
-      userId: 800100,
+    const { data } = await API.post(`cashout/markComplete`, {
+      userId: userId,
       requestId: 62301,
       requestedAmt: 35,
       cashoutBalance: 45,
@@ -148,19 +145,21 @@ const userTransactionsSlice = createSlice({
 
     // Current CashOut request
     [fetchCurrentCashoutRequest.pending]: (state, action) => {
-      state.status = "loading";
+      state.currentCashoutStatus = "loading";
     },
     [fetchCurrentCashoutRequest.fulfilled]: (state, action) => {
       const { success, data } = action.payload;
+      console.log("user's current cashout request ", action.payload);
       if (success === 1) {
-        state.status = "succeeded";
-        state.currentCashoutRequest = [{ ...data[0] }];
+        state.currentCashoutStatus = "succeeded";
+        state.currentCashoutRequest = { ...data };
       } else {
-        state.error = data;
+        state.currentCashoutStatus = "failed";
+        state.currentCashoutError = data;
       }
     },
     [fetchCurrentCashoutRequest.rejected]: (state, action) => {
-      state.status = "failed";
+      state.currentCashoutStatus = "failed";
       state.error = action.payload.data;
     },
 
@@ -172,7 +171,6 @@ const userTransactionsSlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.status = "succeeded";
-        // state.currentCashoutRequest = [{ ...data[0] }];
         console.log("The trransaction has been marked completed ", data);
       } else {
         state.error = data;
