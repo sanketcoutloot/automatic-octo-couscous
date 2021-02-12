@@ -19,6 +19,9 @@ import {
   useDisclosure,
   CircularProgress,
   Center,
+  Input,
+  InputLeftAddon,
+  InputGroup,
 } from "@chakra-ui/react";
 
 import BANK from "../../asset/bank.svg";
@@ -46,8 +49,12 @@ const userProfileDetails = () => {
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
 
-  const [bankToTransfer, setBankToTransfer] = useState([]);
+  const [bankToTransfer, setBankToTransfer] = useState(null);
   const [isError, setIsError] = useState(false);
+
+  //transferable amount can be changed while
+  //giving cashout, latedst value must be fetched from here
+  const [transferableFromInput, setTransferableFromInput] = useState([]);
 
   // modal control
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -73,6 +80,10 @@ const userProfileDetails = () => {
   const currentCashoutRequest = useSelector(
     (state) => state.userTransactions.currentCashoutRequest
   );
+
+  useEffect(() => {
+    setTransferableFromInput(currentCashoutRequest.transferableAmt);
+  }, [currentCashoutRequest]);
 
   useEffect(() => {
     if (userCashoutRequests.length > 0) {
@@ -122,7 +133,23 @@ const userProfileDetails = () => {
   };
 
   const markCashoutRequest = () => {
-    dispatch(markCashoutRequestComplete());
+    const {
+      requestId,
+      requestedAmt,
+      cashoutBalance,
+      requestedBy,
+      requestMode,
+    } = currentCashoutRequest;
+    dispatch(
+      markCashoutRequestComplete({
+        requestId,
+        requestedAmt,
+        cashoutBalance,
+        requestedBy,
+        requestMode,
+        transferableAmt: parseInt(transferableFromInput),
+      })
+    );
   };
 
   return (
@@ -265,16 +292,23 @@ const userProfileDetails = () => {
 
               <GridItem gridRow="1/2" gridColumn="4/7">
                 <Flex>
-                  <Text noOfLines={1}>Requested Amt :</Text>
-
-                  <Text
-                    rounded="md"
-                    border="2px solid #CCC7C7"
-                    color="#177CE6"
-                    padding="0.1rem"
-                  >
-                    {` \u20B9  ${currentCashoutRequest.requestedAmount}`}
+                  <Text width="160px" noOfLines={1}>
+                    Transferable Amt :
                   </Text>
+
+                  <InputGroup width="50%">
+                    <InputLeftAddon children={` \u20B9 `} />
+                    <Input
+                      rounded="md"
+                      border="2px solid #CCC7C7"
+                      color="#177CE6"
+                      padding="0.1rem"
+                      value={`${transferableFromInput}`}
+                      onChange={(event) =>
+                        setTransferableFromInput(event.target.value)
+                      }
+                    />
+                  </InputGroup>
                 </Flex>
               </GridItem>
 

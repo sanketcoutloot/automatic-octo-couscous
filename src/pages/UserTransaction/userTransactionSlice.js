@@ -56,15 +56,8 @@ export const fetchCurrentCashoutRequest = createAsyncThunk(
 
 export const markCashoutRequestComplete = createAsyncThunk(
   "user/markCashoutRequestComplete",
-  async (userId) => {
-    const { data } = await API.post(`cashout/markComplete`, {
-      userId: userId,
-      requestId: 62301,
-      requestedAmt: 35,
-      cashoutBalance: 45,
-      requestedBy: 800100,
-      requestMode: "BANK",
-    });
+  async (body) => {
+    const { data } = await API.post(`cashout/markComplete`, body);
     return data;
   }
 );
