@@ -22,6 +22,7 @@ import {
   Input,
   InputLeftAddon,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 
 import BANK from "../../asset/bank.svg";
@@ -40,8 +41,9 @@ import {
   fetchCashoutRequests,
   fetchBankAccounts,
   fetchCurrentCashoutRequest,
-  clearCurrentCashoutRequest,
   markCashoutRequestComplete,
+  clearCurrentCashoutRequest,
+  setStatusToIdle,
 } from "./userTransactionSlice";
 
 const userProfileDetails = () => {
@@ -60,11 +62,33 @@ const userProfileDetails = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dispatch = useDispatch();
+  const toast = useToast();
 
-  const apiStatus = useSelector((state) => state.userTransactions.status);
+  //fetching status from the redux-state
+  const cashoutRequestsStatus = useSelector(
+    (state) => state.userTransactions.cashoutRequestsStatus
+  );
+
+  const moneyLogsStatus = useSelector(
+    (state) => state.userTransactions.moneyLogsStatus
+  );
+
+  const bankAccountsStatus = useSelector(
+    (state) => state.userTransactions.bankAccountsStatus
+  );
+
   const currentCashoutStatus = useSelector(
     (state) => state.userTransactions.currentCashoutStatus
   );
+
+  // Fetching error state from the redux-state
+  const currentCashoutError = useSelector(
+    (state) => state.userTransactions.currentCashoutError
+  );
+
+  const error = useSelector((state) => state.userTransactions.error);
+
+  //fetching data from the redux state
   const userCashoutRequests = useSelector(
     (state) => state.userTransactions.cashoutRequests
   );
@@ -80,6 +104,70 @@ const userProfileDetails = () => {
   const currentCashoutRequest = useSelector(
     (state) => state.userTransactions.currentCashoutRequest
   );
+
+  useEffect(() => {
+    if (currentCashoutStatus === "failed") {
+      toast({
+        title: "Current Cashout Request Failed.",
+        description: currentCashoutError,
+        status: "error",
+        position: "top-right",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+  }, [currentCashoutStatus]);
+
+  useEffect(() => {
+    if (cashoutRequestsStatus === "failed") {
+      toast({
+        title: "Cashout request Failed.",
+        description: JSON.stringify(error, null, 2),
+        status: "error",
+        position: "top-right",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+
+    return () => {
+      setStatusToIdle();
+    };
+  }, [cashoutRequestsStatus]);
+
+  useEffect(() => {
+    if (moneyLogsStatus === "failed") {
+      toast({
+        title: "Cashout request Failed.",
+        description: JSON.stringify(error, null, 2),
+        status: "error",
+        position: "top-right",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+
+    return () => {
+      setStatusToIdle();
+    };
+  }, [moneyLogsStatus]);
+
+  useEffect(() => {
+    if (bankAccountsStatus === "failed") {
+      toast({
+        title: "Cashout request Failed.",
+        description: JSON.stringify(error, null, 2),
+        status: "error",
+        position: "top-right",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+
+    return () => {
+      setStatusToIdle();
+    };
+  }, [bankAccountsStatus]);
 
   useEffect(() => {
     setTransferableFromInput(currentCashoutRequest.transferableAmt);
@@ -135,10 +223,10 @@ const userProfileDetails = () => {
   const markCashoutRequest = () => {
     const {
       requestId,
-      requestedAmt,
-      cashoutBalance,
       requestedBy,
       requestMode,
+      cashoutBal: cashoutBalance,
+      requestedAmount: requestedAmt,
     } = currentCashoutRequest;
     dispatch(
       markCashoutRequestComplete({
@@ -213,7 +301,7 @@ const userProfileDetails = () => {
 
         <TabPanels overflowY="scroll" h="80%" bgColor="blue">
           <TabPanel>
-            {apiStatus === "loading" ? (
+            {cashoutRequestsStatus === "loading" ? (
               <Center marginTop="10%">
                 <CircularProgress
                   isIndeterminate
@@ -226,7 +314,7 @@ const userProfileDetails = () => {
             )}
           </TabPanel>
           <TabPanel>
-            {apiStatus === "loading" ? (
+            {moneyLogsStatus === "loading" ? (
               <Center marginTop="10%">
                 <CircularProgress
                   isIndeterminate
@@ -239,7 +327,7 @@ const userProfileDetails = () => {
             )}
           </TabPanel>
           <TabPanel>
-            {apiStatus === "loading" ? (
+            {bankAccountsStatus === "loading" ? (
               <Center marginTop="10%">
                 <CircularProgress
                   isIndeterminate

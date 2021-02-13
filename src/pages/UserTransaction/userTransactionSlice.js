@@ -3,20 +3,27 @@ import API from "../../config/API";
 
 const initialState = {
   cashoutRequests: [],
+  cashoutRequestsStatus: "idle",
+  cashoutRequestsError: null,
+
   moneyLogs: [],
+  moneyLogsStatus: "idle",
+  moneyLogsError: null,
+
   bankAccounts: [],
+  bankAccountsStatus: "idle",
+  bankAccountsError: null,
+
   currentCashoutRequest: {},
-  status: "idle",
   currentCashoutStatus: "idle",
   currentCashoutError: null,
-  error: null,
 };
 
 export const fetchCashoutRequests = createAsyncThunk(
   "user/fetchCashoutRequests",
   async (userId) => {
     const { data } = await API.post(`cashout/getUserCashoutRequests`, {
-      userId,
+      userId: 56565,
     });
     return data;
   }
@@ -48,7 +55,7 @@ export const fetchCurrentCashoutRequest = createAsyncThunk(
   "user/fetchCurrentCashoutRequest",
   async (userId) => {
     const { data } = await API.post(`cashout/getUserCurrentRequest`, {
-      userId,
+      userId: 1233,
     });
     return data;
   }
@@ -72,6 +79,10 @@ const userTransactionsSlice = createSlice({
       state.bankAccounts = [];
       state.currentCashoutRequest = [];
     },
+
+    setStatusToIdle: (state) => {
+      state.status = "idle";
+    },
   },
   extraReducers: {
     // cashout request reducers
@@ -84,7 +95,8 @@ const userTransactionsSlice = createSlice({
         state.status = "succeeded";
         state.cashoutRequests = state.cashoutRequests.concat(data);
       } else {
-        state.error = data;
+        state.cashoutRequestsStatus = "failed";
+        state.cashoutRequestsError = action.payload.errMessage;
       }
     },
     [fetchCashoutRequests.rejected]: (state, action) => {
@@ -106,7 +118,8 @@ const userTransactionsSlice = createSlice({
         }
         state.moneyLogs = state.moneyLogs.concat(resData);
       } else {
-        state.error = data;
+        state.moneyLogsStatus = "failed";
+        state.moneyLogsError = action.payload.errMessage;
       }
     },
     [fetchMoneyLogs.rejected]: (state, action) => {
@@ -128,7 +141,8 @@ const userTransactionsSlice = createSlice({
         }
         state.bankAccounts = state.bankAccounts.concat(resData);
       } else {
-        state.error = data;
+        state.bankAccountsStatus = "failed";
+        state.bankAccountsError = action.payload.errMessage;
       }
     },
     [fetchBankAccounts.rejected]: (state, action) => {
@@ -141,19 +155,20 @@ const userTransactionsSlice = createSlice({
       state.currentCashoutStatus = "loading";
     },
     [fetchCurrentCashoutRequest.fulfilled]: (state, action) => {
-      const { success, data } = action.payload;
+      const { success, data, errMessage } = action.payload;
       console.log("user's current cashout request ", action.payload);
       if (success === 1) {
         state.currentCashoutStatus = "succeeded";
         state.currentCashoutRequest = { ...data };
       } else {
         state.currentCashoutStatus = "failed";
-        state.currentCashoutError = data;
+        state.currentCashoutError = errMessage;
       }
     },
     [fetchCurrentCashoutRequest.rejected]: (state, action) => {
+      const { errMessage } = action.payload;
       state.currentCashoutStatus = "failed";
-      state.error = action.payload.data;
+      state.currentCashoutError = errMessage;
     },
 
     //mark as complete
@@ -164,7 +179,6 @@ const userTransactionsSlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.status = "succeeded";
-        console.log("The trransaction has been marked completed ", data);
       } else {
         state.error = data;
       }
@@ -176,6 +190,9 @@ const userTransactionsSlice = createSlice({
   },
 });
 
-export const { clearCurrentCashoutRequest } = userTransactionsSlice.actions;
+export const {
+  clearCurrentCashoutRequest,
+  setStatusToIdle,
+} = userTransactionsSlice.actions;
 
 export default userTransactionsSlice.reducer;
