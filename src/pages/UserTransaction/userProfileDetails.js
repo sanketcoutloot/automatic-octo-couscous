@@ -44,6 +44,7 @@ import {
   markCashoutRequestComplete,
   clearCurrentCashoutRequest,
   setStatusToIdle,
+  verifyBankDetails,
 } from "./userTransactionSlice";
 
 const userProfileDetails = () => {
@@ -242,6 +243,24 @@ const userProfileDetails = () => {
     );
   };
 
+  const verifyAccount = () => {
+    const {
+      requestData: {
+        accountNumber: beneficiaryAccount,
+        ifscCode: beneficiaryIFSC,
+      },
+      requestId,
+    } = currentCashoutRequest;
+    dispatch(
+      verifyBankDetails({
+        beneficiaryAccount,
+        beneficiaryIFSC,
+        requestId,
+        accountId: "1er18s8ai",
+      })
+    );
+  };
+
   return (
     <Box>
       {" "}
@@ -405,7 +424,7 @@ const userProfileDetails = () => {
               <GridItem gridRow="2/3" gridColumn="1/4">
                 <Flex>
                   <Text>Cashout Bal :</Text>
-                  <Text color="#000000">{` \u20B9 N/A`}</Text>
+                  <Text color="#000000">{` \u20B9 ${currentCashoutRequest.cashoutBal}`}</Text>
                 </Flex>
               </GridItem>
 
@@ -453,6 +472,48 @@ const userProfileDetails = () => {
           >
             <Flex justify="space-between" align="center">
               <Text>Bank Details :</Text>
+
+              {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
+                <Box
+                  as="span"
+                  as="span"
+                  border="2px red solid"
+                  borderRadius="50px"
+                  bg="green.100"
+                  color="green.600"
+                  padding="0.1rem 0.5rem"
+                >
+                  {" "}
+                  Verified
+                </Box>
+              )}
+              {currentCashoutRequest.bankVerificationStatus ===
+                "NOT_VERIFIED" && (
+                <Box
+                  as="span"
+                  border="2px red solid"
+                  borderRadius="50px"
+                  bg="red.100"
+                  color="red.600"
+                  padding="0.1rem 0.5rem"
+                >
+                  Not Verified
+                </Box>
+              )}
+
+              {currentCashoutRequest.bankVerificationStatus === "FAILED" && (
+                <Box
+                  as="span"
+                  as="span"
+                  border="2px red solid"
+                  borderRadius="50px"
+                  bg="red.100"
+                  color="red.600"
+                  padding="0.1rem 0.5rem"
+                >
+                  Failed
+                </Box>
+              )}
               <Button
                 onClick={onOpen}
                 colorScheme="blue"
@@ -545,6 +606,13 @@ const userProfileDetails = () => {
                       height="48px"
                       width="200px"
                       border="2px"
+                      isDisabled={
+                        currentCashoutRequest.bankVerificationStatus ===
+                        "NOT_VERIFIED"
+                          ? false
+                          : true
+                      }
+                      onClick={verifyAccount}
                       borderColor="blue.500"
                     >
                       Verify Account{" "}
@@ -558,6 +626,12 @@ const userProfileDetails = () => {
                       width="200px"
                       border="2px"
                       borderColor="gray.500"
+                      isDisabled={
+                        currentCashoutRequest.bankVerificationStatus ===
+                        "VERIFIED"
+                          ? false
+                          : true
+                      }
                     >
                       Auto Pay
                     </Button>

@@ -17,6 +17,10 @@ const initialState = {
   currentCashoutRequest: {},
   currentCashoutStatus: "idle",
   currentCashoutError: null,
+
+  bankVerificationRequest: {},
+  bankVerificationStatus: "idle",
+  bankVerificationError: null,
 };
 
 export const fetchCashoutRequests = createAsyncThunk(
@@ -65,6 +69,14 @@ export const markCashoutRequestComplete = createAsyncThunk(
   "user/markCashoutRequestComplete",
   async (body) => {
     const { data } = await API.post(`cashout/markComplete`, body);
+    return data;
+  }
+);
+
+export const verifyBankDetails = createAsyncThunk(
+  "user/verifyBankDetails",
+  async (bankDetails) => {
+    const { data } = await API.post(`bank/paytmBankVerification`, bankDetails);
     return data;
   }
 );
@@ -186,6 +198,23 @@ const userTransactionsSlice = createSlice({
     [markCashoutRequestComplete.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload.data;
+    },
+
+    //Bank verification
+    [verifyBankDetails.pending]: (state, action) => {
+      state.bankAccountsStatus = "loading";
+    },
+    [verifyBankDetails.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.bankAccountsStatus = "succeeded";
+      } else {
+        state.bankVerificationError = data;
+      }
+    },
+    [verifyBankDetails.rejected]: (state, action) => {
+      state.bankAccountsStatus = "failed";
+      state.bankVerificationError = action.payload.data;
     },
   },
 });
