@@ -105,6 +105,8 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.currentCashoutRequest
   );
 
+  //show error
+
   useEffect(() => {
     if (currentCashoutStatus === "failed") {
       toast({
@@ -131,14 +133,14 @@ const userProfileDetails = () => {
     }
 
     return () => {
-      setStatusToIdle();
+      setStatusToIdle("cashoutRequestsStatus");
     };
   }, [cashoutRequestsStatus]);
 
   useEffect(() => {
     if (moneyLogsStatus === "failed") {
       toast({
-        title: "Cashout request Failed.",
+        title: "Unable to fetch money logs.",
         description: JSON.stringify(error, null, 2),
         status: "error",
         position: "top-right",
@@ -155,7 +157,7 @@ const userProfileDetails = () => {
   useEffect(() => {
     if (bankAccountsStatus === "failed") {
       toast({
-        title: "Cashout request Failed.",
+        title: "Unable to fetch user's bank details.",
         description: JSON.stringify(error, null, 2),
         status: "error",
         position: "top-right",

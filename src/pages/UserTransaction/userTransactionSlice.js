@@ -23,7 +23,7 @@ export const fetchCashoutRequests = createAsyncThunk(
   "user/fetchCashoutRequests",
   async (userId) => {
     const { data } = await API.post(`cashout/getUserCashoutRequests`, {
-      userId: 56565,
+      userId,
     });
     return data;
   }
@@ -55,7 +55,7 @@ export const fetchCurrentCashoutRequest = createAsyncThunk(
   "user/fetchCurrentCashoutRequest",
   async (userId) => {
     const { data } = await API.post(`cashout/getUserCurrentRequest`, {
-      userId: 1233,
+      userId,
     });
     return data;
   }
@@ -80,8 +80,8 @@ const userTransactionsSlice = createSlice({
       state.currentCashoutRequest = [];
     },
 
-    setStatusToIdle: (state) => {
-      state.status = "idle";
+    setStatusToIdle: (state, action) => {
+      state[action.payload] = "idle";
     },
   },
   extraReducers: {
@@ -92,7 +92,7 @@ const userTransactionsSlice = createSlice({
     [fetchCashoutRequests.fulfilled]: (state, action) => {
       const { success, data } = action.payload;
       if (success === 1) {
-        state.status = "succeeded";
+        state.cashoutRequestsStatus = "succeeded";
         state.cashoutRequests = state.cashoutRequests.concat(data);
       } else {
         state.cashoutRequestsStatus = "failed";
