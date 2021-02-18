@@ -15,8 +15,6 @@ import BANK from "../../asset/bank.svg";
 import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
 
-// axios
-import axios from "../../config/API";
 //react-router
 import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 
@@ -24,7 +22,7 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchAllRequests } from "./allRequestSlice";
+import { fetchAllRequests } from "../AllRequersts/allRequestSlice";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -83,7 +81,7 @@ const renderPaymentMode = (props) => {
   }
 };
 
-const AllRequests = () => {
+const AutopayQueue = () => {
   // const [allRequests, SetAllRequests] = useState([]);
   const [pageNumber, changePageNumber] = useState(0);
   const [isError, setIsError] = useState(false);
@@ -139,27 +137,12 @@ const AllRequests = () => {
         Cell: renderPaymentMode,
       },
       {
-        Header: "Status",
-        accessor: "requestStatus",
-        Cell: ({ value }) => (
-          <Button
-            colorScheme={value.toLowerCase() === "active" ? "green" : "orange"}
-            variant="outline"
-            _hover={{ cursor: "initial" }}
-            size="sm"
-            width="5rem"
-          >
-            <Text casing="capitalize">{value}</Text>
-          </Button>
-        ),
-      },
-      {
         Header: "Amount",
         accessor: "requestedAmount",
         Cell: ({
           cell: {
             row: {
-              original: { requestedAmount },
+              original: { transferableAmount },
             },
           },
         }) => (
@@ -169,7 +152,7 @@ const AllRequests = () => {
             color="#00000"
             casing="capitalize"
           >
-            {` \u20B9${requestedAmount}`}
+            {` \u20B9${transferableAmount}`}
           </Text>
         ),
       },
@@ -177,11 +160,7 @@ const AllRequests = () => {
         Header: "Date",
         accessor: "requestDate",
         Cell: ({ value }) => {
-          let date = new Date(Number(value) * 1000)
-            .toLocaleString()
-            .replaceAll("/", "-")
-            .replaceAll(",", " ");
-          return <Text fontWeight="bold"> {date} </Text>;
+          return <Text fontWeight="bold"> {value} </Text>;
         },
       },
       {
@@ -199,7 +178,7 @@ const AllRequests = () => {
               size="sm"
               as={RouterLink}
               style={{
-                backgroundColor: "red",
+                backgroundColor: "#28A745",
                 padding: "0.5rem",
                 color: "white",
                 borderRadius: "5px",
@@ -224,7 +203,7 @@ const AllRequests = () => {
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
-        All Requests
+        Autopay Pending Requests
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
@@ -236,7 +215,7 @@ const AllRequests = () => {
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>
             {" "}
-            <Text>Cashout Requests </Text>{" "}
+            <Text> AutoPay Queue</Text>{" "}
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
@@ -253,4 +232,4 @@ const AllRequests = () => {
   );
 };
 
-export default AllRequests;
+export default AutopayQueue;

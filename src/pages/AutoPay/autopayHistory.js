@@ -24,7 +24,7 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchAllRequests } from "./allRequestSlice";
+import { fetchAllRequests } from "../AllRequersts/allRequestSlice";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -83,7 +83,7 @@ const renderPaymentMode = (props) => {
   }
 };
 
-const AllRequests = () => {
+const AutopayHistory = () => {
   // const [allRequests, SetAllRequests] = useState([]);
   const [pageNumber, changePageNumber] = useState(0);
   const [isError, setIsError] = useState(false);
@@ -117,7 +117,7 @@ const AllRequests = () => {
       },
       {
         Header: "Requested By",
-        accessor: (d) => `${d.requestedBy} ${d.requestedName}`,
+        accessor: "requestedBy",
         Cell: ({
           cell: {
             row: {
@@ -224,7 +224,7 @@ const AllRequests = () => {
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
-        All Requests
+        Autopay Pending Requests
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
@@ -236,7 +236,7 @@ const AllRequests = () => {
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>
             {" "}
-            <Text>Cashout Requests </Text>{" "}
+            <Text> AutoPay Queue</Text>{" "}
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
@@ -253,4 +253,4 @@ const AllRequests = () => {
   );
 };
 
-export default AllRequests;
+export default AutopayHistory;

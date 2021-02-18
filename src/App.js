@@ -2,7 +2,14 @@ import React, { Component } from "react";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { MoneyLogs, AllRequests, UserProfileDetails, ErrorPage } from "./pages";
+import {
+  MoneyLogs,
+  AllRequests,
+  UserProfileDetails,
+  ErrorPage,
+  AutopayHistory,
+  AutopayQueue,
+} from "./pages";
 
 import { Layout } from "./component/Layout.js";
 
@@ -22,6 +29,14 @@ class App extends Component {
 
             <Route exact path="/allrequests/:userId">
               <Layout children={<UserProfileDetails />} />
+            </Route>
+
+            <Route exact path="/autoPayQueue">
+              <Layout children={<AutopayQueue />} />
+            </Route>
+
+            <Route exact path="/autoPayHistory">
+              <Layout children={<AutopayHistory />} />
             </Route>
 
             <Route children={<ErrorPage />} />

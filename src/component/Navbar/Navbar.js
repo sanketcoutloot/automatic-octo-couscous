@@ -1,8 +1,25 @@
-import { Box, ListItem, UnorderedList, Link, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  ListItem,
+  UnorderedList,
+  Link,
+  Icon,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from "@chakra-ui/react";
 import { NavLink as RouterLink } from "react-router-dom";
 import React from "react";
 
-import { FaBars, FaGreaterThan, FaHome, FaUserAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaGreaterThan,
+  FaHome,
+  FaUserAlt,
+  FaArrowRight,
+} from "react-icons/fa";
 
 import Logo from "../../asset/cl-logo.png";
 const ActiveLinkStyle = {
@@ -90,6 +107,54 @@ const Navbar = () => (
           as={FaGreaterThan}
         />
       </ListItem>
+
+      <Accordion allowToggle>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                AutoPay
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <ListItem
+              display="flex"
+              alignItems="center"
+              // justifyContent="space-between"
+              my={1}
+              ml={0}
+            >
+              <Icon boxSize={3} mr={4} as={FaArrowRight} />
+              <Link
+                as={RouterLink}
+                to="/autoPayQueue"
+                activeStyle={{ ...ActiveLinkStyle }}
+              >
+                Pending Requests
+              </Link>
+            </ListItem>
+
+            <ListItem
+              display="flex"
+              alignItems="center"
+              // justifyContent="space-between"
+              my={1}
+              ml={0}
+            >
+              <Icon boxSize={3} mr={4} as={FaArrowRight} />
+              <Link
+                as={RouterLink}
+                to="/autoPayHistory"
+                activeStyle={{ ...ActiveLinkStyle }}
+              >
+                History
+              </Link>
+            </ListItem>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </UnorderedList>
   </Box>
 );
