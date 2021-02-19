@@ -8,6 +8,21 @@ import {
   Button,
   Link,
   CircularProgress,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  Divider,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Lorem,
+  Heading,
+  HStack,
+  PinInputField,
+  PinInput,
+  BeatLoader,
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
@@ -22,7 +37,14 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchAllRequests } from "../AllRequersts/allRequestSlice";
+import {
+  fetchAllQueuedRequests,
+  sendOtpToSignedInUser,
+  verifyOTP,
+  transferMoney,
+} from "./autopaySlice";
+
+import { isEmptyObject } from "../../utils";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -82,24 +104,71 @@ const renderPaymentMode = (props) => {
 };
 
 const AutopayQueue = () => {
-  // const [allRequests, SetAllRequests] = useState([]);
-  const [pageNumber, changePageNumber] = useState(0);
-  const [isError, setIsError] = useState(false);
-
-  let { path, url } = useRouteMatch();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
 
-  const allRequests = useSelector((state) => state.allRequests.allRequests);
-  const allRequestStatus = useSelector((state) => state.allRequests.status);
+  // State
+  const [pageNumber, changePageNumber] = useState(0);
+  const [isError, setIsError] = useState(false);
+  const [autoPayRequestDetails, setAutoPayRequestDetails] = useState({});
+  const [seconds, setSeconds] = React.useState(30);
+  const [value, setValue] = React.useState(null);
 
+  //Even Handlers + helper functions
+  const handleChange = (event) => setValue(event.target.value);
+
+  // redux selectors
+
+  //@DESC get queued cashout request
+  const allQueuedRequests = useSelector(
+    (state) => state.autoPay.allQueuedRequests
+  );
+
+  //@DESC status of allQueuedRequests
+  const allQueuedRequestsStatus = useSelector(
+    (state) => state.autoPay.allQueuedRequestsStatus
+  );
+
+  //@desc status of verifyOtp
+  const verifyOTPStatus = useSelector((state) => state.autoPay.verifyOTPStatus);
+
+  //SIDE - EFFECTS
+  //@desc fetch all queued requests
   useEffect(() => {
     //dispatch all requests
-    if (allRequests.length === 0) {
-      dispatch(fetchAllRequests(0));
+    if (allQueuedRequests.length === 0) {
+      dispatch(fetchAllQueuedRequests(0));
     }
-  }, [allRequests]);
+  }, [allQueuedRequests]);
 
+  //@desc send otp to signed in user
+  useEffect(() => {
+    if (!isEmptyObject(autoPayRequestDetails) && isOpen === true) {
+      dispatch(sendOtpToSignedInUser());
+    }
+  }, [autoPayRequestDetails, isOpen]);
+
+  //@desc validate OTP
+  const validateOTPAndSendBankData = () => {
+    dispatch(verifyOTP(value));
+  };
+
+  // @desc if verify otp is success
+  useEffect(() => {
+    if (verifyOTPStatus === "succeeded") {
+      const {
+        requestId,
+        requestMode,
+        requestData,
+        autoPay: { transferableAmount: amount },
+      } = autoPayRequestDetails;
+
+      dispatch(transferMoney({ requestId, requestMode, requestData, amount }));
+    }
+  }, [verifyOTPStatus]);
+
+  //REACT-DEBATABLE
+  //@desc react-table column
   const columns = React.useMemo(
     () => [
       {
@@ -130,7 +199,6 @@ const AutopayQueue = () => {
           >{`${requestedName}(${requestedBy})`}</Text>
         ),
       },
-
       {
         Header: "Payment Mode",
         accessor: "requestMode",
@@ -168,13 +236,11 @@ const AutopayQueue = () => {
         accessor: "",
         Cell: ({
           cell: {
-            row: {
-              original: { requestedName, requestedBy: userId },
-            },
+            row: { original },
           },
         }) => {
           return (
-            <Link
+            <Box
               size="sm"
               as={RouterLink}
               style={{
@@ -183,13 +249,10 @@ const AutopayQueue = () => {
                 color: "white",
                 borderRadius: "5px",
               }}
-              to={{
-                pathname: `${url}/${userId}`,
-                state: { userId, requestedName },
-              }}
+              onClick={() => setAutoPayRequestDetails(original)}
             >
               Process
-            </Link>
+            </Box>
           );
         },
       },
@@ -197,13 +260,15 @@ const AutopayQueue = () => {
     []
   );
 
-  const data = React.useMemo(() => allRequests, []);
+  //@desc data for datatable
+  const data = React.useMemo(() => allQueuedRequests, []);
 
   return (
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
         Autopay Pending Requests
+        <Button onClick={onOpen}>Open Modal</Button>
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
@@ -220,14 +285,82 @@ const AutopayQueue = () => {
         </BreadcrumbItem>
       </Breadcrumb>
       <Box h="85vh" display="grid" overflow="scroll">
-        {allRequestStatus === "loading" ? (
+        {allQueuedRequestsStatus === "loading" ? (
           <Box style={{ placeSelf: "center" }} as="span">
             <CircularProgress isIndeterminate size="120px" color="red.300" />
           </Box>
         ) : (
-          <ReactTable columns={columns} data={allRequests} />
+          <ReactTable columns={columns} data={allQueuedRequests} />
         )}
       </Box>
+      <Modal
+        isCentered
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        size="5xl"
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent padding={5}>
+          <ModalHeader>Verify OTP</ModalHeader>
+          <ModalCloseButton />
+          <Divider color="teal" size="md" />
+          <ModalBody p={4}>
+            <Box textAlign="center">
+              <Text mt={4} fontSize="3xl" fontWeight="700">
+                Please Enter the one-Time Password (OTP) to verify your account.
+              </Text>
+
+              <Text mt={4} fontSize="xl" color="#726D6D">
+                Please Enter the one-Time Password (OTP) to verify your account.
+              </Text>
+
+              <PinInput
+                manageFocus
+                colorScheme="teal"
+                type="number"
+                otp
+                size="lg"
+                onChange={(value) => setValue(value)}
+              >
+                <PinInputField m={2} size="lg" />
+                <PinInputField m={2} size="lg" />
+                <PinInputField m={2} size="lg" />
+                <PinInputField m={2} size="lg" />
+                <PinInputField m={2} size="lg" />
+              </PinInput>
+
+              <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
+                Check your registered phone number For OTP
+              </Text>
+
+              <Text mt={4} fontSize="xl" fontWeight="700" color="#DD611F">
+                OTP doesn’t match .... Please try again.
+              </Text>
+
+              <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
+                OTP Verified
+              </Text>
+
+              <Text mt={4} fontSize="xl" fontWeight="700" color="green.500">
+                Send Bank Details for Transfer
+              </Text>
+            </Box>
+          </ModalBody>
+          <ModalFooter justifyContent="center">
+            <Button
+              onClick={() => {
+                validateOTPAndSendBankData();
+              }}
+              colorScheme="blue"
+              size="lg"
+              w="16rem"
+            >
+              Validate
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

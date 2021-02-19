@@ -1,42 +1,148 @@
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import API from "../../config/API";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "../../config/API";
+import axios from "axios";
 
-// const initialState = {
-//   allRequests: [],
-//   status: "idle",
-//   error: null,
-// };
+const initialState = {
+  allQueuedRequests: [],
+  addRequestToAutoPayQueueStatus: "idle",
+  allQueuedRequestsStatus: "idle",
+  sendOtpToSignedInUserStatus: "idle",
+  verifyOTPStatus: "idle",
+  error: null,
+};
 
-// export const fetchAllRequests = createAsyncThunk(
-//   "allRequests/fetchAllRequest",
-//   async (pageNumber) => {
-//     let { data } = await API.get(`cashout/getCashoutRequests/${pageNumber}`);
-//     return data;
-//   }
-// );
+export const addRequestToAutoPayQueue = createAsyncThunk(
+  "autoPay/addRequestToAutoPayQueue",
+  async (body) => {
+    let { data } = await API.post(`/cashout/addToAutopayQueued`, body);
+    return data;
+  }
+);
 
-// const allRequestsSlice = createSlice({
-//   name: "allRequests",
-//   initialState,
-//   reducers: {},
-//   extraReducers: {
-//     [fetchAllRequests.pending]: (state, action) => {
-//       state.status = "loading";
-//     },
-//     [fetchAllRequests.fulfilled]: (state, action) => {
-//       const { success, data } = action.payload;
-//       if (success === 1) {
-//         state.status = "succeeded";
-//         state.allRequests = state.allRequests.concat(data);
-//       } else {
-//         state.error = data;
-//       }
-//     },
-//     [fetchAllRequests.rejected]: (state, action) => {
-//       state.status = "failed";
-//       state.error = action.payload.data;
-//     },
-//   },
-// });
+export const fetchAllQueuedRequests = createAsyncThunk(
+  "autoPay/allQueuedRequests",
+  async (pageNumber = 0) => {
+    let { data } = await API.get(`/cashout/getAutopayQueued/${pageNumber}`);
+    return data;
+  }
+);
 
-// export default allRequestsSlice.reducer;
+export const sendOtpToSignedInUser = createAsyncThunk(
+  "autoPay/sendOtpToSignedInUser",
+  async () => {
+    let { data } = await axios.post(
+      `https://internal-auth.coutloot.com/auth/sendOTP`,
+      {
+        email: "sanket@coutloot.com",
+        mobile: 9405945413,
+      }
+    );
+    return data;
+  }
+);
+
+export const verifyOTP = createAsyncThunk("autoPay/verifyOTP", async (otp) => {
+  let { data } = await axios.post(
+    "https://internal-auth.coutloot.com/auth/login",
+    {
+      otp: parseInt(otp),
+      mobile: "9405945413", //will be taken from local storage
+      otpToken: localStorage.getItem("otpToken"),
+    }
+  );
+  return data;
+});
+
+export const transferMoney = createAsyncThunk(
+  "autoPay/transferMoney",
+  async (transferDetails) => {
+    let { data } = await API.post(`paytm/moneyTransfer`, transferDetails);
+
+    return data;
+  }
+);
+const autoPaySlice = createSlice({
+  name: "autoPay",
+  initialState,
+  reducers: {},
+  extraReducers: {
+    //addRequestToAutoPayQueue
+    [addRequestToAutoPayQueue.pending]: (state, action) => {
+      state.addRequestToAutoPayQueueStatus = "loading";
+    },
+    [addRequestToAutoPayQueue.fulfilled]: (state, action) => {
+      const { success } = action.payload;
+      if (success === 1) {
+        state.addRequestToAutoPayQueueStatus = "succeeded";
+      } else {
+        state.addRequestToAutoPayQueueStatus = "failed";
+        state.error = action.payload;
+      }
+    },
+    [addRequestToAutoPayQueue.rejected]: (state, action) => {
+      state.addRequestToAutoPayQueueStatus = "failed";
+      state.error = action.payload;
+    },
+
+    //fetch all queued request
+    [fetchAllQueuedRequests.pending]: (state, action) => {
+      state.allQueuedRequestsStatus = "loading";
+    },
+    [fetchAllQueuedRequests.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.allQueuedRequestsStatus = "succeeded";
+        state.allQueuedRequests = state.allQueuedRequests.concat(data);
+      } else {
+        state.allQueuedRequestsStatus = "failed";
+        state.error = action.payload.data;
+      }
+    },
+    [fetchAllQueuedRequests.rejected]: (state, action) => {
+      state.allQueuedRequestsStatus = "failed";
+      state.error = action.payload.data;
+    },
+
+    //send OTP
+    [sendOtpToSignedInUser.pending]: (state, action) => {
+      state.sendOtpToSignedInUserStatus = "loading";
+    },
+    [sendOtpToSignedInUser.fulfilled]: (state, action) => {
+      const { success, otpToken } = action.payload;
+      if (success === 1) {
+        state.sendOtpToSignedInUserStatus = "succeeded";
+        localStorage.setItem("otpToken", otpToken);
+      } else {
+        state.sendOtpToSignedInUserStatus = "failed";
+        state.error = action.payload;
+      }
+    },
+    [sendOtpToSignedInUser.rejected]: (state, action) => {
+      state.sendOtpToSignedInUserStatus = "failed";
+      state.error = action.payload.data;
+    },
+
+    //verify otp
+    [verifyOTP.pending]: (state, action) => {
+      state.verifyOTPStatus = "loading";
+    },
+    [verifyOTP.fulfilled]: (state, action) => {
+      const { success, otpToken } = action.payload;
+      if (success === 1) {
+        state.verifyOTPStatus = "succeeded";
+        localStorage.setItem("otpToken", otpToken);
+      } else {
+        state.verifyOTPStatus = "failed";
+        state.error = action.payload;
+      }
+    },
+    [verifyOTP.rejected]: (state, action) => {
+      state.verifyOTPStatus = "failed";
+      state.error = action.payload.data;
+    },
+
+    //send bankdetails for vareification
+  },
+});
+
+export default autoPaySlice.reducer;

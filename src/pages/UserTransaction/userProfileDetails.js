@@ -46,6 +46,7 @@ import {
   setStatusToIdle,
   verifyBankDetails,
 } from "./userTransactionSlice";
+import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
 
 const userProfileDetails = () => {
   const { state } = useLocation();
@@ -257,6 +258,22 @@ const userProfileDetails = () => {
         beneficiaryIFSC,
         requestId,
         accountId: "1er18s8ai",
+      })
+    );
+  };
+
+  const addRequestToQueue = () => {
+    const {
+      requestId,
+      transferableAmt,
+      requestedBy: userId,
+    } = currentCashoutRequest;
+
+    dispatch(
+      addRequestToAutoPayQueue({
+        requestId,
+        userId,
+        transferableAmt,
       })
     );
   };
@@ -626,6 +643,7 @@ const userProfileDetails = () => {
                       width="200px"
                       border="2px"
                       borderColor="gray.500"
+                      onClick={() => addRequestToQueue()}
                       isDisabled={
                         currentCashoutRequest.bankVerificationStatus ===
                         "VERIFIED"

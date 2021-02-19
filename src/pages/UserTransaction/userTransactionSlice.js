@@ -76,7 +76,10 @@ export const markCashoutRequestComplete = createAsyncThunk(
 export const verifyBankDetails = createAsyncThunk(
   "user/verifyBankDetails",
   async (bankDetails) => {
-    const { data } = await API.post(`bank/paytmBankVerification`, bankDetails);
+    const { data } = await API.post(
+      `paytm/bankAccountVerification`,
+      bankDetails
+    );
     return data;
   }
 );
