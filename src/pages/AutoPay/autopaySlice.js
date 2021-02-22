@@ -61,6 +61,7 @@ export const transferMoney = createAsyncThunk(
     return data;
   }
 );
+
 const autoPaySlice = createSlice({
   name: "autoPay",
   initialState,

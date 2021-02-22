@@ -249,7 +249,10 @@ const AutopayQueue = () => {
                 color: "white",
                 borderRadius: "5px",
               }}
-              onClick={() => setAutoPayRequestDetails(original)}
+              onClick={() => {
+                setAutoPayRequestDetails(original);
+                onOpen();
+              }}
             >
               Process
             </Box>
@@ -267,8 +270,7 @@ const AutopayQueue = () => {
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
-        Autopay Pending Requests
-        <Button onClick={onOpen}>Open Modal</Button>
+        AutoPay Pending Requests
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
