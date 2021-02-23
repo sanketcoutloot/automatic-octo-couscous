@@ -139,7 +139,7 @@ const cashoutRequestTable = ({
           variant="outline"
           _hover={{ cursor: "initial" }}
           size="sm"
-          width="5rem"
+          width="7rem"
         >
           <Text casing="capitalize">{value}</Text>
         </Button>
