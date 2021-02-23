@@ -9,6 +9,7 @@ import {
   ErrorPage,
   AutopayHistory,
   AutopayQueue,
+  Login
 } from "./pages";
 
 import { Layout } from "./component/Layout.js";
@@ -19,6 +20,10 @@ class App extends Component {
       <React.Fragment>
         <Router>
           <Switch>
+          <Route exact path="/">
+              <Login />
+            </Route>
+
             <Route exact path="/moneylogs">
               <Layout children={<MoneyLogs />} />
             </Route>

@@ -177,11 +177,8 @@ const AllRequests = () => {
         Header: "Date",
         accessor: "requestDate",
         Cell: ({ value }) => {
-          let date = new Date(Number(value) * 1000)
-            .toLocaleString()
-            .replaceAll("/", "-")
-            .replaceAll(",", " ");
-          return <Text fontWeight="bold"> {date} </Text>;
+         
+          return <Text fontWeight="bold"> {value} </Text>;
         },
       },
       {
