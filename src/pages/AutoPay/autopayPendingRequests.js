@@ -210,7 +210,7 @@ const AutopayQueue = () => {
         Cell: ({
           cell: {
             row: {
-              original: { transferableAmount },
+              original: { autoPay:{transferableAmount} },
             },
           },
         }) => (
@@ -332,7 +332,7 @@ const AutopayQueue = () => {
                 <PinInputField m={2} size="lg" />
               </PinInput>
 
-              <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
+              {/* <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
                 Check your registered phone number For OTP
               </Text>
 
@@ -346,7 +346,7 @@ const AutopayQueue = () => {
 
               <Text mt={4} fontSize="xl" fontWeight="700" color="green.500">
                 Send Bank Details for Transfer
-              </Text>
+              </Text> */}
             </Box>
           </ModalBody>
           <ModalFooter justifyContent="center">

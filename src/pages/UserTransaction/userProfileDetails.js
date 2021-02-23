@@ -23,6 +23,8 @@ import {
   InputLeftAddon,
   InputGroup,
   useToast,
+  NumberInput,
+  NumberInputField,
 } from "@chakra-ui/react";
 
 import BANK from "../../asset/bank.svg";
@@ -424,16 +426,29 @@ const userProfileDetails = () => {
 
                   <InputGroup width="50%">
                     <InputLeftAddon children={` \u20B9 `} />
-                    <Input
+
+                    {/* <Input
                       rounded="md"
                       border="2px solid #CCC7C7"
                       color="#177CE6"
                       padding="0.1rem"
+                      type="number"
+                      max={`${currentCashoutRequest.transferableAmt}`}
                       value={`${transferableFromInput}`}
                       onChange={(event) =>
                         setTransferableFromInput(event.target.value)
                       }
-                    />
+                    /> */}
+                    <NumberInput
+                      max={`${currentCashoutRequest.transferableAmt}`}
+                      value={`${transferableFromInput}`}
+                      inputMode="numeric"
+                      max={`${currentCashoutRequest.transferableAmt}`}
+                      min={`0`}
+                      onChange={(value) => setTransferableFromInput(value)}
+                    >
+                      <NumberInputField />
+                    </NumberInput>
                   </InputGroup>
                 </Flex>
               </GridItem>
@@ -487,17 +502,17 @@ const userProfileDetails = () => {
             color="#6C757D"
             p={2}
           >
-            <Flex justify="space-between" align="center">
-              <Text>Bank Details :</Text>
+            <Flex align="center">
+              <Text mr={4}>Bank Details :</Text>
 
               {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
                 <Box
                   as="span"
                   as="span"
-                  border="2px red solid"
+                  border="1px #52D676 solid"
                   borderRadius="50px"
-                  bg="green.100"
-                  color="green.600"
+                  bg="#E5FDEC"
+                  color="#52D676"
                   padding="0.1rem 0.5rem"
                 >
                   {" "}
@@ -508,13 +523,26 @@ const userProfileDetails = () => {
                 "NOT_VERIFIED" && (
                 <Box
                   as="span"
-                  border="2px red solid"
+                  border="1px #F41717 solid"
                   borderRadius="50px"
-                  bg="red.100"
-                  color="red.600"
+                  bg="#FFEFEF"
+                  color="#F41717"
                   padding="0.1rem 0.5rem"
                 >
                   Not Verified
+                </Box>
+              )}
+
+              {currentCashoutRequest.bankVerificationStatus === "PENDING" && (
+                <Box
+                  as="span"
+                  border="1px #FCA847 solid"
+                  borderRadius="50px"
+                  bg="#F7AC551D"
+                  color="#FCA847"
+                  padding="0.1rem 0.5rem"
+                >
+                  Pending
                 </Box>
               )}
 
@@ -532,6 +560,7 @@ const userProfileDetails = () => {
                 </Box>
               )}
               <Button
+                ml="auto"
                 onClick={onOpen}
                 colorScheme="blue"
                 leftIcon={<FaPen />}
@@ -609,7 +638,7 @@ const userProfileDetails = () => {
                       color="white"
                       fontWeight="700"
                       _hover={{
-                        transform: "scale(1.25)",
+                        transform: "scale(1.20)",
                       }}
                       onClick={markCashoutRequest}
                     >
@@ -629,6 +658,9 @@ const userProfileDetails = () => {
                           ? false
                           : true
                       }
+                      _hover={{
+                        transform: "scale(1.20)",
+                      }}
                       onClick={verifyAccount}
                       borderColor="blue.500"
                     >
@@ -642,6 +674,9 @@ const userProfileDetails = () => {
                       height="48px"
                       width="200px"
                       border="2px"
+                      _hover={{
+                        transform: "scale(1.20)",
+                      }}
                       borderColor="gray.500"
                       onClick={() => addRequestToQueue()}
                       isDisabled={
