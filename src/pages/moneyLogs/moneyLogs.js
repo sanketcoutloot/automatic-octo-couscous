@@ -15,12 +15,12 @@ import { FaGreaterThan } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 //components
-import { ReactTable } from "../component/ReactTable";
+import { ReactTable } from "../../component/ReactTable";
 
-import { MoneyLogDetailsModals } from "../component/ReactTable/moneylog";
+import { MoneyLogDetailsModals } from "../../component/ReactTable/moneylog";
 
-import API from "../config/API";
-import { isEmptyObject } from "../utils";
+import API from "../../config/API";
+import { isEmptyObject } from "../../utils";
 import { icons } from "react-icons/lib";
 
 const renderWalletType = (props) => {
@@ -133,7 +133,7 @@ const renderAmount = ({
 const MoneyLogs = () => {
   const [isError, setIsError] = useState(false);
   const [moneyLogs, SetMoneyLogs] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(null);
   const [shouldFetchMoneyLog, setShouldFetchMoneyLog] = useState(false);
   const [moneyLogDetails, setMoneyLogDetails] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -170,38 +170,12 @@ const MoneyLogs = () => {
         );
       },
     },
-    {
-      Header: "User",
-      accessor: "userId",
-      Cell: ({
-        cell: {
-          row: {
-            original: { userName, userId },
-          },
-        },
-      }) => (
-        // <Text
-        //   color="#000000"
-        //   align="left"
-        //   fontWeight="bold"
-        // >{`${userName} (${userId})`}</Text>
-        <Text
-          color="#000000"
-          align="center"
-          fontWeight="bold"
-        >{`${userId}`}</Text>
-      ),
-    },
+
     {
       Header: "Date",
       accessor: "transactionDate",
       Cell: ({ value }) => {
-        console.log({ value });
-        let date = new Date(Number(value) * 1000)
-          .toLocaleString()
-          .replaceAll("/", "-")
-          .replaceAll(",", " ");
-        return <Text fontWeight="bold"> {date} </Text>;
+        return <Text fontWeight="bold"> {value} </Text>;
       },
     },
     {
@@ -242,7 +216,7 @@ const MoneyLogs = () => {
   async function getMoneyLogs() {
     try {
       let { data } = await API.post(`moneyLog/getMoneyLogs`, {
-        searchText: "2237417",
+        searchText: 213660,
         searchType: "USERID",
         pageNo: 0,
       });

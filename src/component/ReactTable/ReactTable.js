@@ -72,6 +72,7 @@ function GlobalFilter({
   const [value, setValue] = React.useState(globalFilter);
 
   const onChange = (value) => {
+    //money log search function
     // setSearchText(value);
 
     setGlobalFilter(value || undefined);

@@ -8,8 +8,21 @@ const initialState = {
   allQueuedRequestsStatus: "idle",
   sendOtpToSignedInUserStatus: "idle",
   verifyOTPStatus: "idle",
+
+  autoPayHistoryStatus: "idle",
+  autoPayHistory: [],
   error: null,
 };
+
+//history API fetchAutoPayHistory
+
+export const fetchAutoPayHistory = createAsyncThunk(
+  "autoPay/fetchAutoPayHistory",
+  async (pageNo) => {
+    let { data } = await API.get(`/cashout/getAutopayHistory/${pageNo}`);
+    return data;
+  }
+);
 
 export const addRequestToAutoPayQueue = createAsyncThunk(
   "autoPay/addRequestToAutoPayQueue",
@@ -67,6 +80,25 @@ const autoPaySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    //autopay history
+    [fetchAutoPayHistory.pending]: (state, action) => {
+      state.autoPayHistoryStatus = "loading";
+    },
+    [fetchAutoPayHistory.fulfilled]: (state, action) => {
+      const { success, data } = action.payload;
+      if (success === 1) {
+        state.autoPayHistoryStatus = "succeeded";
+        state.autoPayHistory = [...state.autoPayHistory, ...data];
+      } else {
+        state.autoPayHistoryStatus = "failed";
+        state.error = action.payload;
+      }
+    },
+    [fetchAutoPayHistory.rejected]: (state, action) => {
+      state.autoPayHistoryStatus = "failed";
+      state.error = action.payload.data;
+    },
+
     //addRequestToAutoPayQueue
     [addRequestToAutoPayQueue.pending]: (state, action) => {
       state.addRequestToAutoPayQueueStatus = "loading";

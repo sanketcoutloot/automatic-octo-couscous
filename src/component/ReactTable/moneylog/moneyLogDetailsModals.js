@@ -79,13 +79,17 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails: log }) => {
                 <Button colorScheme="teal" variant="outline">
                   Order ID:
                   <Box as="span" color="#F9BD65">
-                    {` N/A`}
+                    {log.transactionData.orderId
+                      ? log.transactionData.orderId
+                      : "N/A"}
                   </Box>
                 </Button>
                 <Button colorScheme="teal" variant="outline">
                   Product ID:
                   <Box color="#8504BE" as="span">
-                    {` N/A`}
+                    {log.transactionData.productId
+                      ? log.transactionData.productId
+                      : "N/A"}
                   </Box>
                 </Button>
               </Stack>

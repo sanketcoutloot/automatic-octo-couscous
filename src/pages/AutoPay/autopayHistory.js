@@ -24,7 +24,7 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchAllRequests } from "../AllRequersts/allRequestSlice";
+import { fetchAutoPayHistory } from "./autopaySlice";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -84,33 +84,29 @@ const renderPaymentMode = (props) => {
 };
 
 const AutopayHistory = () => {
-  // const [allRequests, SetAllRequests] = useState([]);
   const [pageNumber, changePageNumber] = useState(0);
-  const [isError, setIsError] = useState(false);
-
-  let { path, url } = useRouteMatch();
 
   const dispatch = useDispatch();
 
-  const allRequests = useSelector((state) => state.allRequests.allRequests);
+  const autoPayHistory = useSelector((state) => state.autoPay.autoPayHistory);
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
     //dispatch all requests
-    if (allRequests.length === 0) {
-      dispatch(fetchAllRequests(0));
-    }
-  }, [allRequests]);
+    // if (autoPayHistory.length === 0) {
+    dispatch(fetchAutoPayHistory(0));
+    // }
+  }, []);
 
   const columns = React.useMemo(
     () => [
       {
         Header: "Request ID",
         accessor: "requestId",
-        Cell: (props) => {
+        Cell: ({ value }) => {
           return (
             <Text color="#6B46C1" fontWeight="bold">
-              {props.value}
+              {value}
             </Text>
           );
         },
@@ -121,7 +117,7 @@ const AutopayHistory = () => {
         Cell: ({
           cell: {
             row: {
-              original: { requestedBy, requestedName },
+              original: { requestedBy },
             },
           },
         }) => (
@@ -129,10 +125,9 @@ const AutopayHistory = () => {
             color="#000000"
             align="center"
             fontWeight="bold"
-          >{`${requestedName}(${requestedBy})`}</Text>
+          >{`${requestedBy}`}</Text>
         ),
       },
-
       {
         Header: "Payment Mode",
         accessor: "requestMode",
@@ -147,7 +142,7 @@ const AutopayHistory = () => {
             variant="outline"
             _hover={{ cursor: "initial" }}
             size="sm"
-            width="5rem"
+            width="7rem"
           >
             <Text casing="capitalize">{value}</Text>
           </Button>
@@ -155,11 +150,14 @@ const AutopayHistory = () => {
       },
       {
         Header: "Amount",
-        accessor: "requestedAmount",
+        accessor: "",
         Cell: ({
           cell: {
             row: {
-              original: { requestedAmount },
+              original: {
+                requestedAmount,
+                // autoPay: { transferableAmount },
+              },
             },
           },
         }) => (
@@ -177,54 +175,21 @@ const AutopayHistory = () => {
         Header: "Date",
         accessor: "requestDate",
         Cell: ({ value }) => {
-          let date = new Date(Number(value) * 1000)
-            .toLocaleString()
-            .replaceAll("/", "-")
-            .replaceAll(",", " ");
-          return <Text fontWeight="bold"> {date} </Text>;
-        },
-      },
-      {
-        Header: "Action",
-        accessor: "",
-        Cell: ({
-          cell: {
-            row: {
-              original: { requestedName, requestedBy: userId },
-            },
-          },
-        }) => {
-          return (
-            <Link
-              size="sm"
-              as={RouterLink}
-              style={{
-                backgroundColor: "red",
-                padding: "0.5rem",
-                color: "white",
-                borderRadius: "5px",
-              }}
-              to={{
-                pathname: `${url}/${userId}`,
-                state: { userId, requestedName },
-              }}
-            >
-              Process
-            </Link>
-          );
+          return <Text fontWeight="bold"> {value} </Text>;
         },
       },
     ],
     []
   );
 
-  const data = React.useMemo(() => allRequests, []);
+  const data = React.useMemo(() => autoPayHistory, []);
 
+  console.log("AUTOPAY HISTORY ", autoPayHistory);
   return (
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
-        Autopay Pending Requests
+        Autopay History
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
@@ -246,7 +211,7 @@ const AutopayHistory = () => {
             <CircularProgress isIndeterminate size="120px" color="red.300" />
           </Box>
         ) : (
-          <ReactTable columns={columns} data={allRequests} />
+          <ReactTable columns={columns} data={autoPayHistory} />
         )}
       </Box>
     </Box>
