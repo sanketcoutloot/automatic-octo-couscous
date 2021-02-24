@@ -3,7 +3,9 @@ import axios from "../../config/API";
 
 const initialState = {
   status: "idle",
-  isAuthenticated: true,
+  isAuthenticated: false,
+  sendOTPStatus: null,
+  verifyOTPStatus: null,
   error: null,
 };
 
@@ -30,6 +32,7 @@ export const verifyOTP = createAsyncThunk("login/verifyOTP", async (otp) => {
       otpToken: localStorage.getItem("otpToken"),
     }
   );
+
   return data;
 });
 
@@ -44,15 +47,16 @@ const authSlice = createSlice({
     [sendOTP.fulfilled]: (state, action) => {
       const { success, data } = action.payload;
       if (success === 1) {
-        state.status = "succeeded";
+        state.sendOTPStatus = "succeeded";
         state.allRequests = state.allRequests.concat(data);
       } else {
-        state.error = data;
+        state.sendOTPStatus = "failed";
+        state.error = action.payload.data;
       }
     },
     [sendOTP.rejected]: (state, action) => {
-      state.status = "failed";
-      state.error = action.payload.data;
+      state.sendOTPStatus = "failed";
+      state.error = action.payload;
     },
 
     //verify OTP
@@ -60,16 +64,19 @@ const authSlice = createSlice({
       state.status = "loading";
     },
     [verifyOTP.fulfilled]: (state, action) => {
-      const { success, data } = action.payload;
+      const { success, loggedInUser, token } = action.payload;
       if (success === 1) {
+        state.verifyOTPStatus = "succeed";
         state.isAuthenticated = true;
+        localStorage.setItem("token", token);
       } else {
-        state.error = data;
+        state.verifyOTPStatus = "failed";
+        state.error = action.payload;
       }
     },
     [verifyOTP.rejected]: (state, action) => {
-      state.status = "failed";
-      state.error = action.payload.data;
+      state.verifyOTPStatus = "failed";
+      state.error = action.payload;
     },
   },
 });

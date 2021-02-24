@@ -18,7 +18,6 @@ import {
 } from "./pages";
 
 import { Layout } from "./component/Layout.js";
-import { ProtectedRoute } from "./component/ProtectedRoute";
 import { useSelector } from "react-redux";
 
 const App = () => {
@@ -28,20 +27,16 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path="/">
-            {isAuthenticated ? <Redirect to="/allRequests" /> : <Login />}
+            <Login />
           </Route>
 
           <Route exact path="/moneylogs">
             <Layout children={<MoneyLogs />} />
           </Route>
 
-          {/* <Route exact path="/allrequests"> */}
-          {/* <Layout children={<AllRequests />} /> */}
-          <ProtectedRoute
-            component={AllRequests}
-            isAuthenticated={isAuthenticated}
-          />
-          {/* </Route> */}
+          <Route exact path="/allrequests">
+            <Layout children={<AllRequests />} />
+          </Route>
 
           <Route exact path="/allrequests/:userId">
             <Layout children={<UserProfileDetails />} />

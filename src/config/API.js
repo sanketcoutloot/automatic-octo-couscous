@@ -14,5 +14,8 @@ console.log({ baseURL });
 
 export default axios.create({
   baseURL,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+    token: localStorage.getItem("token"),
+  },
 });

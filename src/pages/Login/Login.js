@@ -9,6 +9,7 @@ import {
   PinInputField,
   Stack,
   Icon,
+  useToast,
   Button,
   VStack,
 } from "@chakra-ui/react";
@@ -33,9 +34,25 @@ const Login = () => {
   const [isHidden, setIsHidden] = useState(false);
 
   const dispatch = useDispatch();
+  const history = useHistory();
+  const toast = useToast();
 
   //state value from redux
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const sendOTPStatus = useSelector((state) => state.auth.sendOTPStatus);
+  const verifyOTPStatus = useSelector((state) => state.auth.verifyOTPStatus);
+
+  useEffect(() => {
+    if (sendOTPStatus === "failed" || verifyOTPStatus === "failed") {
+      toast({
+        title: "Please Try again",
+        status: "error",
+        position: "top-right",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [sendOTPStatus, verifyOTPStatus]);
 
   const sendOTP = (e) => {
     e.preventDefault();
@@ -53,7 +70,11 @@ const Login = () => {
       dispatch(verifyOTPThunk(OTP));
     }
   };
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      history.push("/allRequests");
+    }
+  }, [isAuthenticated]);
   return (
     <Box
       h="100vh"
