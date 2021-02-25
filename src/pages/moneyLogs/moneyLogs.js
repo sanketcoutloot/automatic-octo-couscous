@@ -88,7 +88,7 @@ const renderAmount = ({
     case "cashout":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#1FB241"
           casing="capitalize"
@@ -100,7 +100,7 @@ const renderAmount = ({
     case "credit":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#F4552F"
           casing="capitalize"
@@ -112,7 +112,7 @@ const renderAmount = ({
     case "referral":
       return (
         <Text
-          align="left"
+          align="center"
           fontWeight="bold"
           color="#1FB241"
           casing="capitalize"

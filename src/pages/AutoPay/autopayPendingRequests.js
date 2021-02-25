@@ -160,7 +160,7 @@ const AutopayQueue = () => {
         requestId,
         requestMode,
         requestData,
-        autoPay: { transferableAmount: amount },
+        transferableAmount: amount,
       } = autoPayRequestDetails;
 
       dispatch(transferMoney({ requestId, requestMode, requestData, amount }));
@@ -210,7 +210,7 @@ const AutopayQueue = () => {
         Cell: ({
           cell: {
             row: {
-              original: { autoPay:{transferableAmount} },
+              original: { transferableAmount },
             },
           },
         }) => (

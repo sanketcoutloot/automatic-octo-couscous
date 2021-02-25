@@ -214,10 +214,7 @@ const AutopayHistory = () => {
         Cell: ({
           cell: {
             row: {
-              original: {
-                requestedAmount,
-                // autoPay: { transferableAmount },
-              },
+              original: { transferableAmount },
             },
           },
         }) => (
@@ -227,7 +224,7 @@ const AutopayHistory = () => {
             color="#00000"
             casing="capitalize"
           >
-            {` \u20B9${requestedAmount}`}
+            {` \u20B9${transferableAmount}`}
           </Text>
         ),
       },
