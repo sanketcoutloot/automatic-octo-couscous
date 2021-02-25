@@ -28,6 +28,7 @@ export const fetchCashoutRequests = createAsyncThunk(
   async (userId) => {
     const { data } = await API.post(`cashout/getUserCashoutRequests`, {
       userId,
+      pageNo: 0,
     });
     return data;
   }

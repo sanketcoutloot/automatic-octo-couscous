@@ -34,10 +34,7 @@ const EditBankDetailsModal = ({
 
   const submitEditBankDetails = async (updatedBankDetails) => {
     try {
-      let { data } = await API.post(
-        `cahsout/editBankDetails`,
-        updatedBankDetails
-      );
+      let { data } = await API.post(`bank/editBankDetails`, updatedBankDetails);
       let { success, data: responseData } = data;
       if (success === 1) {
         if (!Array.isArray(responseData)) {
