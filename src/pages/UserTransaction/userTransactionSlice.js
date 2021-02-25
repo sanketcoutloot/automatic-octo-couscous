@@ -48,9 +48,7 @@ export const fetchMoneyLogs = createAsyncThunk(
 export const fetchBankAccounts = createAsyncThunk(
   "user/fetchBankAccounts",
   async (userId) => {
-    const { data } = await API.post(`cashout/getUserBankDetails`, {
-      userId,
-    });
+    const { data } = await API.get(`/bank/getUserBanks/${userId}`);
     return data;
   }
 );

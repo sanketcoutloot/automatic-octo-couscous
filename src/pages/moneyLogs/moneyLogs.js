@@ -134,6 +134,8 @@ const MoneyLogs = () => {
   const [isError, setIsError] = useState(false);
   const [moneyLogs, SetMoneyLogs] = useState([]);
   const [searchText, setSearchText] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
+
   const [shouldFetchMoneyLog, setShouldFetchMoneyLog] = useState(false);
   const [moneyLogDetails, setMoneyLogDetails] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -218,7 +220,7 @@ const MoneyLogs = () => {
       let { data } = await API.post(`moneyLog/getMoneyLogs`, {
         searchText: 213660,
         searchType: "USERID",
-        pageNo: 0,
+        pageNo: pageNumber,
       });
       let { success, data: responseData } = data;
       if (success === 1) {
