@@ -83,6 +83,81 @@ const renderPaymentMode = (props) => {
   }
 };
 
+const renderRequestStatus = ({ value }) => {
+  switch (value) {
+    case "COMPLETE":
+      return (
+        <Text
+          py={2}
+          borderRadius="5px"
+          px={4}
+          width="9rem"
+          align="center"
+          bg="#28A74526"
+          color="#28A745"
+          marginLeft="auto"
+          marginRight="auto"
+          textTransform="capitalize"
+        >
+          {value}
+        </Text>
+      );
+
+    case "PROCESSING":
+      return (
+        <Text
+          py={2}
+          px={4}
+          borderRadius="5px"
+          width="9rem"
+          color="#F8832D"
+          bg="#F8832D26"
+          align="center"
+          marginLeft="auto"
+          marginRight="auto"
+          textTransform="capitalize"
+        >
+          {value}
+        </Text>
+      );
+
+    case "FAILED":
+      return (
+        <Text
+          py={2}
+          px={3}
+          borderRadius="5px"
+          align="center"
+          width="9rem"
+          marginLeft="auto"
+          marginRight="auto"
+          bg="#F4171726"
+          color="#F41717"
+          textTransform="capitalize"
+        >
+          {value}
+        </Text>
+      );
+
+    default:
+      return (
+        <Text
+          py={2}
+          px={4}
+          borderRadius="5px"
+          border="1px green solid"
+          width="9rem"
+          align="center"
+          marginLeft="auto"
+          marginRight="auto"
+          textTransform="capitalize"
+        >
+          {value}
+        </Text>
+      );
+  }
+};
+
 const AutopayHistory = () => {
   const [pageNumber, changePageNumber] = useState(0);
 
@@ -113,11 +188,11 @@ const AutopayHistory = () => {
       },
       {
         Header: "Requested By",
-        accessor: "requestedBy",
+        accessor: (d) => `${d.requestedBy} ${d.requestedName}`,
         Cell: ({
           cell: {
             row: {
-              original: { requestedBy },
+              original: { requestedName, requestedBy },
             },
           },
         }) => (
@@ -125,7 +200,7 @@ const AutopayHistory = () => {
             color="#000000"
             align="center"
             fontWeight="bold"
-          >{`${requestedBy}`}</Text>
+          >{`${requestedName} (${requestedBy})`}</Text>
         ),
       },
       {
@@ -134,23 +209,8 @@ const AutopayHistory = () => {
         Cell: renderPaymentMode,
       },
       {
-        Header: "Status",
-        accessor: "requestStatus",
-        Cell: ({ value }) => (
-          <Button
-            colorScheme={value.toLowerCase() === "active" ? "green" : "orange"}
-            variant="outline"
-            _hover={{ cursor: "initial" }}
-            size="sm"
-            width="7rem"
-          >
-            <Text casing="capitalize">{value}</Text>
-          </Button>
-        ),
-      },
-      {
         Header: "Amount",
-        accessor: "",
+        accessor: "requestedAmount",
         Cell: ({
           cell: {
             row: {
@@ -172,11 +232,23 @@ const AutopayHistory = () => {
         ),
       },
       {
+        Header: "Approved By",
+        accessor: "",
+        Cell: () => {
+          return <Text fontWeight="bold"> N/A </Text>;
+        },
+      },
+      {
         Header: "Date",
         accessor: "requestDate",
         Cell: ({ value }) => {
           return <Text fontWeight="bold"> {value} </Text>;
         },
+      },
+      {
+        Header: "Status",
+        accessor: "requestStatus",
+        Cell: renderRequestStatus,
       },
     ],
     []
