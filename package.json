@@ -9,23 +9,28 @@
     "@emotion/styled": "^11.0.0",
     "@reduxjs/toolkit": "^1.5.0",
     "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
     "framer-motion": "^2.9.5",
     "react": "^16.12.0",
+    "react-app-rewire-uglifyjs": "^0.1.1",
     "react-dom": "^16.12.0",
     "react-hook-form": "^6.14.0",
     "react-icons": "^4.1.0",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "0.9.5",
     "react-table": "^7.6.2",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
-    "faker": "^5.1.0"
+    "faker": "^5.1.0",
+    "uglifyjs-webpack-plugin": "^1.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "PORT=20011 react-scripts start",
+    "build": "PORT=20011 react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "buildWithReWire": "react-app-rewired build"
   }
 }
