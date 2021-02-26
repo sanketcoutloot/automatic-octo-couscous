@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form/dist/index.ie11";
@@ -32,17 +33,33 @@ const EditBankDetailsModal = ({
     getValues,
   } = useForm();
 
+  const toast = useToast();
+
   const submitEditBankDetails = async (updatedBankDetails) => {
     try {
       let { data } = await API.post(`bank/editBankDetails`, updatedBankDetails);
-      let { success, data: responseData } = data;
+      let { success, data: responseData, errMessage } = data;
       if (success === 1) {
         if (!Array.isArray(responseData)) {
           responseData = new Array(responseData);
         }
+        toast({
+          title: "Successfully edited Bank Details.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
         console.log(" updateBankDetails", responseData[0]);
+        onClose();
         updateBankDetails(responseData[0]);
       } else {
+        toast({
+          title: "Failed to edit Bank Details.",
+          description: errMessage,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
         setIsError(true);
       }
     } catch (error) {

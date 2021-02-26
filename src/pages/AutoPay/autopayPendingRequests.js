@@ -206,21 +206,15 @@ const AutopayQueue = () => {
       },
       {
         Header: "Amount",
-        accessor: "requestedAmount",
-        Cell: ({
-          cell: {
-            row: {
-              original: { transferableAmount },
-            },
-          },
-        }) => (
+        accessor: "transferableAmount",
+        Cell: ({ value }) => (
           <Text
             align="center"
             fontWeight="bold"
             color="#00000"
             casing="capitalize"
           >
-            {` \u20B9${transferableAmount}`}
+            {` \u20B9${value}`}
           </Text>
         ),
       },

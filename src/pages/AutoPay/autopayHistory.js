@@ -164,7 +164,9 @@ const AutopayHistory = () => {
   const dispatch = useDispatch();
 
   const autoPayHistory = useSelector((state) => state.autoPay.autoPayHistory);
-  const allRequestStatus = useSelector((state) => state.allRequests.status);
+  const autoPayHistoryStatus = useSelector(
+    (state) => state.autoPay.autoPayHistoryStatus
+  );
 
   useEffect(() => {
     //dispatch all requests
@@ -250,14 +252,21 @@ const AutopayHistory = () => {
       },
       {
         Header: "Approved By",
-        accessor: "",
-        Cell: () => {
-          return <Text fontWeight="bold"> N/A </Text>;
+        accessor: "approvedBy",
+        Cell: ({ value }) => {
+          return <Text fontWeight="bold"> {value} </Text>;
+        },
+      },
+      {
+        Header: "Approved On",
+        accessor: "approvedOn",
+        Cell: ({ value }) => {
+          return <Text fontWeight="bold"> {value} </Text>;
         },
       },
       {
         Header: "Date",
-        accessor: "requestDate",
+        accessor: "Requested Date",
         Cell: ({ value }) => {
           return <Text fontWeight="bold"> {value} </Text>;
         },
@@ -273,12 +282,11 @@ const AutopayHistory = () => {
 
   const data = React.useMemo(() => autoPayHistory, []);
 
-  console.log("AUTOPAY HISTORY ", autoPayHistory);
   return (
     <Box>
       {" "}
       <Box as="h1" fontSize="30px">
-        Autopay History
+        Auto-Pay History
       </Box>
       <Breadcrumb fontWeight="medium" fontSize="sm">
         <BreadcrumbItem>
@@ -295,7 +303,7 @@ const AutopayHistory = () => {
         </BreadcrumbItem>
       </Breadcrumb>
       <Box h="85vh" display="grid" overflow="scroll">
-        {allRequestStatus === "loading" ? (
+        {autoPayHistoryStatus === "loading" ? (
           <Box style={{ placeSelf: "center" }} as="span">
             <CircularProgress isIndeterminate size="120px" color="red.300" />
           </Box>

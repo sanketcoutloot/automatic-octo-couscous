@@ -505,7 +505,7 @@ const userProfileDetails = () => {
             <Flex align="center">
               <Text mr={4}>Bank Details :</Text>
 
-              {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
+              {/* {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
                 <Box
                   as="span"
                   as="span"
@@ -558,7 +558,8 @@ const userProfileDetails = () => {
                 >
                   Failed
                 </Box>
-              )}
+              )} */}
+
               <Button
                 ml="auto"
                 onClick={onOpen}
@@ -644,7 +645,7 @@ const userProfileDetails = () => {
                     >
                       Manual Pay
                     </Button>
-                    <Button
+                    {/* <Button
                       leftIcon={<FaLandmark />}
                       size="lg"
                       bg="white"
@@ -665,7 +666,7 @@ const userProfileDetails = () => {
                       borderColor="blue.500"
                     >
                       Verify Account{" "}
-                    </Button>
+                    </Button> */}
                     <Button
                       leftIcon={<FaRedo />}
                       size="lg"
@@ -679,12 +680,12 @@ const userProfileDetails = () => {
                       }}
                       borderColor="gray.500"
                       onClick={() => addRequestToQueue()}
-                      isDisabled={
-                        currentCashoutRequest.bankVerificationStatus ===
-                        "VERIFIED"
-                          ? false
-                          : true
-                      }
+                      // isDisabled={
+                      //   currentCashoutRequest.bankVerificationStatus ===
+                      //   "VERIFIED"
+                      //     ? false
+                      //     : true
+                      // }
                     >
                       Auto Pay
                     </Button>
