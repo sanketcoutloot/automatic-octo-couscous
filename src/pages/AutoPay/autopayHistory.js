@@ -209,8 +209,28 @@ const AutopayHistory = () => {
         Cell: renderPaymentMode,
       },
       {
-        Header: "Amount",
+        Header: "Requested Amount",
         accessor: "requestedAmount",
+        Cell: ({
+          cell: {
+            row: {
+              original: { requestedAmount },
+            },
+          },
+        }) => (
+          <Text
+            align="center"
+            fontWeight="bold"
+            color="#00000"
+            casing="capitalize"
+          >
+            {` \u20B9${requestedAmount}`}
+          </Text>
+        ),
+      },
+      {
+        Header: "Transferable Amount",
+        accessor: "transferableAmount",
         Cell: ({
           cell: {
             row: {
