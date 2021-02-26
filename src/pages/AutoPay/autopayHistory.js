@@ -88,16 +88,17 @@ const renderRequestStatus = ({ value }) => {
     case "COMPLETE":
       return (
         <Text
-          py={2}
+          py={1}
           borderRadius="5px"
-          px={4}
-          width="9rem"
+          px={2}
+          width="7rem"
           align="center"
           bg="#28A74526"
           color="#28A745"
           marginLeft="auto"
           marginRight="auto"
           textTransform="capitalize"
+          fontSize="small"
         >
           {value}
         </Text>
@@ -106,16 +107,17 @@ const renderRequestStatus = ({ value }) => {
     case "PROCESSING":
       return (
         <Text
-          py={2}
-          px={4}
+          py={1}
+          px={2}
           borderRadius="5px"
-          width="9rem"
+          width="7rem"
           color="#F8832D"
           bg="#F8832D26"
           align="center"
           marginLeft="auto"
           marginRight="auto"
           textTransform="capitalize"
+          fontSize="small"
         >
           {value}
         </Text>
@@ -124,16 +126,17 @@ const renderRequestStatus = ({ value }) => {
     case "FAILED":
       return (
         <Text
-          py={2}
-          px={3}
+          py={1}
+          px={2}
           borderRadius="5px"
           align="center"
-          width="9rem"
+          width="7rem"
           marginLeft="auto"
           marginRight="auto"
           bg="#F4171726"
           color="#F41717"
           textTransform="capitalize"
+          fontSize="small"
         >
           {value}
         </Text>
@@ -142,15 +145,16 @@ const renderRequestStatus = ({ value }) => {
     default:
       return (
         <Text
-          py={2}
-          px={4}
+          py={1}
+          px={2}
           borderRadius="5px"
           border="1px green solid"
-          width="9rem"
+          width="7rem"
           align="center"
           marginLeft="auto"
           marginRight="auto"
           textTransform="capitalize"
+          fontSize="small"
         >
           {value}
         </Text>
@@ -264,13 +268,7 @@ const AutopayHistory = () => {
           return <Text fontWeight="bold"> {value} </Text>;
         },
       },
-      {
-        Header: "Date",
-        accessor: "Requested Date",
-        Cell: ({ value }) => {
-          return <Text fontWeight="bold"> {value} </Text>;
-        },
-      },
+
       {
         Header: "Status",
         accessor: "requestStatus",
