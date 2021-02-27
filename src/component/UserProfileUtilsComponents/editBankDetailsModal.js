@@ -68,6 +68,8 @@ const EditBankDetailsModal = ({
     }
   };
 
+  //find the
+
   const onSubmit = async () => {
     let data = getValues();
     let accountId = bankDetails.accountId;
@@ -129,7 +131,6 @@ const EditBankDetailsModal = ({
               <FormLabel htmlFor="accountType">Account Type</FormLabel>
               <Select
                 name="accountType"
-                placeholder="Account Type"
                 ref={register({
                   required: true,
                 })}
@@ -137,6 +138,7 @@ const EditBankDetailsModal = ({
                 <option value="Saving Account">Saving Account</option>
                 <option value="Current Account">Current Account</option>
                 <option value="UPI">UPI</option>
+                <option value="PAYTM">PAYTM</option>
               </Select>
 
               <FormErrorMessage>
