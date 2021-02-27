@@ -21,6 +21,9 @@ const initialState = {
   bankVerificationRequest: {},
   bankVerificationStatus: "idle",
   bankVerificationError: null,
+
+  markCashoutRequestCompleteStatus: "idle",
+  markCashoutRequestCompleteError: null,
 };
 
 export const fetchCashoutRequests = createAsyncThunk(
@@ -92,6 +95,8 @@ const userTransactionsSlice = createSlice({
       state.moneyLogs = [];
       state.bankAccounts = [];
       state.currentCashoutRequest = [];
+      state.markCashoutRequestCompleteStatus = "idle";
+      state.markCashoutRequestCompleteError = null;
     },
 
     setStatusToIdle: (state, action) => {
@@ -190,16 +195,17 @@ const userTransactionsSlice = createSlice({
       state.status = "loading";
     },
     [markCashoutRequestComplete.fulfilled]: (state, action) => {
-      const { success, data } = action.payload;
+      const { success, data, errMessage } = action.payload;
       if (success === 1) {
-        state.status = "succeeded";
+        state.markCashoutRequestCompleteStatus = "succeeded";
       } else {
-        state.error = data;
+        state.markCashoutRequestCompleteStatus = "failed";
+        state.markCashoutRequestCompleteError = errMessage;
       }
     },
     [markCashoutRequestComplete.rejected]: (state, action) => {
-      state.status = "failed";
-      state.error = action.payload.data;
+      state.markCashoutRequestCompleteStatus = "failed";
+      state.markCashoutRequestCompleteError = action.payload.data;
     },
 
     //Bank verification

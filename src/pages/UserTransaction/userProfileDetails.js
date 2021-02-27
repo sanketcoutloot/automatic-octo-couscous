@@ -109,6 +109,14 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.currentCashoutRequest
   );
 
+  const markCashoutRequestCompleteStatus = useSelector(
+    (state) => state.userTransactions.markCashoutRequestCompleteStatus
+  );
+
+  const markCashoutRequestCompleteError = useSelector(
+    (state) => state.userTransactions.markCashoutRequestCompleteError
+  );
+
   //show error
 
   useEffect(() => {
@@ -185,6 +193,28 @@ const userProfileDetails = () => {
     }
   }, [userCashoutRequests]);
 
+  useEffect(() => {
+    if (markCashoutRequestCompleteStatus === "failed") {
+      toast({
+        title: "Error: unable to process the request",
+        description: markCashoutRequestCompleteError,
+        status: "error",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (markCashoutRequestCompleteStatus === "succeeded") {
+      toast({
+        title: "Request completed.",
+        description: markCashoutRequestCompleteError,
+        status: "success",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [markCashoutRequestCompleteStatus]);
+
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
     setBankToTransfer(bankDetails);
     if (isOpenValue === true) {
@@ -242,24 +272,6 @@ const userProfileDetails = () => {
         requestedBy,
         requestMode,
         transferableAmt: parseInt(transferableFromInput),
-      })
-    );
-  };
-
-  const verifyAccount = () => {
-    const {
-      requestData: {
-        accountNumber: beneficiaryAccount,
-        ifscCode: beneficiaryIFSC,
-      },
-      requestId,
-    } = currentCashoutRequest;
-    dispatch(
-      verifyBankDetails({
-        beneficiaryAccount,
-        beneficiaryIFSC,
-        requestId,
-        accountId: "1er18s8ai",
       })
     );
   };
@@ -636,6 +648,11 @@ const userProfileDetails = () => {
                       width="200px"
                       border="2px"
                       bg="#28A745"
+                      isDisabled={
+                        markCashoutRequestCompleteStatus === "succeeded"
+                          ? true
+                          : false
+                      }
                       color="white"
                       fontWeight="700"
                       _hover={{
@@ -645,28 +662,6 @@ const userProfileDetails = () => {
                     >
                       Manual Pay
                     </Button>
-                    {/* <Button
-                      leftIcon={<FaLandmark />}
-                      size="lg"
-                      bg="white"
-                      color="blue.500"
-                      height="48px"
-                      width="200px"
-                      border="2px"
-                      isDisabled={
-                        currentCashoutRequest.bankVerificationStatus ===
-                        "NOT_VERIFIED"
-                          ? false
-                          : true
-                      }
-                      _hover={{
-                        transform: "scale(1.20)",
-                      }}
-                      onClick={verifyAccount}
-                      borderColor="blue.500"
-                    >
-                      Verify Account{" "}
-                    </Button> */}
                     <Button
                       leftIcon={<FaRedo />}
                       size="lg"
@@ -678,14 +673,13 @@ const userProfileDetails = () => {
                       _hover={{
                         transform: "scale(1.20)",
                       }}
+                      isDisabled={
+                        markCashoutRequestCompleteStatus === "succeeded"
+                          ? true
+                          : false
+                      }
                       borderColor="gray.500"
                       onClick={() => addRequestToQueue()}
-                      // isDisabled={
-                      //   currentCashoutRequest.bankVerificationStatus ===
-                      //   "VERIFIED"
-                      //     ? false
-                      //     : true
-                      // }
                     >
                       Auto Pay
                     </Button>
