@@ -7,6 +7,7 @@ import {
   Text,
   Icon,
   useDisclosure,
+  CircularProgress,
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
@@ -23,6 +24,9 @@ import API from "../../config/API";
 import { isEmptyObject } from "../../utils";
 import { icons } from "react-icons/lib";
 
+import { useDispatch, useSelector } from "react-redux";
+import { moneyLogs as fetchMoneyLogs } from "./MoneyLogsSlice";
+//utility functions
 const renderWalletType = (props) => {
   let lowerCaseValue = props.value.toLowerCase().trim();
 
@@ -132,7 +136,6 @@ const renderAmount = ({
 
 const MoneyLogs = () => {
   const [isError, setIsError] = useState(false);
-  const [moneyLogs, SetMoneyLogs] = useState([]);
   const [searchText, setSearchText] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -140,13 +143,21 @@ const MoneyLogs = () => {
   const [moneyLogDetails, setMoneyLogDetails] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const dispatch = useDispatch();
+
+  const moneyLogs = useSelector((state) => state.moneyLogs.moneyLogs);
+  const moneyLogsStatus = useSelector(
+    (state) => state.moneyLogs.moneyLogsStatus
+  );
   useEffect(() => {
-    // todo : comment the below line
-    getMoneyLogs();
-    if (shouldFetchMoneyLog) {
-      getMoneyLogs();
-    }
-  }, [shouldFetchMoneyLog]);
+    dispatch(
+      fetchMoneyLogs({
+        searchText: 213660,
+        searchType: "USERID",
+        pageNo: pageNumber,
+      })
+    );
+  }, []);
 
   useEffect(() => {
     if (isEmptyObject(moneyLogDetails) === false) {
@@ -215,33 +226,8 @@ const MoneyLogs = () => {
     },
   ];
 
-  async function getMoneyLogs() {
-    try {
-      let { data } = await API.post(`moneyLog/getMoneyLogs`, {
-        searchText: 213660,
-        searchType: "USERID",
-        pageNo: pageNumber,
-      });
-      let { success, data: responseData } = data;
-      if (success === 1) {
-        if (!Array.isArray(responseData)) {
-          responseData = new Array(responseData);
-        }
-        SetMoneyLogs(responseData);
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
-  }
-
   return (
     <Box>
-      {console.log("isOpen", isOpen)}
-      {console.log("logDetails", moneyLogDetails)}
-
       <Box as="h1" fontSize="30px">
         Money Logs
       </Box>
@@ -263,12 +249,18 @@ const MoneyLogs = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      <ReactTable
-        setSearchText={setSearchText}
-        setShouldFetchMoneyLog={setShouldFetchMoneyLog}
-        columns={columns}
-        data={moneyLogs}
-      />
+      {moneyLogsStatus === "loading" ? (
+        <Box style={{ placeSelf: "center" }} as="span">
+          <CircularProgress isIndeterminate size="120px" color="red.300" />
+        </Box>
+      ) : (
+        <ReactTable
+          setSearchText={setSearchText}
+          setShouldFetchMoneyLog={setShouldFetchMoneyLog}
+          columns={columns}
+          data={moneyLogs}
+        />
+      )}
       {isOpen && (
         <MoneyLogDetailsModals
           isOpen={isOpen}

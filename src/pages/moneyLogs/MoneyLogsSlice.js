@@ -1,19 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../../config/API";
+import API from "../../config/API";
 
 const initialState = {
   moneyLogsStatus: "idle",
-  moneyLogs: null,
-  error: null,
+  moneyLogs: [],
+  moneyLogsError: null,
 };
 
 export const moneyLogs = createAsyncThunk(
   "moneyLogs/getMoneyLogs",
-  async (searchText, pageNo = 0) => {
-    let { data } = await API.post(`moneyLog/getMoneyLogs/${pageNo}`, {
-      searchText,
-      searchType: "USERID",
-    });
+  async (body) => {
+    let { data } = await API.post(`moneyLog/getMoneyLogs`, body);
     return data;
   }
 );
@@ -24,21 +21,21 @@ const moneyLogsSlice = createSlice({
   reducers: {},
   extraReducers: {
     [moneyLogs.pending]: (state, action) => {
-      state.status = "loading";
+      state.moneyLogsStatus = "loading";
     },
     [moneyLogs.fulfilled]: (state, action) => {
-      const { success, data } = action.payload;
+      const { success, data, errMessage } = action.payload;
       if (success === 1) {
         state.moneyLogsStatus = "succeeded";
-        state.moneyLogs = state.allRequests.concat(data);
+        state.moneyLogs = state.moneyLogs.concat(data);
       } else {
         state.moneyLogsStatus = "failed";
-        state.error = action.payload.data;
+        state.error = errMessage;
       }
     },
     [moneyLogs.rejected]: (state, action) => {
       state.moneyLogsStatus = "failed";
-      state.error = action.payload;
+      state.moneyLogsError = action.payload.errMessage;
     },
   },
 });
