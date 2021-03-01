@@ -96,7 +96,6 @@ const AllRequests = () => {
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
-    //dispatch all requests
     if (allRequests.length === 0) {
       dispatch(fetchAllRequests(0));
     }
@@ -177,7 +176,6 @@ const AllRequests = () => {
         Header: "Date",
         accessor: "requestDate",
         Cell: ({ value }) => {
-         
           return <Text fontWeight="bold"> {value} </Text>;
         },
       },

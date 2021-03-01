@@ -162,8 +162,8 @@ const autoPaySlice = createSlice({
     [verifyOTP.fulfilled]: (state, action) => {
       const { success, otpToken } = action.payload;
       if (success === 1) {
-        state.verifyOTPStatus = "succeeded";
         localStorage.setItem("otpToken", otpToken);
+        state.verifyOTPStatus = "succeeded";
       } else {
         state.verifyOTPStatus = "failed";
         state.error = action.payload;

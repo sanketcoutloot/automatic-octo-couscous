@@ -249,18 +249,21 @@ const MoneyLogs = () => {
           </BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      {moneyLogsStatus === "loading" ? (
-        <Box style={{ placeSelf: "center" }} as="span">
-          <CircularProgress isIndeterminate size="120px" color="red.300" />
-        </Box>
-      ) : (
-        <ReactTable
-          setSearchText={setSearchText}
-          setShouldFetchMoneyLog={setShouldFetchMoneyLog}
-          columns={columns}
-          data={moneyLogs}
-        />
-      )}
+
+      <Box display="grid" height="100vh">
+        {moneyLogsStatus === "loading" ? (
+          <Box style={{ placeSelf: "center" }} as="span">
+            <CircularProgress isIndeterminate size="120px" color="red.300" />
+          </Box>
+        ) : (
+          <ReactTable
+            setSearchText={setSearchText}
+            setShouldFetchMoneyLog={setShouldFetchMoneyLog}
+            columns={columns}
+            data={moneyLogs}
+          />
+        )}
+      </Box>
       {isOpen && (
         <MoneyLogDetailsModals
           isOpen={isOpen}
