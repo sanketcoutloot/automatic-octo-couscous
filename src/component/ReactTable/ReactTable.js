@@ -120,6 +120,8 @@ function ReactTable({
   data,
   setSearchText = undefined,
   setShouldFetchMoneyLog = undefined,
+  fetchData,
+  pageCount: controlledPageCount,
 }) {
   const {
     getTableProps,
@@ -134,17 +136,19 @@ function ReactTable({
     page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
     pageCount,
-    gotoPage,
     nextPage,
     previousPage,
     setPageSize,
+    // Get the state from the instance
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, pageSize: 50 },
+      manualPagination: true,
+      pageCount: controlledPageCount,
     },
     useFilters, // useFilters!
     useGlobalFilter,
@@ -152,14 +156,11 @@ function ReactTable({
     usePagination
   );
 
-  let { pageIndex, pageSize } = state;
-
   useEffect(() => {
-    setPageSize(50);
-    setTableData(data);
-  }, [pageSize, tableDate]);
+    console.log("STATE", { fetchData, pageIndex, pageSize });
+    fetchData(pageIndex);
+  }, [fetchData, pageIndex]);
 
-  const [tableDate, setTableData] = useState([]);
   return (
     <Box>
       {console.log("rendering react datatable")}
@@ -224,7 +225,7 @@ function ReactTable({
               ))}
             </TableHeader>
           ))}
-        </thead>{" "}
+        </thead>
         <TableBody {...getTableBodyProps()}>
           {page.map((row, i) => {
             prepareRow(row);
@@ -240,38 +241,13 @@ function ReactTable({
           })}
         </TableBody>
       </Table>
-      <div className="pagination">
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {`Previous Page         `}
-        </button>{" "}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
+      <div>
+        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {`Previous Page `}
+        </Button>
+        <Button onClick={() => nextPage()} disabled={!canNextPage}>
           {`Next page   `}
-        </button>{" "}
-        <span>
-          | Go to page:{" "}
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
-            }}
-            style={{ width: "100px" }}
-          />
-        </span>{" "}
-        {/* the following code is to give users a option to change bunmber of rows iinthe table   */}
-        {/* <select
-          value={pageSize}
-          onChange={(e) => {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          (Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>*/}
+        </Button>
       </div>
     </Box>
   );

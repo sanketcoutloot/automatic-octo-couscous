@@ -26,8 +26,10 @@ const allRequestsSlice = createSlice({
     [fetchAllRequests.fulfilled]: (state, action) => {
       const { success, data } = action.payload;
       if (success === 1) {
-        state.status = "succeeded";
         state.allRequests = state.allRequests.concat(data);
+        state.allRequests = data;
+
+        state.status = "succeeded";
       } else {
         state.error = data;
       }

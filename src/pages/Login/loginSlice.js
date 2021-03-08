@@ -66,9 +66,9 @@ const authSlice = createSlice({
     [verifyOTP.fulfilled]: (state, action) => {
       const { success, loggedInUser, token } = action.payload;
       if (success === 1) {
-        state.verifyOTPStatus = "succeed";
-        state.isAuthenticated = true;
         localStorage.setItem("token", token);
+        state.isAuthenticated = true;
+        state.verifyOTPStatus = "succeed";
       } else {
         state.verifyOTPStatus = "failed";
         state.error = action.payload;
