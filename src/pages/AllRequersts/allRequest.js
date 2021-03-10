@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@chakra-ui/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BANK from "../../asset/bank.svg";
 import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
@@ -84,22 +84,19 @@ const renderPaymentMode = (props) => {
 };
 
 const AllRequests = () => {
-  // const [allRequests, SetAllRequests] = useState([]);
-  const [pageNumber, changePageNumber] = useState(0);
-  const [isError, setIsError] = useState(false);
+  const [pageCount, setPageCount] = useState(1000);
 
   let { path, url } = useRouteMatch();
 
   const dispatch = useDispatch();
 
   const allRequests = useSelector((state) => state.allRequests.allRequests);
+
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
-    if (allRequests.length === 0) {
-      dispatch(fetchAllRequests(0));
-    }
-  }, [allRequests]);
+    dispatch(fetchAllRequests(0));
+  }, []);
 
   const columns = React.useMemo(
     () => [
@@ -131,7 +128,6 @@ const AllRequests = () => {
           >{`${requestedName}(${requestedBy})`}</Text>
         ),
       },
-
       {
         Header: "Payment Mode",
         accessor: "requestMode",
@@ -213,11 +209,10 @@ const AllRequests = () => {
     []
   );
 
-  const data = React.useMemo(() => allRequests, []);
+  const data = React.useMemo(() => allRequests, [allRequests]);
 
   return (
     <Box>
-      {" "}
       <Box as="h1" fontSize="30px">
         All Requests
       </Box>
@@ -241,7 +236,12 @@ const AllRequests = () => {
             <CircularProgress isIndeterminate size="120px" color="red.300" />
           </Box>
         ) : (
-          <ReactTable columns={columns} data={allRequests} />
+          <ReactTable
+            columns={columns}
+            data={data}
+            // fetchData={getAllRequest}
+            pageCount={pageCount}
+          />
         )}
       </Box>
     </Box>
