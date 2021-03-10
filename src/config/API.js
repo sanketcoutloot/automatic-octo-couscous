@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseURL = "";
+let baseURL = null;
 
 if (process.env.NODE_ENV === "development") {
   baseURL = process.env.REACT_APP_DEV_BASE_URL;

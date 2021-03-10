@@ -72,9 +72,8 @@ function GlobalFilter({
   const [value, setValue] = React.useState(globalFilter);
 
   const onChange = (value) => {
-    //money log search function
+    // money log search function
     // setSearchText(value);
-
     setGlobalFilter(value || undefined);
   };
 
@@ -127,7 +126,6 @@ function ReactTable({
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
     state,
     visibleColumns,
@@ -139,8 +137,6 @@ function ReactTable({
     pageCount,
     nextPage,
     previousPage,
-    setPageSize,
-    // Get the state from the instance
     state: { pageIndex, pageSize },
   } = useTable(
     {
@@ -157,15 +153,30 @@ function ReactTable({
   );
 
   useEffect(() => {
-    console.log("STATE", { fetchData, pageIndex, pageSize });
     fetchData(pageIndex);
-  }, [fetchData, pageIndex]);
+  }, [pageIndex, fetchData, pageSize]);
 
   return (
     <Box>
       {console.log("rendering react datatable")}
       {console.log({ data })}
       {/* {console.log({})} */}
+
+      <pre>
+        <code>
+          {JSON.stringify(
+            {
+              pageIndex,
+              pageSize,
+              pageCount,
+              canNextPage,
+              canPreviousPage,
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre>
 
       <Table {...getTableProps()}>
         <thead>
@@ -201,25 +212,6 @@ function ReactTable({
                         ? " 🔽"
                         : " 🔼"
                       : null}
-                    {/* //todo : renderinf icon */}
-                    {/* todo : render only for default and not for others  */}
-                    {/* {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <Icon size="lg">
-                          {" "}
-                          <FaSortAmountUpAlt />{" "}
-                        </Icon>
-                      ) : (
-                        <Icon size="lg">
-                          {" "}
-                          <FaSortAmountDownAlt />{" "}
-                        </Icon>
-                      )
-                    ) : (
-                      <Icon size="lg">
-                        <FaSort />
-                      </Icon>
-                    )} */}
                   </span>
                 </th>
               ))}
@@ -243,10 +235,11 @@ function ReactTable({
       </Table>
       <div>
         <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {`Previous Page `}
+          {"<"}
         </Button>
+
         <Button onClick={() => nextPage()} disabled={!canNextPage}>
-          {`Next page   `}
+          {">"}
         </Button>
       </div>
     </Box>

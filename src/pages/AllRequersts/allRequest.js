@@ -25,7 +25,6 @@ import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
 
 import { fetchAllRequests } from "./allRequestSlice";
-import API from "../../config/API";
 
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
@@ -97,7 +96,9 @@ const AllRequests = () => {
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   const getAllRequest = useCallback((pageIndex) => {
+    console.log("Async Data CALLED", pageIndex);
     dispatch(fetchAllRequests(pageIndex));
+    setPageCount(pageCount + 1);
   }, []);
 
   const columns = React.useMemo(
