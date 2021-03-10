@@ -42,27 +42,19 @@ export const fetchAllQueuedRequests = createAsyncThunk(
 
 export const sendOtpToSignedInUser = createAsyncThunk(
   "autoPay/sendOtpToSignedInUser",
-  async () => {
-    let { data } = await axios.post(
-      `https://internal-auth.coutloot.com/auth/sendOTP`,
-      {
-        email: "sanket@coutloot.com",
-        mobile: 9405945413,
-      }
-    );
+  async (body) => {
+    console.log("BODY", body);
+    let { data } = await API.post(`/paytm/moneyInitiate`, body);
     return data;
   }
 );
 
 export const verifyOTP = createAsyncThunk("autoPay/verifyOTP", async (otp) => {
-  let { data } = await axios.post(
-    "https://internal-auth.coutloot.com/auth/login",
-    {
-      otp: parseInt(otp),
-      mobile: "9405945413", //will be taken from local storage
-      otpToken: localStorage.getItem("otpToken"),
-    }
-  );
+  let { data } = await axios.post("/paytm/approveTransfer", {
+    otp: parseInt(otp),
+    requestId: localStorage.getItem("requestId"),
+    authToken: localStorage.getItem("otpToken"),
+  });
   return data;
 });
 
@@ -141,10 +133,11 @@ const autoPaySlice = createSlice({
       state.sendOtpToSignedInUserStatus = "loading";
     },
     [sendOtpToSignedInUser.fulfilled]: (state, action) => {
-      const { success, otpToken } = action.payload;
+      const { success, data } = action.payload;
       if (success === 1) {
+        localStorage.setItem("requestId", data.requestId);
+        localStorage.setItem("authToken", data.authToken);
         state.sendOtpToSignedInUserStatus = "succeeded";
-        localStorage.setItem("otpToken", otpToken);
       } else {
         state.sendOtpToSignedInUserStatus = "failed";
         state.error = action.payload;

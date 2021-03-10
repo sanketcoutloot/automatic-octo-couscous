@@ -143,8 +143,24 @@ const AutopayQueue = () => {
 
   //@desc send otp to signed in user
   useEffect(() => {
+    let payload = {};
+    if (!isEmptyObject(autoPayRequestDetails)) {
+      const {
+        requestId,
+        requestMode,
+        requestData,
+        transferableAmount,
+        requestedBy,
+      } = autoPayRequestDetails;
+
+      payload.requestId = requestId;
+      payload.userId = requestedBy;
+      payload.amount = transferableAmount;
+      payload.requestMode = requestMode;
+      payload.requestData = requestData;
+    }
     if (!isEmptyObject(autoPayRequestDetails) && isOpen === true) {
-      dispatch(sendOtpToSignedInUser());
+      dispatch(sendOtpToSignedInUser(payload));
     }
   }, [autoPayRequestDetails, isOpen]);
 

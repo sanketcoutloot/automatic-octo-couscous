@@ -45,7 +45,7 @@ import {
   fetchCurrentCashoutRequest,
   markCashoutRequestComplete,
   clearCurrentCashoutRequest,
-  setStatusToIdle,
+  cleanUpAction,
   verifyBankDetails,
 } from "./userTransactionSlice";
 import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
@@ -75,6 +75,10 @@ const userProfileDetails = () => {
 
   const moneyLogsStatus = useSelector(
     (state) => state.userTransactions.moneyLogsStatus
+  );
+
+  const addRequestToAutoPayQueueStatus = useSelector(
+    (state) => state.autoPay.addRequestToAutoPayQueueStatus
   );
 
   const bankAccountsStatus = useSelector(
@@ -143,10 +147,6 @@ const userProfileDetails = () => {
         isClosable: true,
       });
     }
-
-    return () => {
-      setStatusToIdle("cashoutRequestsStatus");
-    };
   }, [cashoutRequestsStatus]);
 
   useEffect(() => {
@@ -160,10 +160,6 @@ const userProfileDetails = () => {
         isClosable: true,
       });
     }
-
-    return () => {
-      setStatusToIdle();
-    };
   }, [moneyLogsStatus]);
 
   useEffect(() => {
@@ -177,10 +173,6 @@ const userProfileDetails = () => {
         isClosable: true,
       });
     }
-
-    return () => {
-      setStatusToIdle();
-    };
   }, [bankAccountsStatus]);
 
   useEffect(() => {
@@ -215,6 +207,28 @@ const userProfileDetails = () => {
     }
   }, [markCashoutRequestCompleteStatus]);
 
+  useEffect(() => {
+    if (addRequestToAutoPayQueueStatus === "failed") {
+      toast({
+        title: "Error: unable to process the request",
+        description: markCashoutRequestCompleteError,
+        status: "error",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else if (addRequestToAutoPayQueueStatus === "succeeded") {
+      toast({
+        title: "Request Added to AutoPay Queue.",
+        description: markCashoutRequestCompleteError,
+        status: "success",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [addRequestToAutoPayQueueStatus]);
+
   const openEditBankDetailsModal = (isOpenValue, bankDetails) => {
     setBankToTransfer(bankDetails);
     if (isOpenValue === true) {
@@ -238,7 +252,8 @@ const userProfileDetails = () => {
 
   useEffect(() => {
     return () => {
-      clearCurrentUserTransactionDetails();
+      console.log("Clean Up Details ");
+      cleanUpAction();
     };
   }, []);
 
@@ -403,43 +418,46 @@ const userProfileDetails = () => {
           <CircularProgress isIndeterminate size="120px" color="red.500" />
         </Center>
       )}
-      {currentCashoutStatus === "succeeded" && (
-        <Flex height="23vh" w="100%">
-          <Box
-            height="100%"
-            margin="0.5rem 0.5rem 0rem 0rem"
-            width="50%"
-            bgColor="white"
-            color="#6C757D"
-            p={2}
-          >
-            <Flex height="32px" justify="space-between" align="center">
-              <Text>User Details :</Text>
-            </Flex>
-            <Grid
-              h="100%"
-              templateRows="repeat(5, 1fr)"
-              templateColumns="repeat(6, 1fr)"
-              gap={1}
-              alignItems="center"
+      {currentCashoutStatus === "succeeded" &&
+        addRequestToAutoPayQueueStatus === "idle" && (
+          <Flex height="23vh" w="100%">
+            <Box
+              height="100%"
+              margin="0.5rem 0.5rem 0rem 0rem"
+              width="50%"
+              bgColor="white"
+              color="#6C757D"
+              p={2}
             >
-              <GridItem gridRow="1/2" gridColumn="1/4">
-                <Flex>
-                  <Text>Request Id :</Text>
-                  <Text color="#000000">{currentCashoutRequest.requestId}</Text>
-                </Flex>
-              </GridItem>
+              <Flex height="32px" justify="space-between" align="center">
+                <Text>User Details :</Text>
+              </Flex>
+              <Grid
+                h="100%"
+                templateRows="repeat(5, 1fr)"
+                templateColumns="repeat(6, 1fr)"
+                gap={1}
+                alignItems="center"
+              >
+                <GridItem gridRow="1/2" gridColumn="1/4">
+                  <Flex>
+                    <Text>Request Id :</Text>
+                    <Text color="#000000">
+                      {currentCashoutRequest.requestId}
+                    </Text>
+                  </Flex>
+                </GridItem>
 
-              <GridItem gridRow="1/2" gridColumn="4/7">
-                <Flex>
-                  <Text width="160px" noOfLines={1}>
-                    Transferable Amt :
-                  </Text>
+                <GridItem gridRow="1/2" gridColumn="4/7">
+                  <Flex>
+                    <Text width="160px" noOfLines={1}>
+                      Transferable Amt :
+                    </Text>
 
-                  <InputGroup width="50%">
-                    <InputLeftAddon children={` \u20B9 `} />
+                    <InputGroup width="50%">
+                      <InputLeftAddon children={` \u20B9 `} />
 
-                    {/* <Input
+                      {/* <Input
                       rounded="md"
                       border="2px solid #CCC7C7"
                       color="#177CE6"
@@ -451,73 +469,73 @@ const userProfileDetails = () => {
                         setTransferableFromInput(event.target.value)
                       }
                     /> */}
-                    <NumberInput
-                      max={`${currentCashoutRequest.transferableAmt}`}
-                      value={`${transferableFromInput}`}
-                      inputMode="numeric"
-                      max={`${currentCashoutRequest.transferableAmt}`}
-                      min={`0`}
-                      onChange={(value) => setTransferableFromInput(value)}
+                      <NumberInput
+                        max={`${currentCashoutRequest.transferableAmt}`}
+                        value={`${transferableFromInput}`}
+                        inputMode="numeric"
+                        max={`${currentCashoutRequest.transferableAmt}`}
+                        min={`0`}
+                        onChange={(value) => setTransferableFromInput(value)}
+                      >
+                        <NumberInputField />
+                      </NumberInput>
+                    </InputGroup>
+                  </Flex>
+                </GridItem>
+
+                <GridItem gridRow="2/3" gridColumn="1/4">
+                  <Flex>
+                    <Text>Cashout Bal :</Text>
+                    <Text color="#000000">{` \u20B9 ${currentCashoutRequest.cashoutBal}`}</Text>
+                  </Flex>
+                </GridItem>
+
+                <GridItem gridRow="2/3" gridColumn="4/7">
+                  <Flex>
+                    <Text>Requested Mode :</Text>
+
+                    <Image src={BANK} width="70px" objectFit="contain" />
+                  </Flex>
+                </GridItem>
+
+                <GridItem gridRow="3/4" gridColumn="1/-1">
+                  <Flex>
+                    <Text>Requested Date :</Text>
+
+                    <Text color="#000000">
+                      {currentCashoutRequest.requestDate}
+                    </Text>
+                  </Flex>
+                </GridItem>
+
+                <GridItem gridRow="4/5" gridColumn="1/-1">
+                  <Flex>
+                    <Text>Locked In Amt :</Text>
+
+                    <Text
+                      rounded="md"
+                      border="2px solid #CCC7C7"
+                      color="#177CE6"
+                      padding="0.1rem"
                     >
-                      <NumberInputField />
-                    </NumberInput>
-                  </InputGroup>
-                </Flex>
-              </GridItem>
+                      {` \u20B9 N/A`}
+                    </Text>
+                  </Flex>
+                </GridItem>
+              </Grid>
+            </Box>
+            <Box
+              height="100%"
+              margin="0.5rem 0.5rem 0rem 0rem"
+              width="50%"
+              bgColor="white"
+              color="#6C757D"
+              p={2}
+            >
+              <Flex align="center">
+                <Text mr={4}>Bank Details :</Text>
 
-              <GridItem gridRow="2/3" gridColumn="1/4">
-                <Flex>
-                  <Text>Cashout Bal :</Text>
-                  <Text color="#000000">{` \u20B9 ${currentCashoutRequest.cashoutBal}`}</Text>
-                </Flex>
-              </GridItem>
-
-              <GridItem gridRow="2/3" gridColumn="4/7">
-                <Flex>
-                  <Text>Requested Mode :</Text>
-
-                  <Image src={BANK} width="70px" objectFit="contain" />
-                </Flex>
-              </GridItem>
-
-              <GridItem gridRow="3/4" gridColumn="1/-1">
-                <Flex>
-                  <Text>Requested Date :</Text>
-
-                  <Text color="#000000">
-                    {currentCashoutRequest.requestDate}
-                  </Text>
-                </Flex>
-              </GridItem>
-
-              <GridItem gridRow="4/5" gridColumn="1/-1">
-                <Flex>
-                  <Text>Locked In Amt :</Text>
-
-                  <Text
-                    rounded="md"
-                    border="2px solid #CCC7C7"
-                    color="#177CE6"
-                    padding="0.1rem"
-                  >
-                    {` \u20B9 N/A`}
-                  </Text>
-                </Flex>
-              </GridItem>
-            </Grid>
-          </Box>
-          <Box
-            height="100%"
-            margin="0.5rem 0.5rem 0rem 0rem"
-            width="50%"
-            bgColor="white"
-            color="#6C757D"
-            p={2}
-          >
-            <Flex align="center">
-              <Text mr={4}>Bank Details :</Text>
-
-              {/* {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
+                {/* {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
                 <Box
                   as="span"
                   as="span"
@@ -572,124 +590,124 @@ const userProfileDetails = () => {
                 </Box>
               )} */}
 
-              <Button
-                ml="auto"
-                onClick={onOpen}
-                colorScheme="blue"
-                leftIcon={<FaPen />}
-                variant="outline"
-                borderRadius="2rem"
-                size="sm"
-              >
-                Edit
-              </Button>
-            </Flex>
-            {currentCashoutRequest.requestData && (
-              <Grid
-                h="100%"
-                templateRows="repeat(5, 1fr)"
-                templateColumns="repeat(6, 1fr)"
-                gap={1}
-                alignItems="center"
-              >
-                <GridItem gridRow="1/2" gridColumn="1/-1">
-                  <Flex>
-                    <Text>Acc. Holder Name :</Text>
-                    <Text color="#000000">
-                      {currentCashoutRequest.requestData.accountHolderName}{" "}
-                    </Text>
-                  </Flex>
-                </GridItem>
+                <Button
+                  ml="auto"
+                  onClick={onOpen}
+                  colorScheme="blue"
+                  leftIcon={<FaPen />}
+                  variant="outline"
+                  borderRadius="2rem"
+                  size="sm"
+                >
+                  Edit
+                </Button>
+              </Flex>
+              {currentCashoutRequest.requestData && (
+                <Grid
+                  h="100%"
+                  templateRows="repeat(5, 1fr)"
+                  templateColumns="repeat(6, 1fr)"
+                  gap={1}
+                  alignItems="center"
+                >
+                  <GridItem gridRow="1/2" gridColumn="1/-1">
+                    <Flex>
+                      <Text>Acc. Holder Name :</Text>
+                      <Text color="#000000">
+                        {currentCashoutRequest.requestData.accountHolderName}{" "}
+                      </Text>
+                    </Flex>
+                  </GridItem>
 
-                <GridItem gridRow="2/3" gridColumn="1/-1">
-                  <Flex>
-                    <Text>Acc. Number :</Text>
-                    <Text color="#000000">
-                      {currentCashoutRequest.requestData.accountNumber}
-                    </Text>
-                  </Flex>
-                </GridItem>
+                  <GridItem gridRow="2/3" gridColumn="1/-1">
+                    <Flex>
+                      <Text>Acc. Number :</Text>
+                      <Text color="#000000">
+                        {currentCashoutRequest.requestData.accountNumber}
+                      </Text>
+                    </Flex>
+                  </GridItem>
 
-                <GridItem gridRow="3/4" gridColumn="1/-1">
-                  <Flex>
-                    <Text>Acc. Type :</Text>
+                  <GridItem gridRow="3/4" gridColumn="1/-1">
+                    <Flex>
+                      <Text>Acc. Type :</Text>
 
-                    <Text color="#000000">
-                      {currentCashoutRequest.requestData.accountType}
-                    </Text>
-                  </Flex>
-                </GridItem>
+                      <Text color="#000000">
+                        {currentCashoutRequest.requestData.accountType}
+                      </Text>
+                    </Flex>
+                  </GridItem>
 
-                <GridItem gridRow="4/5" gridColumn="1/5">
-                  <Flex>
-                    <Text noOfLines={1}>Bank :</Text>
+                  <GridItem gridRow="4/5" gridColumn="1/5">
+                    <Flex>
+                      <Text noOfLines={1}>Bank :</Text>
 
-                    <Text isTruncated color="#000000">
-                      {currentCashoutRequest.requestData.bankName}
-                    </Text>
-                  </Flex>
-                </GridItem>
+                      <Text isTruncated color="#000000">
+                        {currentCashoutRequest.requestData.bankName}
+                      </Text>
+                    </Flex>
+                  </GridItem>
 
-                <GridItem gridRow="4/5" gridColumn="4/7">
-                  <Flex>
-                    <Text>IFSC CODE :</Text>
+                  <GridItem gridRow="4/5" gridColumn="4/7">
+                    <Flex>
+                      <Text>IFSC CODE :</Text>
 
-                    <Text color="#000000" casing="uppercase">
-                      {currentCashoutRequest.requestData.ifscCode}
-                    </Text>
-                  </Flex>
-                </GridItem>
-                <GridItem gridRow="5/6" gridColumn="1/7">
-                  <Flex justifyContent="space-evenly">
-                    <Button
-                      leftIcon={<FaMoneyBillWave />}
-                      size="lg"
-                      height="48px"
-                      width="200px"
-                      border="2px"
-                      bg="#28A745"
-                      isDisabled={
-                        markCashoutRequestCompleteStatus === "succeeded"
-                          ? true
-                          : false
-                      }
-                      color="white"
-                      fontWeight="700"
-                      _hover={{
-                        transform: "scale(1.20)",
-                      }}
-                      onClick={markCashoutRequest}
-                    >
-                      Manual Pay
-                    </Button>
-                    <Button
-                      leftIcon={<FaRedo />}
-                      size="lg"
-                      bg="white"
-                      color="gray.500"
-                      height="48px"
-                      width="200px"
-                      border="2px"
-                      _hover={{
-                        transform: "scale(1.20)",
-                      }}
-                      isDisabled={
-                        markCashoutRequestCompleteStatus === "succeeded"
-                          ? true
-                          : false
-                      }
-                      borderColor="gray.500"
-                      onClick={() => addRequestToQueue()}
-                    >
-                      Auto Pay
-                    </Button>
-                  </Flex>
-                </GridItem>
-              </Grid>
-            )}
-          </Box>
-        </Flex>
-      )}
+                      <Text color="#000000" casing="uppercase">
+                        {currentCashoutRequest.requestData.ifscCode}
+                      </Text>
+                    </Flex>
+                  </GridItem>
+                  <GridItem gridRow="5/6" gridColumn="1/7">
+                    <Flex justifyContent="space-evenly">
+                      <Button
+                        leftIcon={<FaMoneyBillWave />}
+                        size="lg"
+                        height="48px"
+                        width="200px"
+                        border="2px"
+                        bg="#28A745"
+                        isDisabled={
+                          markCashoutRequestCompleteStatus === "succeeded"
+                            ? true
+                            : false
+                        }
+                        color="white"
+                        fontWeight="700"
+                        _hover={{
+                          transform: "scale(1.20)",
+                        }}
+                        onClick={markCashoutRequest}
+                      >
+                        Manual Pay
+                      </Button>
+                      <Button
+                        leftIcon={<FaRedo />}
+                        size="lg"
+                        bg="white"
+                        color="gray.500"
+                        height="48px"
+                        width="200px"
+                        border="2px"
+                        _hover={{
+                          transform: "scale(1.20)",
+                        }}
+                        isDisabled={
+                          markCashoutRequestCompleteStatus === "succeeded"
+                            ? true
+                            : false
+                        }
+                        borderColor="gray.500"
+                        onClick={() => addRequestToQueue()}
+                      >
+                        Auto Pay
+                      </Button>
+                    </Flex>
+                  </GridItem>
+                </Grid>
+              )}
+            </Box>
+          </Flex>
+        )}
       {currentCashoutStatus === "failed" && (
         <Center marginTop="5%">
           <Text fontSize="lg">No Request Found </Text>
