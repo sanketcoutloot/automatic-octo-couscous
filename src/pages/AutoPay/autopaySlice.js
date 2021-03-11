@@ -43,17 +43,16 @@ export const fetchAllQueuedRequests = createAsyncThunk(
 export const sendOtpToSignedInUser = createAsyncThunk(
   "autoPay/sendOtpToSignedInUser",
   async (body) => {
-    console.log("BODY", body);
     let { data } = await API.post(`/paytm/moneyInitiate`, body);
     return data;
   }
 );
 
 export const verifyOTP = createAsyncThunk("autoPay/verifyOTP", async (otp) => {
-  let { data } = await axios.post("/paytm/approveTransfer", {
+  let { data } = await API.post(`/paytm/approveTransfer`, {
     otp: parseInt(otp),
     requestId: localStorage.getItem("requestId"),
-    authToken: localStorage.getItem("otpToken"),
+    authToken: localStorage.getItem("authToken"),
   });
   return data;
 });
@@ -148,13 +147,13 @@ const autoPaySlice = createSlice({
       state.verifyOTPStatus = "loading";
     },
     [verifyOTP.fulfilled]: (state, action) => {
-      const { success, otpToken } = action.payload;
+      const { success, otpToken, errMessage } = action.payload;
       if (success === 1) {
-        localStorage.setItem("otpToken", otpToken);
+        console.log("WE ARE HEAR");
         state.verifyOTPStatus = "succeeded";
       } else {
         state.verifyOTPStatus = "failed";
-        state.error = action.payload;
+        state.error = errMessage;
       }
     },
     [verifyOTP.rejected]: (state, action) => {

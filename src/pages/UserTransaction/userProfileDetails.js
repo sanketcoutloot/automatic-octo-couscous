@@ -287,6 +287,7 @@ const userProfileDetails = () => {
         requestedBy,
         requestMode,
         transferableAmt: parseInt(transferableFromInput),
+        transactionType: "MANUAL",
       })
     );
   };

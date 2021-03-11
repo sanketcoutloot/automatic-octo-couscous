@@ -171,21 +171,25 @@ const AutopayQueue = () => {
   }, [autoPayRequestDetails, isOpen]);
 
   useEffect(() => {
-    sendOtpToSignedInUserStatus === "succeeded"
-      ? toast({
-          title: "OTP has been sent",
-          status: "success",
-          duration: 9000,
-          position: "top-right",
-          isClosable: true,
-        })
-      : toast({
-          title: "Failed to send OTP",
-          status: "error",
-          position: "top-right",
-          duration: 9000,
-          isClosable: true,
-        });
+    if (sendOtpToSignedInUserStatus === "succeeded") {
+      toast({
+        title: "OTP has been sent",
+        status: "success",
+        duration: 9000,
+        position: "top-right",
+        isClosable: true,
+      });
+    }
+
+    if (sendOtpToSignedInUserStatus === "failed") {
+      toast({
+        title: "Failed to send OTP",
+        status: "error",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   }, [sendOtpToSignedInUserStatus]);
 
   //@desc validate OTP
@@ -195,21 +199,24 @@ const AutopayQueue = () => {
 
   // @desc if verify otp is success
   useEffect(() => {
-    sendOtpToSignedInUserStatus === "succeeded"
-      ? toast({
-          title: "Transfer has been made",
-          status: "success",
-          duration: 9000,
-          position: "top-right",
-          isClosable: true,
-        })
-      : toast({
-          title: "Money Transfer Failed ",
-          status: "error",
-          position: "top-right",
-          duration: 9000,
-          isClosable: true,
-        });
+    if (sendOtpToSignedInUserStatus === "succeeded") {
+      toast({
+        title: "Transfer has been made",
+        status: "success",
+        duration: 9000,
+        position: "top-right",
+        isClosable: true,
+      });
+    }
+    if (sendOtpToSignedInUserStatus === "failed") {
+      toast({
+        title: "Money Transfer Failed ",
+        status: "error",
+        position: "top-right",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
 
     return () => {
       dispatch(cleanUpOTP());
