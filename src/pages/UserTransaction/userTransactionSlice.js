@@ -89,20 +89,7 @@ export const verifyBankDetails = createAsyncThunk(
 const userTransactionsSlice = createSlice({
   name: "userTransactions",
   initialState,
-  reducers: {
-    clearCurrentCashoutRequest: (state) => {
-      state.cashoutRequests = [];
-      state.moneyLogs = [];
-      state.bankAccounts = [];
-      state.currentCashoutRequest = [];
-      state.markCashoutRequestCompleteStatus = "idle";
-      state.markCashoutRequestCompleteError = null;
-    },
-
-    setStatusToIdle: (state, action) => {
-      state[action.payload] = "idle";
-    },
-  },
+  reducers: {},
   extraReducers: {
     // cashout request reducers
     [fetchCashoutRequests.pending]: (state, action) => {
@@ -227,9 +214,6 @@ const userTransactionsSlice = createSlice({
   },
 });
 
-export const {
-  clearCurrentCashoutRequest,
-  setStatusToIdle,
-} = userTransactionsSlice.actions;
+// export const { cleanUpAction } = userTransactionsSlice.actions;
 
 export default userTransactionsSlice.reducer;

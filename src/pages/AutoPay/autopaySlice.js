@@ -42,43 +42,29 @@ export const fetchAllQueuedRequests = createAsyncThunk(
 
 export const sendOtpToSignedInUser = createAsyncThunk(
   "autoPay/sendOtpToSignedInUser",
-  async () => {
-    let { data } = await axios.post(
-      `https://internal-auth.coutloot.com/auth/sendOTP`,
-      {
-        email: "sanket@coutloot.com",
-        mobile: 9405945413,
-      }
-    );
+  async (body) => {
+    let { data } = await API.post(`/paytm/moneyInitiate`, body);
     return data;
   }
 );
 
 export const verifyOTP = createAsyncThunk("autoPay/verifyOTP", async (otp) => {
-  let { data } = await axios.post(
-    "https://internal-auth.coutloot.com/auth/login",
-    {
-      otp: parseInt(otp),
-      mobile: "9405945413", //will be taken from local storage
-      otpToken: localStorage.getItem("otpToken"),
-    }
-  );
+  let { data } = await API.post(`/paytm/approveTransfer`, {
+    otp: parseInt(otp),
+    requestId: localStorage.getItem("requestId"),
+    authToken: localStorage.getItem("authToken"),
+  });
   return data;
 });
-
-export const transferMoney = createAsyncThunk(
-  "autoPay/transferMoney",
-  async (transferDetails) => {
-    let { data } = await API.post(`paytm/moneyTransfer`, transferDetails);
-
-    return data;
-  }
-);
 
 const autoPaySlice = createSlice({
   name: "autoPay",
   initialState,
-  reducers: {},
+  reducers: {
+    cleanUpOTP: (state, action) => {
+      state.sendOtpToSignedInUserStatus = "idle";
+    },
+  },
   extraReducers: {
     //autopay history
     [fetchAutoPayHistory.pending]: (state, action) => {
@@ -141,10 +127,11 @@ const autoPaySlice = createSlice({
       state.sendOtpToSignedInUserStatus = "loading";
     },
     [sendOtpToSignedInUser.fulfilled]: (state, action) => {
-      const { success, otpToken } = action.payload;
+      const { success, data } = action.payload;
       if (success === 1) {
+        localStorage.setItem("requestId", data.requestId);
+        localStorage.setItem("authToken", data.authToken);
         state.sendOtpToSignedInUserStatus = "succeeded";
-        localStorage.setItem("otpToken", otpToken);
       } else {
         state.sendOtpToSignedInUserStatus = "failed";
         state.error = action.payload;
@@ -160,22 +147,22 @@ const autoPaySlice = createSlice({
       state.verifyOTPStatus = "loading";
     },
     [verifyOTP.fulfilled]: (state, action) => {
-      const { success, otpToken } = action.payload;
+      const { success, otpToken, errMessage } = action.payload;
       if (success === 1) {
-        localStorage.setItem("otpToken", otpToken);
+        console.log("WE ARE HEAR");
         state.verifyOTPStatus = "succeeded";
       } else {
         state.verifyOTPStatus = "failed";
-        state.error = action.payload;
+        state.error = errMessage;
       }
     },
     [verifyOTP.rejected]: (state, action) => {
       state.verifyOTPStatus = "failed";
       state.error = action.payload.data;
     },
-
-    //send bankdetails for vareification
   },
 });
+
+export const { cleanUpOTP } = autoPaySlice.actions;
 
 export default autoPaySlice.reducer;

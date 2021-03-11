@@ -85,7 +85,6 @@ const renderPaymentMode = (props) => {
 
 const AllRequests = () => {
   const [pageCount, setPageCount] = useState(1000);
-  const fetchIdRef = React.useRef(0);
 
   let { path, url } = useRouteMatch();
 
@@ -95,10 +94,8 @@ const AllRequests = () => {
 
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
-  const getAllRequest = useCallback((pageIndex) => {
-    console.log("Async Data CALLED", pageIndex);
-    dispatch(fetchAllRequests(pageIndex));
-    setPageCount(pageCount + 1);
+  useEffect(() => {
+    dispatch(fetchAllRequests(0));
   }, []);
 
   const columns = React.useMemo(
@@ -212,6 +209,8 @@ const AllRequests = () => {
     []
   );
 
+  const data = React.useMemo(() => allRequests, [allRequests]);
+
   return (
     <Box>
       <Box as="h1" fontSize="30px">
@@ -239,8 +238,8 @@ const AllRequests = () => {
         ) : (
           <ReactTable
             columns={columns}
-            data={allRequests}
-            fetchData={getAllRequest}
+            data={data}
+            // fetchData={getAllRequest}
             pageCount={pageCount}
           />
         )}
