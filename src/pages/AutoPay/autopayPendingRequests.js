@@ -22,6 +22,7 @@ import {
   HStack,
   PinInputField,
   PinInput,
+  useToast,
   BeatLoader,
 } from "@chakra-ui/react";
 
@@ -36,7 +37,7 @@ import { Link as RouterLink, useRouteMatch } from "react-router-dom";
 //components
 import { ReactTable } from "../../component/ReactTable";
 import { useDispatch, useSelector } from "react-redux";
-
+import { cleanUpOTP } from "./autopaySlice";
 import {
   fetchAllQueuedRequests,
   sendOtpToSignedInUser,
@@ -106,6 +107,7 @@ const renderPaymentMode = (props) => {
 const AutopayQueue = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   // State
   const [pageNumber, changePageNumber] = useState(0);
@@ -127,6 +129,10 @@ const AutopayQueue = () => {
   //@DESC status of allQueuedRequests
   const allQueuedRequestsStatus = useSelector(
     (state) => state.autoPay.allQueuedRequestsStatus
+  );
+
+  const sendOtpToSignedInUserStatus = useSelector(
+    (state) => state.autoPay.sendOtpToSignedInUserStatus
   );
 
   //@desc status of verifyOtp
@@ -164,6 +170,24 @@ const AutopayQueue = () => {
     }
   }, [autoPayRequestDetails, isOpen]);
 
+  useEffect(() => {
+    sendOtpToSignedInUserStatus === "succeeded"
+      ? toast({
+          title: "OTP has been sent",
+          status: "success",
+          duration: 9000,
+          position: "top-right",
+          isClosable: true,
+        })
+      : toast({
+          title: "Failed to send OTP",
+          status: "error",
+          position: "top-right",
+          duration: 9000,
+          isClosable: true,
+        });
+  }, [sendOtpToSignedInUserStatus]);
+
   //@desc validate OTP
   const validateOTPAndSendBankData = () => {
     dispatch(verifyOTP(value));
@@ -171,16 +195,25 @@ const AutopayQueue = () => {
 
   // @desc if verify otp is success
   useEffect(() => {
-    if (verifyOTPStatus === "succeeded") {
-      const {
-        requestId,
-        requestMode,
-        requestData,
-        transferableAmount: amount,
-      } = autoPayRequestDetails;
+    sendOtpToSignedInUserStatus === "succeeded"
+      ? toast({
+          title: "Transfer has been made",
+          status: "success",
+          duration: 9000,
+          position: "top-right",
+          isClosable: true,
+        })
+      : toast({
+          title: "Money Transfer Failed ",
+          status: "error",
+          position: "top-right",
+          duration: 9000,
+          isClosable: true,
+        });
 
-      dispatch(transferMoney({ requestId, requestMode, requestData, amount }));
-    }
+    return () => {
+      dispatch(cleanUpOTP());
+    };
   }, [verifyOTPStatus]);
 
   //REACT-DEBATABLE
@@ -323,10 +356,6 @@ const AutopayQueue = () => {
                 Please Enter the one-Time Password (OTP) to verify your account.
               </Text>
 
-              <Text mt={4} fontSize="xl" color="#726D6D">
-                Please Enter the one-Time Password (OTP) to verify your account.
-              </Text>
-
               <PinInput
                 manageFocus
                 colorScheme="teal"
@@ -339,24 +368,7 @@ const AutopayQueue = () => {
                 <PinInputField m={2} size="lg" />
                 <PinInputField m={2} size="lg" />
                 <PinInputField m={2} size="lg" />
-                <PinInputField m={2} size="lg" />
               </PinInput>
-
-              {/* <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
-                Check your registered phone number For OTP
-              </Text>
-
-              <Text mt={4} fontSize="xl" fontWeight="700" color="#DD611F">
-                OTP doesn’t match .... Please try again.
-              </Text>
-
-              <Text mt={4} fontSize="xl" fontWeight="700" color="blue.500">
-                OTP Verified
-              </Text>
-
-              <Text mt={4} fontSize="xl" fontWeight="700" color="green.500">
-                Send Bank Details for Transfer
-              </Text> */}
             </Box>
           </ModalBody>
           <ModalFooter justifyContent="center">

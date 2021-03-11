@@ -58,19 +58,14 @@ export const verifyOTP = createAsyncThunk("autoPay/verifyOTP", async (otp) => {
   return data;
 });
 
-export const transferMoney = createAsyncThunk(
-  "autoPay/transferMoney",
-  async (transferDetails) => {
-    let { data } = await API.post(`paytm/moneyTransfer`, transferDetails);
-
-    return data;
-  }
-);
-
 const autoPaySlice = createSlice({
   name: "autoPay",
   initialState,
-  reducers: {},
+  reducers: {
+    cleanUpOTP: (state, action) => {
+      state.sendOtpToSignedInUserStatus = "idle";
+    },
+  },
   extraReducers: {
     //autopay history
     [fetchAutoPayHistory.pending]: (state, action) => {
@@ -166,9 +161,9 @@ const autoPaySlice = createSlice({
       state.verifyOTPStatus = "failed";
       state.error = action.payload.data;
     },
-
-    //send bankdetails for vareification
   },
 });
+
+export const { cleanUpOTP } = autoPaySlice.actions;
 
 export default autoPaySlice.reducer;
