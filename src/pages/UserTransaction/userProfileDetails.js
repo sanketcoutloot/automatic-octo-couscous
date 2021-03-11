@@ -45,7 +45,6 @@ import {
   fetchCurrentCashoutRequest,
   markCashoutRequestComplete,
   clearCurrentCashoutRequest,
-  cleanUpAction,
   verifyBankDetails,
 } from "./userTransactionSlice";
 import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
@@ -253,7 +252,7 @@ const userProfileDetails = () => {
   useEffect(() => {
     return () => {
       console.log("Clean Up Details ");
-      cleanUpAction();
+      // cleanUpAction();
     };
   }, []);
 

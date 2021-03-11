@@ -152,16 +152,16 @@ function ReactTable({
     usePagination
   );
 
-  useEffect(() => {
-    fetchData(pageIndex);
-  }, [pageIndex, fetchData, pageSize]);
+  // useEffect(() => {
+  //   fetchData(pageIndex);
+  // }, [pageIndex, fetchData, pageSize]);
 
   return (
     <Box>
       {console.log("rendering react datatable")}
       {console.log({ data })}
       {/* {console.log({})} */}
-
+      {/* 
       <pre>
         <code>
           {JSON.stringify(
@@ -176,7 +176,7 @@ function ReactTable({
             2
           )}
         </code>
-      </pre>
+      </pre> */}
 
       <Table {...getTableProps()}>
         <thead>
