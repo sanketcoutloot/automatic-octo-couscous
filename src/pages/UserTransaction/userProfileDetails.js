@@ -28,6 +28,8 @@ import {
 } from "@chakra-ui/react";
 
 import BANK from "../../asset/bank.svg";
+import PAYTM from "../../asset/paytm.png";
+import UPI from "../../asset/upi.png";
 import { Link } from "react-router-dom";
 import {
   CashoutRequestTable,
@@ -48,6 +50,62 @@ import {
   verifyBankDetails,
 } from "./userTransactionSlice";
 import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
+
+const renderPaymentMode = (requestMode) => {
+  let paymentModeValue = parseInt(requestMode.trim());
+  switch (paymentModeValue) {
+    case 1:
+      return (
+        <Box>
+          <Image
+            mx="auto"
+            boxSize="50px"
+            objectFit="contain"
+            src={PAYTM}
+            alt="PAYTM"
+          />
+        </Box>
+      );
+
+    case 2:
+      return (
+        <Box>
+          <Image
+            boxSize="50px"
+            mx="auto"
+            objectFit="contain"
+            src={UPI}
+            alt="UPI"
+          />
+        </Box>
+      );
+
+    case 0:
+      return (
+        <Box>
+          <Image
+            mx="auto"
+            boxSize="60px"
+            objectFit="contain"
+            src={BANK}
+            alt="BANK"
+          />
+        </Box>
+      );
+
+    default:
+      return (
+        <Text
+          align="left"
+          fontWeight="bold"
+          color="#89664C"
+          casing="capitalize"
+        >
+          {paymentModeValue}
+        </Text>
+      );
+  }
+};
 
 const userProfileDetails = () => {
   const { state } = useLocation();
@@ -457,18 +515,6 @@ const userProfileDetails = () => {
                     <InputGroup width="50%">
                       <InputLeftAddon children={` \u20B9 `} />
 
-                      {/* <Input
-                      rounded="md"
-                      border="2px solid #CCC7C7"
-                      color="#177CE6"
-                      padding="0.1rem"
-                      type="number"
-                      max={`${currentCashoutRequest.transferableAmt}`}
-                      value={`${transferableFromInput}`}
-                      onChange={(event) =>
-                        setTransferableFromInput(event.target.value)
-                      }
-                    /> */}
                       <NumberInput
                         max={`${currentCashoutRequest.transferableAmt}`}
                         value={`${transferableFromInput}`}
@@ -507,10 +553,9 @@ const userProfileDetails = () => {
                   </Flex>
                 </GridItem>
                 <GridItem gridRow="3/4" gridColumn="4/7">
-                  <Flex>
+                  <Flex alignItems="center">
                     <Text>Requested Mode :</Text>
-
-                    <Image src={BANK} width="70px" objectFit="contain" />
+                    {renderPaymentMode(currentCashoutRequest.requestMode)}
                   </Flex>
                 </GridItem>
 
@@ -540,61 +585,6 @@ const userProfileDetails = () => {
             >
               <Flex align="center">
                 <Text mr={4}>Bank Details :</Text>
-
-                {/* {currentCashoutRequest.bankVerificationStatus === "VERIFIED" && (
-                <Box
-                  as="span"
-                  as="span"
-                  border="1px #52D676 solid"
-                  borderRadius="50px"
-                  bg="#E5FDEC"
-                  color="#52D676"
-                  padding="0.1rem 0.5rem"
-                >
-                  {" "}
-                  Verified
-                </Box>
-              )}
-              {currentCashoutRequest.bankVerificationStatus ===
-                "NOT_VERIFIED" && (
-                <Box
-                  as="span"
-                  border="1px #F41717 solid"
-                  borderRadius="50px"
-                  bg="#FFEFEF"
-                  color="#F41717"
-                  padding="0.1rem 0.5rem"
-                >
-                  Not Verified
-                </Box>
-              )}
-
-              {currentCashoutRequest.bankVerificationStatus === "PENDING" && (
-                <Box
-                  as="span"
-                  border="1px #FCA847 solid"
-                  borderRadius="50px"
-                  bg="#F7AC551D"
-                  color="#FCA847"
-                  padding="0.1rem 0.5rem"
-                >
-                  Pending
-                </Box>
-              )}
-
-              {currentCashoutRequest.bankVerificationStatus === "FAILED" && (
-                <Box
-                  as="span"
-                  as="span"
-                  border="2px red solid"
-                  borderRadius="50px"
-                  bg="red.100"
-                  color="red.600"
-                  padding="0.1rem 0.5rem"
-                >
-                  Failed
-                </Box>
-              )} */}
 
                 <Button
                   ml="auto"

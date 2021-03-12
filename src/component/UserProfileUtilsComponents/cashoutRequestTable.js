@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { allRequestFactory as AllRequestGenerator } from "../../Factory";
 import BANK from "../../asset/bank.svg";
 import PAYTM from "../../asset/paytm.png";
 import UPI from "../../asset/upi.png";
@@ -102,29 +101,6 @@ const cashoutRequestTable = ({
         );
       },
     },
-    {
-      Header: "Requested By",
-      accessor: "requestedBy",
-      Cell: ({
-        cell: {
-          row: {
-            original: { requestedBy, userId },
-          },
-        },
-      }) => (
-        // <Text
-        //   color="#000000"
-        //   align="center"
-        //   fontWeight="bold"
-        // >{`${requestedBy} (${userId})`}</Text>
-        <Text
-          color="#000000"
-          align="center"
-          fontWeight="bold"
-        >{`${requestedBy}`}</Text>
-      ),
-    },
-
     {
       Header: "Payment Mode",
       accessor: "requestMode",
