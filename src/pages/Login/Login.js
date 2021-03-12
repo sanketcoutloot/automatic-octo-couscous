@@ -55,6 +55,7 @@ const Login = () => {
   }, [sendOTPStatus, verifyOTPStatus]);
 
   const sendOTP = (e) => {
+    verifyOTPStatus;
     e.preventDefault();
     if (email && mobile) {
       localStorage.setItem("email", email);

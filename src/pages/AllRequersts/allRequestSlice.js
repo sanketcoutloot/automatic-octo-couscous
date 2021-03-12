@@ -10,6 +10,7 @@ const initialState = {
 export const fetchAllRequests = createAsyncThunk(
   "allRequests/fetchAllRequest",
   async (pageNumber) => {
+    console.log("ALL reQUEST DISPATCHED ");
     let { data } = await API.get(`cashout/getCashoutRequests/${pageNumber}`);
     return data;
   }
@@ -27,14 +28,15 @@ const allRequestsSlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.allRequests = data;
-
         state.status = "succeeded";
       } else {
         state.error = data;
+        state.status = "failed";
       }
     },
     [fetchAllRequests.rejected]: (state, action) => {
       state.status = "failed";
+
       state.error = action.payload.data;
     },
   },

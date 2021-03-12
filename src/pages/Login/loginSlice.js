@@ -48,7 +48,6 @@ const authSlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.sendOTPStatus = "succeeded";
-        state.allRequests = state.allRequests.concat(data);
       } else {
         state.sendOTPStatus = "failed";
         state.error = action.payload.data;

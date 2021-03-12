@@ -492,19 +492,25 @@ const userProfileDetails = () => {
 
                 <GridItem gridRow="2/3" gridColumn="4/7">
                   <Flex>
-                    <Text>Requested Mode :</Text>
-
-                    <Image src={BANK} width="70px" objectFit="contain" />
+                    <Text>Requested Amt :</Text>
+                    <Text color="#000000">{` \u20B9 ${currentCashoutRequest.requestedAmount}`}</Text>
                   </Flex>
                 </GridItem>
 
-                <GridItem gridRow="3/4" gridColumn="1/-1">
+                <GridItem gridRow="3/4" gridColumn="1/4">
                   <Flex>
                     <Text>Requested Date :</Text>
 
                     <Text color="#000000">
                       {currentCashoutRequest.requestDate}
                     </Text>
+                  </Flex>
+                </GridItem>
+                <GridItem gridRow="3/4" gridColumn="4/7">
+                  <Flex>
+                    <Text>Requested Mode :</Text>
+
+                    <Image src={BANK} width="70px" objectFit="contain" />
                   </Flex>
                 </GridItem>
 

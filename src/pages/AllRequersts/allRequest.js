@@ -8,6 +8,7 @@ import {
   Button,
   Link,
   CircularProgress,
+  useToken,
 } from "@chakra-ui/react";
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -85,6 +86,7 @@ const renderPaymentMode = (props) => {
 
 const AllRequests = () => {
   const [pageCount, setPageCount] = useState(1000);
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   let { path, url } = useRouteMatch();
 
@@ -95,8 +97,11 @@ const AllRequests = () => {
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
-    dispatch(fetchAllRequests(0));
-  }, []);
+    if (token) {
+      console.log("token````````````", token);
+      dispatch(fetchAllRequests(0));
+    }
+  }, [token]);
 
   const columns = React.useMemo(
     () => [
