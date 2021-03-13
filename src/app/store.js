@@ -4,6 +4,8 @@ import userTransactions from "../pages/UserTransaction/userTransactionSlice";
 import autoPayReducer from "../pages/AutoPay/autopaySlice";
 import authReducer from "../pages/Login/loginSlice";
 import moneyLogsReducer from "../pages/moneyLogs/MoneyLogsSlice";
+
+import logger from "redux-logger";
 export default configureStore({
   reducer: {
     allRequests: AllRequestReducer,
@@ -12,4 +14,5 @@ export default configureStore({
     auth: authReducer,
     moneyLogs: moneyLogsReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

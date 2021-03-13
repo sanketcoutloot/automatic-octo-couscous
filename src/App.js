@@ -18,6 +18,7 @@ import {
 } from "./pages";
 
 import { Layout } from "./component/Layout.js";
+import { ProtectedRoute } from "./component/ProtectedRoute";
 import { useSelector } from "react-redux";
 
 const App = () => {
@@ -30,9 +31,13 @@ const App = () => {
             <Login />
           </Route>
 
-          <Route exact path="/moneylogs">
+          {/* <Route exact path="/moneylogs"> */}
+          {/* <Layout children={<MoneyLogs />} /> */}
+          {/* </Route> */}
+
+          <ProtectedRoute path="/moneylogs">
             <Layout children={<MoneyLogs />} />
-          </Route>
+          </ProtectedRoute>
 
           <Route exact path="/allrequests">
             <Layout children={<AllRequests />} />

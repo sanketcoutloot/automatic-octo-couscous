@@ -10,6 +10,7 @@ const initialState = {
 export const fetchAllRequests = createAsyncThunk(
   "allRequests/fetchAllRequest",
   async (pageNumber) => {
+    console.log("TEST API ", API);
     console.log("ALL reQUEST DISPATCHED ");
     let { data } = await API.get(`cashout/getCashoutRequests/${pageNumber}`);
     return data;

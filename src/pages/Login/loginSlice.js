@@ -7,6 +7,7 @@ const initialState = {
   sendOTPStatus: null,
   verifyOTPStatus: null,
   error: null,
+  authToken: null,
 };
 
 export const sendOTP = createAsyncThunk(
@@ -66,6 +67,7 @@ const authSlice = createSlice({
       const { success, loggedInUser, token } = action.payload;
       if (success === 1) {
         localStorage.setItem("token", token);
+        state.authToken = token;
         state.verifyOTPStatus = "succeed";
         state.isAuthenticated = true;
       } else {

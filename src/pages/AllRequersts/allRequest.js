@@ -97,11 +97,8 @@ const AllRequests = () => {
   const allRequestStatus = useSelector((state) => state.allRequests.status);
 
   useEffect(() => {
-    if (token) {
-      console.log("token````````````", token);
-      dispatch(fetchAllRequests(0));
-    }
-  }, [token]);
+    dispatch(fetchAllRequests(0));
+  }, []);
 
   const columns = React.useMemo(
     () => [
