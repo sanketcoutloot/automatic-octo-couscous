@@ -46,17 +46,17 @@ const authSlice = createSlice({
       state.status = "loading";
     },
     [sendOTP.fulfilled]: (state, action) => {
-      const { success, data } = action.payload;
+      const { success, data, errMessage } = action.payload;
       if (success === 1) {
         state.sendOTPStatus = "succeeded";
       } else {
         state.sendOTPStatus = "failed";
-        state.error = action.payload.data;
+        state.error = errMessage;
       }
     },
     [sendOTP.rejected]: (state, action) => {
       state.sendOTPStatus = "failed";
-      state.error = action.payload;
+      state.error = action.payload.errMessage;
     },
 
     //verify OTP
@@ -64,7 +64,7 @@ const authSlice = createSlice({
       state.status = "loading";
     },
     [verifyOTP.fulfilled]: (state, action) => {
-      const { success, loggedInUser, token } = action.payload;
+      const { success, loggedInUser, token, errMessage } = action.payload;
       if (success === 1) {
         localStorage.setItem("token", token);
         state.authToken = token;
@@ -72,12 +72,12 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
       } else {
         state.verifyOTPStatus = "failed";
-        state.error = action.payload;
+        state.error = errMessage;
       }
     },
     [verifyOTP.rejected]: (state, action) => {
       state.verifyOTPStatus = "failed";
-      state.error = action.payload;
+      state.error = action.payload.errMessage;
     },
   },
 });

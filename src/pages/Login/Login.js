@@ -5,8 +5,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  PinInput,
-  PinInputField,
   Stack,
   Icon,
   useToast,
@@ -41,26 +39,30 @@ const Login = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const sendOTPStatus = useSelector((state) => state.auth.sendOTPStatus);
   const verifyOTPStatus = useSelector((state) => state.auth.verifyOTPStatus);
+  const errorMsg = useSelector((state) => state.auth.error);
 
   useEffect(() => {
     if (sendOTPStatus === "failed" || verifyOTPStatus === "failed") {
       toast({
         title: "Please Try again",
+        description: errorMsg,
         status: "error",
         position: "top-right",
-        duration: 2000,
+        duration: 4000,
         isClosable: true,
       });
+    }
+
+    if (sendOTPStatus === "succeeded") {
+      setIsHidden(!isHidden);
     }
   }, [sendOTPStatus, verifyOTPStatus]);
 
   const sendOTP = (e) => {
-    verifyOTPStatus;
     e.preventDefault();
     if (email && mobile) {
       localStorage.setItem("email", email);
       localStorage.setItem("mobile", mobile);
-      setIsHidden(!isHidden);
       dispatch(sendOTPThunk({ email, mobile }));
     }
   };
