@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form/dist/index.ie11";
+import { useParams } from "react-router";
 import API from "../../config/API";
 
 const EditBankDetailsModal = ({
@@ -70,10 +71,13 @@ const EditBankDetailsModal = ({
 
   //find the
 
+  const { userId } = useParams();
+
   const onSubmit = async () => {
     let data = getValues();
+
     let accountId = bankDetails.accountId;
-    let payload = { ...data, accountId };
+    let payload = { ...data, accountId, userId };
     await submitEditBankDetails(payload);
   };
 
