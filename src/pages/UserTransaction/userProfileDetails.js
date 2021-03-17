@@ -47,8 +47,10 @@ import {
   fetchCurrentCashoutRequest,
   markCashoutRequestComplete,
   clearCurrentCashoutRequest,
+  setUserTransactionToInitialSlice,
   verifyBankDetails,
 } from "./userTransactionSlice";
+
 import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
 
 const renderPaymentMode = (requestMode) => {
@@ -179,6 +181,11 @@ const userProfileDetails = () => {
   );
 
   //show error
+  useEffect(() => {
+    return () => {
+      dispatch(setUserTransactionToInitialSlice());
+    };
+  }, []);
 
   useEffect(() => {
     if (currentCashoutStatus === "failed") {
