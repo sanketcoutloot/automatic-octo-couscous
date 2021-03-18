@@ -138,6 +138,8 @@ const AutopayQueue = () => {
   //@desc status of verifyOtp
   const verifyOTPStatus = useSelector((state) => state.autoPay.verifyOTPStatus);
 
+  const errMessage = useSelector((state) => state.autoPay.error);
+
   //SIDE - EFFECTS
   //@desc fetch all queued requests
   useEffect(() => {
@@ -203,7 +205,7 @@ const AutopayQueue = () => {
       toast({
         title: "Transfer has been made",
         status: "success",
-        duration: 9000,
+        duration: 4000,
         position: "top-right",
         isClosable: true,
       });
@@ -211,10 +213,11 @@ const AutopayQueue = () => {
     }
     if (verifyOTPStatus === "failed") {
       toast({
-        title: "Money Transfer Failed ",
+        title: "Unable to proceed",
+        description: errMessage,
         status: "error",
         position: "top-right",
-        duration: 9000,
+        duration: 4000,
         isClosable: true,
       });
       onClose();

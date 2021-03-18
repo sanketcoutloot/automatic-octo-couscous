@@ -31,13 +31,13 @@ const App = () => {
             <Login />
           </Route>
 
-          {/* <Route exact path="/moneylogs"> */}
-          {/* <Layout children={<MoneyLogs />} /> */}
-          {/* </Route> */}
-
-          <ProtectedRoute path="/moneylogs">
+          <Route exact path="/moneylogs">
             <Layout children={<MoneyLogs />} />
-          </ProtectedRoute>
+          </Route>
+
+          {/* <ProtectedRoute path="/moneylogs">
+            <Layout children={<MoneyLogs />} />
+          </ProtectedRoute> */}
 
           <Route exact path="/allrequests">
             <Layout children={<AllRequests />} />

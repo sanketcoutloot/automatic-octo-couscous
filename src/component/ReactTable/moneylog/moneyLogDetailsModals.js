@@ -147,10 +147,7 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails: log }) => {
               </GridItem>
 
               <GridItem rowStart={3} rowEnd={4} colStart={2} colEnd={4}>
-                {new Date(Number(log.transactionDate) * 1000)
-                  .toLocaleString()
-                  .replaceAll("/", "-")
-                  .replaceAll(",", " ")}
+                {log.transactionDate}
               </GridItem>
               {/* row 4 */}
               <GridItem rowStart={4} rowEnd={5} colStart={1} colEnd={2}>
@@ -190,7 +187,7 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails: log }) => {
                 color="white"
                 bg="#F41717"
               >
-                Opening Balance : ₹2300
+                Opening Balance : {log.openingBalance || "N/A"}
               </Box>
               <Box
                 py={3}
@@ -201,7 +198,7 @@ const moneyLogDetailsMoodal = ({ isOpen, onClose, moneyLogDetails: log }) => {
                 color="white"
                 bg="#4CBA2B"
               >
-                Opening Balance : ₹2300
+                Closing Balance : {log.closingBalance || "N/A"}
               </Box>
             </Flex>
           </ModalBody>
