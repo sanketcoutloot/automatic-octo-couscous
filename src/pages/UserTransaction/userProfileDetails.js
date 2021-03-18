@@ -51,7 +51,10 @@ import {
   verifyBankDetails,
 } from "./userTransactionSlice";
 
-import { addRequestToAutoPayQueue } from "../AutoPay/autopaySlice";
+import {
+  addRequestToAutoPayQueue,
+  setAutoPayStatusToIdle,
+} from "../AutoPay/autopaySlice";
 
 const renderPaymentMode = (requestMode) => {
   let paymentModeValue = parseInt(requestMode.trim());
@@ -184,6 +187,7 @@ const userProfileDetails = () => {
   useEffect(() => {
     return () => {
       dispatch(setUserTransactionToInitialSlice());
+      dispatch(setAutoPayStatusToIdle());
     };
   }, []);
 

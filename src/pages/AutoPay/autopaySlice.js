@@ -64,6 +64,10 @@ const autoPaySlice = createSlice({
     cleanUpOTP: (state, action) => {
       state.sendOtpToSignedInUserStatus = "idle";
     },
+
+    setAutoPayStatusToIdle: (state) => {
+      state.addRequestToAutoPayQueueStatus = "idle";
+    },
   },
   extraReducers: {
     //autopay history
@@ -163,6 +167,6 @@ const autoPaySlice = createSlice({
   },
 });
 
-export const { cleanUpOTP } = autoPaySlice.actions;
+export const { cleanUpOTP, setAutoPayStatusToIdle } = autoPaySlice.actions;
 
 export default autoPaySlice.reducer;
