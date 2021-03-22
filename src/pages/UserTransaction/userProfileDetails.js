@@ -381,6 +381,7 @@ const userProfileDetails = () => {
     const {
       requestId,
       transferableAmt,
+      requestMode,
       requestedBy: userId,
     } = currentCashoutRequest;
 
@@ -389,6 +390,7 @@ const userProfileDetails = () => {
         requestId,
         userId,
         transferableAmt,
+        requestMode,
       })
     );
   };
