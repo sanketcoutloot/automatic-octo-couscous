@@ -40,7 +40,16 @@ export const verifyOTP = createAsyncThunk("login/verifyOTP", async (otp) => {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    cleanUpAfterError: (state) => {
+      state.status = "idle";
+      state.isAuthenticated = false;
+      state.sendOTPStatus = null;
+      state.verifyOTPStatus = null;
+      state.error = null;
+      state.authToken = null;
+    },
+  },
   extraReducers: {
     [sendOTP.pending]: (state, action) => {
       state.status = "loading";
@@ -81,5 +90,5 @@ const authSlice = createSlice({
     },
   },
 });
-
+export const { cleanUpAfterError } = authSlice.actions;
 export default authSlice.reducer;

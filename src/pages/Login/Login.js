@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   verifyOTP as verifyOTPThunk,
   sendOTP as sendOTPThunk,
+  cleanUpAfterError,
 } from "../Login/loginSlice";
 
 const Login = () => {
@@ -51,6 +52,7 @@ const Login = () => {
         duration: 4000,
         isClosable: true,
       });
+      dispatch(cleanUpAfterError());
     }
 
     if (sendOTPStatus === "succeeded") {
