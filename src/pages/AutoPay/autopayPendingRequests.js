@@ -143,10 +143,7 @@ const AutopayQueue = () => {
   //SIDE - EFFECTS
   //@desc fetch all queued requests
   useEffect(() => {
-    //dispatch all requests
-    if (allQueuedRequests.length === 0) {
-      dispatch(fetchAllQueuedRequests(0));
-    }
+    dispatch(fetchAllQueuedRequests(0));
   }, [allQueuedRequests]);
 
   //@desc send otp to signed in user
