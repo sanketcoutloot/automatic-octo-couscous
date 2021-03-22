@@ -18,12 +18,20 @@ const initialState = {
   currentCashoutStatus: "idle",
   currentCashoutError: null,
 
+  currentCashoutBankDetails: {},
+
+  bankDetailToEdit: {},
+
   bankVerificationRequest: {},
   bankVerificationStatus: "idle",
   bankVerificationError: null,
 
   markCashoutRequestCompleteStatus: "idle",
   markCashoutRequestCompleteError: null,
+
+  updateBankDetailStatus: "idle",
+  updatedBankDetails: [],
+  updateBankDetailError: null,
 };
 
 export const fetchCashoutRequests = createAsyncThunk(
@@ -86,12 +94,35 @@ export const verifyBankDetails = createAsyncThunk(
   }
 );
 
+export const updateBankDetail = createAsyncThunk(
+  "bank/editBankDetails",
+  async (bankDetails) => {
+    const { data } = await API.post(`bank/editBankDetails`, bankDetails);
+    return data;
+  }
+);
+
 const userTransactionsSlice = createSlice({
   name: "userTransactions",
   initialState,
   reducers: {
     setUserTransactionToInitialSlice: (state) => {
       state.markCashoutRequestCompleteStatus = "idle";
+    },
+    editModalCleanUp: (state) => {
+      state.updateBankDetailStatus = "idle";
+      state.updatedBankDetails = [];
+      state.updateBankDetailError = null;
+    },
+    addBankDetailToEdit: (state, action) => {
+      //this dispatch help to set the
+      const { editCurrentRequestBankDetails, index } = action.payload;
+      if (editCurrentRequestBankDetails === true) {
+        state.bankDetailToEdit = state.currentCashoutBankDetails;
+      }
+      //use index value to edit bank detail for the bank details list
+
+      console.log("addBankDetailToEdit", action);
     },
   },
   extraReducers: {
@@ -170,6 +201,7 @@ const userTransactionsSlice = createSlice({
       if (success === 1) {
         state.currentCashoutStatus = "succeeded";
         state.currentCashoutRequest = { ...data };
+        state.currentCashoutBankDetails = data.requestData;
       } else {
         state.currentCashoutStatus = "failed";
         state.currentCashoutError = errMessage;
@@ -178,6 +210,41 @@ const userTransactionsSlice = createSlice({
     [fetchCurrentCashoutRequest.rejected]: (state, action) => {
       const { errMessage } = action.payload;
       state.currentCashoutStatus = "failed";
+      state.currentCashoutError = errMessage;
+    },
+
+    //edit /Update bank Details
+    [updateBankDetail.pending]: (state, action) => {
+      state.updateBankDetailStatus = "loading";
+    },
+    [updateBankDetail.fulfilled]: (state, action) => {
+      const { success, data, errMessage } = action.payload;
+      if (success === 1) {
+        state.updateBankDetailStatus = "succeeded";
+        const {
+          accountHolderName,
+          accountNumber,
+          accountType,
+          bankName,
+          ifscCode,
+          accountId,
+        } = data[0];
+        state.currentCashoutBankDetails = {
+          accountHolderName,
+          accountNumber,
+          accountType,
+          bankName,
+          ifscCode,
+          accountId,
+        };
+      } else {
+        state.updateBankDetailStatus = "failed";
+        state.updateBankDetailError = errMessage;
+      }
+    },
+    [updateBankDetail.rejected]: (state, action) => {
+      const { errMessage } = action.payload;
+      state.updateBankDetail = "failed";
       state.currentCashoutError = errMessage;
     },
 
@@ -220,6 +287,8 @@ const userTransactionsSlice = createSlice({
 
 export const {
   setUserTransactionToInitialSlice,
+  editModalCleanUp,
+  addBankDetailToEdit,
 } = userTransactionsSlice.actions;
 
 export default userTransactionsSlice.reducer;

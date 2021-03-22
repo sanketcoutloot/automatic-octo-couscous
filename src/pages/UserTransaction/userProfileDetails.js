@@ -49,12 +49,14 @@ import {
   clearCurrentCashoutRequest,
   setUserTransactionToInitialSlice,
   verifyBankDetails,
+  addBankDetailToEdit,
 } from "./userTransactionSlice";
 
 import {
   addRequestToAutoPayQueue,
   setAutoPayStatusToIdle,
 } from "../AutoPay/autopaySlice";
+import { isEmptyObject } from "../../utils";
 
 const renderPaymentMode = (requestMode) => {
   let paymentModeValue = parseInt(requestMode.trim());
@@ -175,6 +177,14 @@ const userProfileDetails = () => {
     (state) => state.userTransactions.currentCashoutRequest
   );
 
+  const currentCashoutBankDetails = useSelector(
+    (state) => state.userTransactions.currentCashoutBankDetails
+  );
+
+  const bankDetailsToEdit = useSelector(
+    (state) => state.userTransactions.bankDetailToEdit
+  );
+
   const markCashoutRequestCompleteStatus = useSelector(
     (state) => state.userTransactions.markCashoutRequestCompleteStatus
   );
@@ -229,6 +239,13 @@ const userProfileDetails = () => {
       });
     }
   }, [moneyLogsStatus]);
+
+  useEffect(() => {
+    if (isEmptyObject(bankDetailsToEdit) === false) {
+      onOpen();
+    }
+  }, [bankDetailsToEdit]);
+  console.log({ bankDetailsToEdit });
 
   useEffect(() => {
     if (bankAccountsStatus === "failed") {
@@ -599,7 +616,13 @@ const userProfileDetails = () => {
 
                 <Button
                   ml="auto"
-                  onClick={onOpen}
+                  onClick={() => {
+                    dispatch(
+                      addBankDetailToEdit({
+                        editCurrentRequestBankDetails: true,
+                      })
+                    );
+                  }}
                   colorScheme="blue"
                   leftIcon={<FaPen />}
                   variant="outline"
@@ -621,7 +644,7 @@ const userProfileDetails = () => {
                     <Flex>
                       <Text>Acc. Holder Name :</Text>
                       <Text color="#000000">
-                        {currentCashoutRequest.requestData.accountHolderName}{" "}
+                        {currentCashoutBankDetails.accountHolderName}{" "}
                       </Text>
                     </Flex>
                   </GridItem>
@@ -630,7 +653,7 @@ const userProfileDetails = () => {
                     <Flex>
                       <Text>Acc. Number :</Text>
                       <Text color="#000000">
-                        {currentCashoutRequest.requestData.accountNumber}
+                        {currentCashoutBankDetails.accountNumber}
                       </Text>
                     </Flex>
                   </GridItem>
@@ -640,7 +663,7 @@ const userProfileDetails = () => {
                       <Text>Acc. Type :</Text>
 
                       <Text color="#000000">
-                        {currentCashoutRequest.requestData.accountType}
+                        {currentCashoutBankDetails.accountType}
                       </Text>
                     </Flex>
                   </GridItem>
@@ -650,7 +673,7 @@ const userProfileDetails = () => {
                       <Text noOfLines={1}>Bank :</Text>
 
                       <Text isTruncated color="#000000">
-                        {currentCashoutRequest.requestData.bankName}
+                        {currentCashoutBankDetails.bankName}
                       </Text>
                     </Flex>
                   </GridItem>
@@ -660,7 +683,7 @@ const userProfileDetails = () => {
                       <Text>IFSC CODE :</Text>
 
                       <Text color="#000000" casing="uppercase">
-                        {currentCashoutRequest.requestData.ifscCode}
+                        {currentCashoutBankDetails.ifscCode}
                       </Text>
                     </Flex>
                   </GridItem>

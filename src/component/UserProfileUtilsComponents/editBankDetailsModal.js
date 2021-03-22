@@ -15,9 +15,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form/dist/index.ie11";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import API from "../../config/API";
-
+import { useRowSelect } from "react-table";
+import {
+  editModalCleanUp,
+  updateBankDetail,
+} from "../../pages/UserTransaction/userTransactionSlice";
+import { isEmptyObject } from "../../utils";
 const EditBankDetailsModal = ({
   isOpen,
   onClose,
@@ -35,41 +40,21 @@ const EditBankDetailsModal = ({
   } = useForm();
 
   const toast = useToast();
+  const dispatch = useDispatch();
 
-  const submitEditBankDetails = async (updatedBankDetails) => {
-    try {
-      let { data } = await API.post(`bank/editBankDetails`, updatedBankDetails);
-      let { success, data: responseData, errMessage } = data;
-      if (success === 1) {
-        if (!Array.isArray(responseData)) {
-          responseData = new Array(responseData);
-        }
-        toast({
-          title: "Successfully edited Bank Details.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        console.log(" updateBankDetails", responseData[0]);
-        onClose();
-        updateBankDetails(responseData[0]);
-      } else {
-        toast({
-          title: "Failed to edit Bank Details.",
-          description: errMessage,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-        setIsError(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setIsError(true);
-    }
-  };
+  const editBankDetailStatus = useSelector(
+    (state) => state.userTransactions.updateBankDetailStatus
+  );
+  const editBankDetailError = useSelector(
+    (state) => state.userTransactions.updateBankDetailError
+  );
 
-  //find the
+  const bankDetailsToEdit = useSelector(
+    (state) => state.userTransactions.bankDetailToEdit
+  );
+  const updatedBankDetails = useSelector(
+    (state) => state.userTransactions.updatedBankDetails
+  );
 
   const { userId } = useParams();
 
@@ -78,13 +63,46 @@ const EditBankDetailsModal = ({
 
     let accountId = bankDetails.accountId;
     let payload = { ...data, accountId, userId };
-    await submitEditBankDetails(payload);
+    dispatch(updateBankDetail(payload));
   };
 
   useEffect(() => {
-    console.log({ bankDetails });
-    reset(bankDetails);
-  }, [bankDetails]);
+    return () => {
+      dispatch(editModalCleanUp());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (editBankDetailStatus === "succeeded") {
+      toast({
+        title: "Successfully edited Bank Details.",
+        status: "success",
+        position: "top-right",
+        duration: 4000,
+        isClosable: true,
+      });
+      updateBankDetails(updatedBankDetails);
+      if (updatedBankDetails.length > 0) {
+        onClose();
+      }
+    } else {
+      toast({
+        title: "Successfully edited Bank Details.",
+        status: "error",
+        description: editBankDetailError,
+        position: "top-right",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  }, [editBankDetailStatus]);
+
+  useEffect(() => {
+    // sets default vlue in form felids
+    if (!isEmptyObject(bankDetailsToEdit)) {
+      reset(bankDetailsToEdit);
+    }
+  }, [bankDetailsToEdit]);
   return (
     <Modal
       isCentered
