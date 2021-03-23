@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router";
 
 const ProtectedRoute = ({ children, ...rest }) => {
-  const token = useSelector((state) => state.auth.authToken);
+  // token can also be taken from auth reducer
+  const token = useSelector(() => window.localStorage.getItem("token"));
 
+  console.log("token ===>", token);
   return (
     <Route
       {...rest}
