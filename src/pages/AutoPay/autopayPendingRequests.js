@@ -144,7 +144,7 @@ const AutopayQueue = () => {
   //@desc fetch all queued requests
   useEffect(() => {
     dispatch(fetchAllQueuedRequests(0));
-  }, [allQueuedRequests]);
+  }, []);
 
   //@desc send otp to signed in user
   useEffect(() => {
