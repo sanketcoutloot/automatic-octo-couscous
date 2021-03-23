@@ -415,7 +415,6 @@ const userProfileDetails = () => {
 
         <BreadcrumbItem isCurrentPage>
           <BreadcrumbLink>
-            {" "}
             <Text>{`${userName} (${userId})`} </Text>{" "}
           </BreadcrumbLink>
         </BreadcrumbItem>
