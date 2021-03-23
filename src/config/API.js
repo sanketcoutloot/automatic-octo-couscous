@@ -1,5 +1,4 @@
 import axios from "axios";
-import store from "../app/store";
 let baseURL = null;
 
 if (process.env.NODE_ENV === "development") {
@@ -22,6 +21,21 @@ apiConfig.interceptors.request.use(
     console.log("TOKEN", localStorage.getItem("token"));
     request.headers.token = localStorage.getItem("token");
     return request;
+  },
+  null,
+  { synchronous: true }
+);
+
+apiConfig.interceptors.response.use(
+  (response) => {
+    console.log("login value ==", response);
+    const {
+      data: { loggedIn },
+    } = response;
+    if (loggedIn === 0) {
+      window.location.replace("/");
+    }
+    return response;
   },
   null,
   { synchronous: true }

@@ -5,7 +5,8 @@ import UPI from "../../asset/upi.png";
 import { Box, Button, Image, Text, useDisclosure } from "@chakra-ui/react";
 import { ReactTable } from "../ReactTable";
 import { FaPen } from "react-icons/fa";
-
+import { addBankDetailToEdit } from "../../pages/UserTransaction/userTransactionSlice";
+import { useDispatch } from "react-redux";
 const renderPaymentMode = (props) => {
   let paymentModeValue = parseInt(props.value.trim());
   switch (paymentModeValue) {
@@ -75,7 +76,7 @@ const cashoutRequestTable = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [bankDetails, setBankdetails] = useState({});
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (isEmptyObject(bankDetails) === false) {
       onOpen();
@@ -270,12 +271,43 @@ const cashoutRequestTable = ({
       },
     },
     {
-      Header: "action",
+      Header: "Action",
       accessor: "",
-      Cell: (props) => {
+      Cell: ({
+        cell: {
+          row: {
+            index,
+            original: {
+              accountHolderName,
+              accountId,
+              accountNumber,
+              accountType,
+              bankName,
+              ifscCode,
+              userId,
+            },
+          },
+        },
+      }) => {
         return (
           <Button
-            onClick={() => setBankdetails(props)}
+            onClick={() => {
+              dispatch(
+                addBankDetailToEdit({
+                  editCurrentRequestBankDetails: false,
+                  index,
+                  bankDetails: {
+                    accountHolderName,
+                    accountId,
+                    accountNumber,
+                    accountType,
+                    bankName,
+                    ifscCode,
+                    userId,
+                  },
+                })
+              );
+            }}
             leftIcon={<FaPen />}
             colorScheme="blue"
             variant="outline"

@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form/dist/index.ie11";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useRowSelect } from "react-table";
+
 import {
   editModalCleanUp,
   updateBankDetail,
@@ -56,12 +56,14 @@ const EditBankDetailsModal = ({
     (state) => state.userTransactions.updatedBankDetails
   );
 
-  const { userId } = useParams();
+  const updateBankDetailStatus = useSelector(
+    (state) => state.userTransactions.updateBankDetailStatus
+  );
 
+  const { userId } = useParams();
   const onSubmit = async () => {
     let data = getValues();
-
-    let accountId = bankDetails.accountId;
+    let accountId = bankDetailsToEdit.accountId;
     let payload = { ...data, accountId, userId };
     dispatch(updateBankDetail(payload));
   };
@@ -85,9 +87,9 @@ const EditBankDetailsModal = ({
       if (updatedBankDetails.length > 0) {
         onClose();
       }
-    } else {
+    } else if (editBankDetailStatus === "failed") {
       toast({
-        title: "Successfully edited Bank Details.",
+        title: "Failed to edited Bank Details.",
         status: "error",
         description: editBankDetailError,
         position: "top-right",
@@ -203,6 +205,7 @@ const EditBankDetailsModal = ({
               colorScheme="teal"
               isLoading={formState.isSubmitting}
               type="submit"
+              isDisabled={updateBankDetailStatus === "loading"}
             >
               Submit
             </Button>

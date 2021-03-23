@@ -21,6 +21,7 @@ const initialState = {
   currentCashoutBankDetails: {},
 
   bankDetailToEdit: {},
+  bankDetailsToEditIndex: null,
 
   bankVerificationRequest: {},
   bankVerificationStatus: "idle",
@@ -113,16 +114,24 @@ const userTransactionsSlice = createSlice({
       state.updateBankDetailStatus = "idle";
       state.updatedBankDetails = [];
       state.updateBankDetailError = null;
+      state.bankDetailToEdit = {};
+      state.bankDetailsToEditIndex = null;
     },
     addBankDetailToEdit: (state, action) => {
       //this dispatch help to set the
-      const { editCurrentRequestBankDetails, index } = action.payload;
+      const {
+        editCurrentRequestBankDetails,
+        index,
+        bankDetails,
+      } = action.payload;
       if (editCurrentRequestBankDetails === true) {
         state.bankDetailToEdit = state.currentCashoutBankDetails;
       }
+      if (editCurrentRequestBankDetails === false) {
+        state.bankDetailToEdit = bankDetails;
+        state.bankDetailsToEditIndex = index;
+      }
       //use index value to edit bank detail for the bank details list
-
-      console.log("addBankDetailToEdit", action);
     },
   },
   extraReducers: {
@@ -220,7 +229,6 @@ const userTransactionsSlice = createSlice({
     [updateBankDetail.fulfilled]: (state, action) => {
       const { success, data, errMessage } = action.payload;
       if (success === 1) {
-        state.updateBankDetailStatus = "succeeded";
         const {
           accountHolderName,
           accountNumber,
@@ -229,14 +237,31 @@ const userTransactionsSlice = createSlice({
           ifscCode,
           accountId,
         } = data[0];
-        state.currentCashoutBankDetails = {
-          accountHolderName,
-          accountNumber,
-          accountType,
-          bankName,
-          ifscCode,
-          accountId,
-        };
+
+        if (state.bankDetailsToEditIndex !== null) {
+          state.bankAccounts = state.bankAccounts.map((item, index) => {
+            if (index === state.bankDetailsToEditIndex) {
+              return (state.bankAccounts[index] = {
+                accountHolderName,
+                accountNumber,
+                accountType,
+                bankName,
+                ifscCode,
+                accountId,
+              });
+            }
+          });
+        } else {
+          state.currentCashoutBankDetails = {
+            accountHolderName,
+            accountNumber,
+            accountType,
+            bankName,
+            ifscCode,
+            accountId,
+          };
+        }
+        state.updateBankDetailStatus = "succeeded";
       } else {
         state.updateBankDetailStatus = "failed";
         state.updateBankDetailError = errMessage;
