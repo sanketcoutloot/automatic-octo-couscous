@@ -31,29 +31,25 @@ const App = () => {
             <Login />
           </Route>
 
-          <Route exact path="/moneylogs">
+          <ProtectedRoute path="/moneylogs">
             <Layout children={<MoneyLogs />} />
-          </Route>
+          </ProtectedRoute>
 
-          {/* <ProtectedRoute path="/moneylogs">
-            <Layout children={<MoneyLogs />} />
-          </ProtectedRoute> */}
-
-          <Route exact path="/allrequests">
+          <ProtectedRoute exact path="/allrequests">
             <Layout children={<AllRequests />} />
-          </Route>
+          </ProtectedRoute>
 
-          <Route exact path="/allrequests/:userId">
+          <ProtectedRoute exact path="/allrequests/:userId">
             <Layout children={<UserProfileDetails />} />
-          </Route>
+          </ProtectedRoute>
 
-          <Route exact path="/autoPayQueue">
+          <ProtectedRoute exact path="/autoPayQueue">
             <Layout children={<AutopayQueue />} />
-          </Route>
+          </ProtectedRoute>
 
-          <Route exact path="/autoPayHistory">
+          <ProtectedRoute exact path="/autoPayHistory">
             <Layout children={<AutopayHistory />} />
-          </Route>
+          </ProtectedRoute>
 
           <Route children={<ErrorPage />} />
         </Switch>
