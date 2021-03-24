@@ -164,8 +164,7 @@ const Navbar = () => (
       colorScheme="red"
       variant="solid"
       onClick={() => {
-        localStorage.removeItem("token");
-        //redirect
+        localStorage.clear();
         window.location.replace("/");
       }}
     >
