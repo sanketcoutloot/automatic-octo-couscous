@@ -9,6 +9,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Button,
 } from "@chakra-ui/react";
 import { NavLink as RouterLink } from "react-router-dom";
 import React from "react";
@@ -19,6 +20,7 @@ import {
   FaHome,
   FaUserAlt,
   FaArrowRight,
+  FaLock,
 } from "react-icons/fa";
 
 import Logo from "../../asset/cl-logo.png";
@@ -28,7 +30,7 @@ const ActiveLinkStyle = {
 };
 
 const Navbar = () => (
-  <Box as="nav" bg="teal" position="relative">
+  <Box as="nav" bg="teal" height="98vh" position="relative">
     <Box as="div" position="sticky" top="0" backgroundColor="white">
       <Box display="flex" m={3} justifyContent="space-around">
         <Icon as={FaBars} color="gray.500" h={6} w={6} />
@@ -58,9 +60,7 @@ const Navbar = () => (
         </Box>
       </Box>
     </Box>
-
     <hr style={{ margin: "1.1rem" }} />
-
     <UnorderedList listStyleType="none" margin="none">
       <ListItem
         display="flex"
@@ -156,6 +156,21 @@ const Navbar = () => (
         </AccordionItem>
       </Accordion>
     </UnorderedList>
+    <Button
+      marginTop="180%"
+      marginLeft="10%"
+      width="80%"
+      leftIcon={<FaLock />}
+      colorScheme="red"
+      variant="solid"
+      onClick={() => {
+        localStorage.removeItem("token");
+        //redirect
+        window.location.replace("/");
+      }}
+    >
+      Logout
+    </Button>
   </Box>
 );
 
