@@ -389,8 +389,8 @@ const userProfileDetails = () => {
       addRequestToAutoPayQueue({
         requestId,
         userId,
-        transferableAmt,
         requestMode,
+        transferableAmt: parseInt(transferableFromInput),
       })
     );
   };

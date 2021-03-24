@@ -10,6 +10,7 @@ import {
   useToast,
   Button,
   VStack,
+  FormLabel,
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
@@ -54,9 +55,16 @@ const Login = () => {
       });
       dispatch(cleanUpAfterError());
     }
-
     if (sendOTPStatus === "succeeded") {
+      toast({
+        title: "OTP has been sent.",
+        status: "success",
+        position: "top-right",
+        duration: 3000,
+        isClosable: true,
+      });
       setIsHidden(!isHidden);
+      dispatch(cleanUpAfterError());
     }
   }, [sendOTPStatus, verifyOTPStatus]);
 
@@ -94,7 +102,7 @@ const Login = () => {
             <form>
               {isHidden === false ? (
                 <VStack>
-                  <InputGroup>
+                  <InputGroup isRequired>
                     <InputLeftElement
                       pointerEvents="none"
                       children={<Icon as={FaMailBulk} />}

@@ -85,9 +85,6 @@ const cashoutRequestTable = ({
     if (isOpen === true && isEmptyObject(bankDetails) === false) {
       openEditBankDetailsModal(isOpen, bankDetails.cell.row.original);
     }
-
-    // console.log({ isOpen });
-    // console.log("bank details ", bankDetails);
   }, [isOpen, bankDetails]);
 
   const tab_1_columns = [
@@ -276,7 +273,7 @@ const cashoutRequestTable = ({
       Cell: ({
         cell: {
           row: {
-            index,
+            id,
             original: {
               accountHolderName,
               accountId,
@@ -295,7 +292,7 @@ const cashoutRequestTable = ({
               dispatch(
                 addBankDetailToEdit({
                   editCurrentRequestBankDetails: false,
-                  index,
+                  index: id,
                   bankDetails: {
                     accountHolderName,
                     accountId,

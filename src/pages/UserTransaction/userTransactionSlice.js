@@ -189,7 +189,7 @@ const userTransactionsSlice = createSlice({
         if (!Array.isArray(resData)) {
           resData = [resData];
         }
-        state.bankAccounts = state.bankAccounts.concat(resData);
+        state.bankAccounts = resData;
       } else {
         state.bankAccountsStatus = "failed";
         state.bankAccountsError = action.payload.errMessage;
@@ -240,7 +240,7 @@ const userTransactionsSlice = createSlice({
 
         if (state.bankDetailsToEditIndex !== null) {
           state.bankAccounts = state.bankAccounts.map((item, index) => {
-            if (index === state.bankDetailsToEditIndex) {
+            if (index === parseInt(state.bankDetailsToEditIndex)) {
               return (state.bankAccounts[index] = {
                 accountHolderName,
                 accountNumber,
@@ -250,6 +250,7 @@ const userTransactionsSlice = createSlice({
                 accountId,
               });
             }
+            return item;
           });
         } else {
           state.currentCashoutBankDetails = {
