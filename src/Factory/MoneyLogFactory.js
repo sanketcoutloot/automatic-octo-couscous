@@ -9,9 +9,9 @@ const MoneyLogFactory = (amount) => {
       walletType: faker.random.arrayElement(["cashout", "credit", "referral"]),
       type: faker.random.arrayElement(["DEBIT", "CREDIT", "REQUEST"]),
       transactionType: "MONEY RECEIVED FOR RETURNED ORDER",
-      transactionAmount: faker.random.number({ min: 0, max: 10000 }),
-      openingBalance: faker.random.number({ min: 0, max: 10000 }),
-      closingBalance: faker.random.number({ min: 0, max: 10000 }),
+      transactionAmount: faker.random.number({ min: 0, max: 1000 }),
+      openingBalance: faker.random.number({ min: 0, max: 1000 }),
+      closingBalance: faker.random.number({ min: 0, max: 1000 }),
       transactionDate: `${Math.floor(
         new Date(`${faker.date.between("2014", "2020")}`).getTime() / 100
       )}`,

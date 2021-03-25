@@ -50,7 +50,7 @@ const Login = () => {
         description: errorMsg,
         status: "error",
         position: "top-right",
-        duration: 4000,
+        duration: 1000,
         isClosable: true,
       });
       dispatch(cleanUpAfterError());
@@ -60,7 +60,7 @@ const Login = () => {
         title: "OTP has been sent.",
         status: "success",
         position: "top-right",
-        duration: 3000,
+        duration: 1000,
         isClosable: true,
       });
       setIsHidden(!isHidden);

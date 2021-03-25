@@ -10,7 +10,7 @@ const allRequestFactory = (amount) => {
       userId: faker.random.number(),
       paymentMode: faker.random.arrayElement(["paytm", "upi", "bank"]),
       status: faker.random.arrayElement(["active", "renewed"]),
-      amount: faker.random.number({ min: 0, max: 10000 }),
+      amount: faker.random.number({ min: 0, max: 1000 }),
       date: `${Math.floor(
         new Date(`${faker.date.between("2014", "2020")}`).getTime() / 100
       )}`,

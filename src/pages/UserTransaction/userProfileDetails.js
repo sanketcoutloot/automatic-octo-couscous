@@ -208,7 +208,7 @@ const userProfileDetails = () => {
         description: currentCashoutError,
         status: "error",
         position: "top-right",
-        duration: 10000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -221,7 +221,7 @@ const userProfileDetails = () => {
         description: JSON.stringify(error, null, 2),
         status: "error",
         position: "top-right",
-        duration: 10000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -234,7 +234,7 @@ const userProfileDetails = () => {
         description: JSON.stringify(error, null, 2),
         status: "error",
         position: "top-right",
-        duration: 10000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -254,7 +254,7 @@ const userProfileDetails = () => {
         description: JSON.stringify(error, null, 2),
         status: "error",
         position: "top-right",
-        duration: 10000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -277,7 +277,7 @@ const userProfileDetails = () => {
         description: markCashoutRequestCompleteError,
         status: "error",
         position: "top-right",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     } else if (markCashoutRequestCompleteStatus === "succeeded") {
@@ -286,7 +286,7 @@ const userProfileDetails = () => {
         description: markCashoutRequestCompleteError,
         status: "success",
         position: "top-right",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -299,7 +299,7 @@ const userProfileDetails = () => {
         description: markCashoutRequestCompleteError,
         status: "error",
         position: "top-right",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     } else if (addRequestToAutoPayQueueStatus === "succeeded") {
@@ -308,7 +308,7 @@ const userProfileDetails = () => {
         description: markCashoutRequestCompleteError,
         status: "success",
         position: "top-right",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     }

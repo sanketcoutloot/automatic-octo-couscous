@@ -180,7 +180,7 @@ const AutopayQueue = () => {
       toast({
         title: "OTP has been sent",
         status: "success",
-        duration: 9000,
+        duration: 1000,
         position: "top-right",
         isClosable: true,
       });
@@ -191,7 +191,7 @@ const AutopayQueue = () => {
         title: "Failed to send OTP",
         status: "error",
         position: "top-right",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     }
@@ -208,7 +208,7 @@ const AutopayQueue = () => {
       toast({
         title: "Transfer has been made",
         status: "success",
-        duration: 4000,
+        duration: 1000,
         position: "top-right",
         isClosable: true,
       });
@@ -220,7 +220,7 @@ const AutopayQueue = () => {
         description: errMessage,
         status: "error",
         position: "top-right",
-        duration: 4000,
+        duration: 1000,
         isClosable: true,
       });
       onClose();

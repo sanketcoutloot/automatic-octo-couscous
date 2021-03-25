@@ -80,7 +80,7 @@ const EditBankDetailsModal = ({
         title: "Successfully edited Bank Details.",
         status: "success",
         position: "top-right",
-        duration: 4000,
+        duration: 1000,
         isClosable: true,
       });
       updateBankDetails(updatedBankDetails);
@@ -93,7 +93,7 @@ const EditBankDetailsModal = ({
         status: "error",
         description: editBankDetailError,
         position: "top-right",
-        duration: 4000,
+        duration: 1000,
         isClosable: true,
       });
     }
