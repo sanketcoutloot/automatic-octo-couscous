@@ -173,10 +173,7 @@ const AutopayHistory = () => {
   );
 
   useEffect(() => {
-    //dispatch all requests
-    // if (autoPayHistory.length === 0) {
     dispatch(fetchAutoPayHistory(0));
-    // }
   }, []);
 
   const columns = React.useMemo(

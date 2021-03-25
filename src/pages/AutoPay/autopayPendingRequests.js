@@ -146,6 +146,12 @@ const AutopayQueue = () => {
     dispatch(fetchAllQueuedRequests(0));
   }, []);
 
+  useEffect(() => {
+    if (verifyOTPStatus === "succeeded") {
+      dispatch(fetchAllQueuedRequests(0));
+    }
+  }, [verifyOTPStatus]);
+
   //@desc send otp to signed in user
   useEffect(() => {
     let payload = {};

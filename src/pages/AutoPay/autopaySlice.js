@@ -74,16 +74,18 @@ const autoPaySlice = createSlice({
     [fetchAutoPayHistory.pending]: (state, action) => {
       state.autoPayHistoryStatus = "loading";
     },
+
     [fetchAutoPayHistory.fulfilled]: (state, action) => {
       const { success, data } = action.payload;
       if (success === 1) {
+        state.autoPayHistory = data;
         state.autoPayHistoryStatus = "succeeded";
-        state.autoPayHistory = [...state.autoPayHistory, ...data];
       } else {
         state.autoPayHistoryStatus = "failed";
         state.error = action.payload;
       }
     },
+
     [fetchAutoPayHistory.rejected]: (state, action) => {
       state.autoPayHistoryStatus = "failed";
       state.error = action.payload.data;
@@ -115,7 +117,7 @@ const autoPaySlice = createSlice({
       const { success, data } = action.payload;
       if (success === 1) {
         state.allQueuedRequestsStatus = "succeeded";
-        state.allQueuedRequests = state.allQueuedRequests.concat(data);
+        state.allQueuedRequests = data;
       } else {
         state.allQueuedRequestsStatus = "failed";
         state.error = action.payload.data;
