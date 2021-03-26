@@ -160,7 +160,7 @@ const Navbar = () => {
       </UnorderedList>
 
       <Button
-        marginTop="280%"
+        marginTop="50vh"
         marginLeft="10%"
         width="80%"
         leftIcon={<FaLock />}
