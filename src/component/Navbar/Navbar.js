@@ -35,7 +35,7 @@ const Navbar = () => {
     <Box as="nav" bg="teal" height="98vh" position="relative">
       <Box as="div" position="sticky" top="0" backgroundColor="white">
         <Box display="flex" m={3} justifyContent="space-around">
-          <Icon as={FaBars} color="gray.500" h={6} w={6} />
+          {/* <Icon as={FaBars} color="gray.500" h={6} w={6} /> */}
           <img
             src={Logo}
             style={{
@@ -160,7 +160,7 @@ const Navbar = () => {
       </UnorderedList>
 
       <Button
-        marginTop="180%"
+        marginTop="280%"
         marginLeft="10%"
         width="80%"
         leftIcon={<FaLock />}
