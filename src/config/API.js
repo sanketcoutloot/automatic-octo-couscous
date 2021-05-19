@@ -18,7 +18,6 @@ const apiConfig = axios.create({
 
 apiConfig.interceptors.request.use(
   (request) => {
-    console.log("TOKEN", localStorage.getItem("token"));
     request.headers.token = localStorage.getItem("token");
     return request;
   },
@@ -28,7 +27,6 @@ apiConfig.interceptors.request.use(
 
 apiConfig.interceptors.response.use(
   (response) => {
-    console.log("login value ==", response);
     const {
       data: { loggedIn },
     } = response;

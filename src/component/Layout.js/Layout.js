@@ -12,25 +12,13 @@ const Layout = ({ children }) => {
       gap={2}
       style={{ boxSizing: "border-box", fontFamily: "Comfortaa, cursive" }}
     >
-      {/* side navigation  */}
-      <GridItem
-        colStart={1}
-        colEnd={2}
-        style={{ height: "calc(100vh - 1rem)" }}
-        overflowY="scroll"
-      >
-        <Navbar />
-      </GridItem>
-
-      {/* main content */}
-
       <GridItem
         bg="rgba(245,245,245,1)"
         borderColor="white"
         boxShadow="lg"
         p={4}
         rounded="lg"
-        colStart={2}
+        colStart={1}
         colEnd={-1}
         style={{ height: "calc(100vh - 1rem)", boxSizing: "border-box" }}
       >
