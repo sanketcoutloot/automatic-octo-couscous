@@ -8,7 +8,7 @@ const Signup = ({ isOpen, onClose }) => {
       <DrawerOverlay />
       <DrawerContent>
         <DrawerHeader>
-          <h1>Sign Up </h1>
+          <h1>New User </h1>
         </DrawerHeader>
         <DrawerBody>
           <SignUpForm />

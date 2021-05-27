@@ -21,7 +21,7 @@ import { FaPhone, FaKey, FaArrowRight, FaMailBulk } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import loginImage from "../../asset/signin.svg";
-import SignUpForm from "./SignUp";
+// import SignUpForm from "./SignUp";
 import { login } from "./loginSlice";
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -88,24 +88,13 @@ const Login = () => {
               <HStack>
                 <Button
                   mt="5px"
-                  ml="322px"
+                  ml="auto"
                   colorScheme="blue"
                   type="submit"
                   variant="outline"
                   onClick={(event) => loginHandler(event)}
                 >
                   Login
-                </Button>
-
-                <Button
-                  mt="5px"
-                  ml="322px"
-                  colorScheme="blue"
-                  onClick={() => onOpen()}
-                  rightIcon={<FaArrowRight />}
-                  // onClick={(event) => verifyOTP(event)}
-                >
-                  Sign Up
                 </Button>
               </HStack>
             </form>
@@ -115,7 +104,6 @@ const Login = () => {
           <Image src={loginImage} boxSize="500px" />
         </Box>
       </Box>
-      {isOpen && <SignUpForm isOpen={isOpen} onClose={onClose} />}
     </Box>
   );
 };
